@@ -1,0 +1,171 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <script type="text/javascript">
+      var shiftWindow = function() { scrollBy(0, -55) };
+      if (location.hash) shiftWindow();
+      window.addEventListener("hashchange", shiftWindow);
+    </script>
+{% endblock %}
+
+{% block titlePage %}
+Analysis - <small>Personalize your analysis </small>
+{% endblock %}
+{% block content %}
+
+{% if observables is defined %}
+<div class="row">
+  <div class="col-lg-8 ">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your input Observable(s)</h3>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="header">Observable </th>
+                  <th class="header">Value </th>
+                  <th class="header">Experimental uncertainty </th>
+                  <th class="header">Theoretical uncertainty </th>
+                  <th class="header">Explanations </th>
+                  <th class="header">Edit </th>
+                </tr>
+              </thead>
+{% set paramEverInUse = {} %}
+{% set paramGetObs = {} %}
+
+{% for observable in observables %}
+                <tr>
+                  <td>{{observable.name}}</td>
+                  <td>{{observable.value}}</td>
+                  <td>{{observable.expUncertity}}</td>
+                  <td>{{observable.thUncertity}}</td>
+                  <td><a href="#">A help link</a></td>
+                  <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">Edit observable</a></td>
+            {% if observable.parameterInputs is defined %}
+                  <tr class="success"><td colspan="6" >Parameters of the Observable {{observable.name}}</td></tr>
+              {% for oneParameter in observable.parameterInputs %}
+                  <tr>
+                    <td>{{ oneParameter.name }}</td>
+                    <td>{{ oneParameter.value }}</td>
+                    <td>{{ oneParameter.expUncertity }}</td>
+                    <td>{{ oneParameter.thUncertity }}</td>
+                    <td><a href="#">A help link</a></td>
+                {% if oneParameter.name not in paramEverInUse|keys %}
+                    <td><div id="{{oneParameter.name}}"><a href="{{ path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': oneParameter.id}) }}">Edit Parameter</a></div></td>
+                    {% set paramGetObs = paramGetObs|merge({ (oneParameter.name): observable.name }) %}
+                {% else %}
+                    <td style="background:#eee"><a href="#{{ oneParameter.name }}">See {{ oneParameter.name }} of {{ paramGetObs[oneParameter.name] }}</a></td>
+                {% endif %}
+                {# set paramEverInUse = paramEverInUse|merge([oneParameter.name]) #}
+
+                {% set paramEverInUse = paramEverInUse|merge({ (oneParameter.name): observable.name }) %}
+
+                  </tr>
+              {% endfor %}
+            {% else %}
+                  <tr><td>No Parameter found...</td></tr>
+            {% endif %}
+                  </tr>
+                  <tr ><td colspan="6" >&nbsp;</td></tr>
+{% endfor %}
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+No observable defined...
+{% endif %}
+
+  <div class="col-lg-4">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Next step Analysis</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
+            <span class="badge">go</span>
+            <i class="fa fa-check"></i> Set the properties
+          </a>
+          <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_step_3', {'analyse': analyse.id, 'step':0}) }}">
+            <span class="badge">go</span>
+            <i class="fa fa-check"></i> Re-choose input
+          </a>
+        {% if analyse.status == 1 %}
+            <a style="background:#F2DEDE;font-weight:bold" class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_remove', {'analyse': analyse.id}) }}">
+            <span class="badge">go</span>
+            <i class="fa fa-check"></i> Remove your Analysis
+            <a style="background:#D0E9C6;font-weight:bold" class="list-group-item" href="#">
+            <span class="badge">go</span>
+            <i class="fa fa-check"></i> Finalise Analysis
+          </a>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+ {% if analyse.status == 1 %}
+ <div class="col-lg-4">
+   <div >
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis properties</h3>
+        </div>
+        <div class="panel-body">
+          <div class="list-group">
+              <a class="list-group-item" href="#">
+                <i class="fa fa-check"></i> granularity <span class="badge">{{analyse.granularity}}</span>
+              </a>
+              <a class="list-group-item" href="#">
+                <i class="fa fa-check"></i> scanMax <span class="badge">{{analyse.scanMax}}</span>
+              </a>
+              <a class="list-group-item" href="#">
+                <i class="fa fa-check"></i> scanMin <span class="badge">{{analyse.scanMin}}</span>
+              </a>
+          </div>
+        </div>
+      </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis will be run on</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          {% for target in targets %}
+            <a class="list-group-item" href="#">
+              <i class="fa fa-check"></i> {{target.name}}
+            </a>
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+ </div>
+{% endif %}
+
+
+</div> <!-- row -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ["\\(","\\)"] ],
+      displayMath: [ ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+{% endblock %}

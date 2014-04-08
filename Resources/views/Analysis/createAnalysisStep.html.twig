@@ -1,0 +1,46 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/createAnalysisStep.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block titlePage %}
+Analysis - <small>Properties definition</small>
+{% endblock %}
+{% block content %}
+<h3>Edit Properties Analysis</h3>
+
+{% for flashMessage in app.session.flashbag.get('notice') %}
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="alert alert-danger">
+              <h4>Warning!</h4>
+              <p>{{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<div class="row">
+  <div class="col-lg-6">
+    <form role="form" method="post" {{ form_enctype(form) }}>
+      {{ form_widget(form) }}
+      <br />
+      <p>
+        <input type="submit" class="btn btn-primary" />
+      </p>
+    </form>
+  </div>
+</div>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ["\\(","\\)"] ],
+      displayMath: [ ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+{% endblock %}

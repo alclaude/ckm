@@ -1,0 +1,12 @@
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block content %}
+  {% if analyse is defined %}
+  <div>
+      <pre>
+      {{ dump( analyse ) }}
+      </pre>
+  </div>
+  {% endif %}
+
+{% endblock %}

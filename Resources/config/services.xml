@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="CKM.form.createAnalyse"
+                 class="CKM\AppBundle\Form\CreateAnalyseForm">
+            <tag name="form.type" alias="createAnalyse" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+
+        <service id="CKM.form.flow.createAnalyse"
+                class="CKM\AppBundle\Form\CreateAnalyseFlow"
+                parent="craue.form.flow"
+                scope="request">
+            <call method="setFormType">
+                <argument type="service" id="CKM.form.createAnalyse" />
+            </call>
+        </service>
+
+        <service id="CKM.twig.ckm_extension" class="CKM\AppBundle\Twig\CKMExtension">
+            <tag name="twig.extension" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+
+        <service id="dimension_rules_validator" class="CKM\AppBundle\Validator\DimensionRulesValidator">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="request_stack"/>
+            <tag name="validator.constraint_validator" alias="dimension_rules" />
+        </service>
+
+    </services>
+
+</container>

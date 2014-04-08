@@ -1,0 +1,68 @@
+{# src/Blogger/BlogBundle/Resources/views/Administration/datacard.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% form_theme form  'CKMAppBundle::Form/errors.html.twig' %}
+
+{% block titlePage %}
+Administration - <small>Datacard management</small>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-8 ">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Select a datacard file</h3>
+      </div>
+      <div class="panel-body">
+      {% for flashMessage in app.session.flashbag.get('suppress') %}
+            <div class="alert alert-success">
+                    <p><span class="label label-primary"> Success </span></p>
+                    <p>{{ flashMessage }}</p>
+            </div>
+      {% endfor %}
+
+        <form role="form" action="{{ path('CKMAppBundle_administration_datacard') }}" method="post" {{ form_enctype(form) }}>
+          {{ form_widget(form) }}
+
+          <br />
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    {{ render(controller('CKMAppBundle:Administration:addDatacard', {
+            'error': 0
+        })) }}
+  </div>
+
+</div>
+
+
+{% if app.session.get('text') is defined %}
+{% if app.session.get('text') is not empty %}
+<div class="row">
+  <div class="col-lg-8 ">
+    <p><span class="label label-primary">{{app.session.get('name')}}</span></p>
+<pre class="pre-scrollable">{{app.session.get('text')}}</pre>
+  </div>
+</div>
+{% endif %}
+{% endif %}
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ["\\(","\\)"] ],
+      displayMath: [ ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+{% endblock %}

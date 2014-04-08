@@ -1,0 +1,67 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block titlePage %}
+Analysis - <small>List </small>
+{% endblock %}
+{% block content %}
+
+{% if analysesbyuser is defined %}
+<div class="row">
+  <div class="col-lg-8 ">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your Analysis</h3>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="header">Analysis </th>
+                  <th class="header">Date </th>
+                  <th class="header">Element target </th>
+                  <th class="header">scan constraint </th>
+                  <th class="header">status </th>
+                  <th class="header">Edit </th>
+                </tr>
+              </thead>
+              {% if analysesbyuser | length > 0 %}
+                {% for analyse in analysesbyuser %}
+                    <tr>
+                      <td>{{ analyse.id }}</td>
+                      <td>{{ analyse.date|date("m/d/Y - H:i") }}</td>
+                      <td>
+                      {% for target in targets(analyse) %}
+                        {{ target.name }}<br />
+                      {% endfor %}
+                      &nbsp;
+                      </td>
+                      <td>{{ analyse.scanConstraint }}</td>
+                      <td>{{ analyse.status }}</td>
+                      <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source', {'analyse': analyse.id}) }}">Edit analysis</a></td>
+                    </tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="5">No analysis retrieved for this user...</td></tr>
+              {% endif %}
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+No analysis defined...
+{% endif %}
+<div class="col-lg-4">
+  <div class="panel panel-default">
+    <div class="panel-heading">User</div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item">{{ app.user.username  }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

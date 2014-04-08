@@ -1,0 +1,43 @@
+{% extends 'CKMAppBundle::layout.html.twig' %}
+{% block titlePage %}
+Create Analyse - <small>Select target & input elements</small>
+{% endblock %}
+{% block content %}
+  <div>
+      Steps:
+      {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
+  </div>
+
+  {% for flashMessage in app.session.flashbag.get('notice') %}
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="alert alert-danger">
+                <h4>Warning!</h4>
+                <p>{{ flashMessage }}</p>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="row">
+    <div class="col-lg-6">
+      <form method="post" action="{{ path(app.request.attributes.get('_route'),
+            app.request.query.all | craue_removeDynamicStepNavigationParameter(flow)) }}" {{ form_enctype(form) }}>
+          {{ form_errors(form) }}
+
+          {% if flow.getCurrentStepNumber() == 2 %}
+              <div>
+                  When selecting four wheels you have to choose the engine in the next step.<br />
+                  {{ form_row(form.scanConstraint) }}
+              </div>
+          {% endif %}
+
+          {{ form_rest(form) }}
+          <br />
+          {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}
+      </form>
+    </div>
+</div>
+
+
+{% endblock %}

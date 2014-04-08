@@ -1,0 +1,63 @@
+# src/CKM/AppBundle/Resources/config/routing.yml
+CKMAppBundle_homepage:
+    pattern:  /
+    defaults: { _controller: CKMAppBundle:Page:index }
+## pages communication
+CKMAppBundle_communication:
+    pattern:  /communication
+    defaults: { _controller: CKMAppBundle:Page:communication }
+## pages analyse
+CKMAppBundle_analyse_definition:
+    pattern:  /analysis/definition
+    defaults: { _controller: CKMAppBundle:Analysis:definition }
+CKMAppBundle_analyse_testform:
+    pattern:  /analysis/testform
+    defaults: { _controller: CKMAppBundle:Analysis:testform }
+CKMAppBundle_analyse_source:
+    pattern:  /analysis/source/
+    defaults: { _controller: CKMAppBundle:Analysis:source }
+CKMAppBundle_analyse_create_analyse:
+    pattern:  /analysis/createAnalyse/
+    defaults: { _controller: CKMAppBundle:Analysis:createAnalyse }
+CKMAppBundle_analyse_create_analyse_source:
+    pattern:  /analysis/createAnalyseSource/{analyse}/{step}
+    defaults: { _controller: CKMAppBundle:Analysis:createAnalyseSource, analyse:null, step:0}
+    requirements:
+        analyse:  \d+
+        step:  \d+
+CKMAppBundle_analyse_create_analyse_source_observable:
+    pattern:  /analysis/createAnalyseSourceObservable/{observable_id}
+    defaults: { _controller: CKMAppBundle:Analysis:editObservable}
+CKMAppBundle_analyse_create_analyse_source_parameter:
+    pattern:  /analysis/createAnalyseSourceParameter/{parameter_id}
+    defaults: { _controller: CKMAppBundle:Analysis:editParameter}
+CKMAppBundle_analyse_create_analyse_properties:
+    pattern:  /analysis/createAnalyseProperties/{analyse}
+    defaults: { _controller: CKMAppBundle:Analysis:editAnalysisProperties}
+CKMAppBundle_analyse_create_analyse_remove:
+    pattern:  /analysis/createAnalyseRemove/{analyse}
+    defaults: { _controller: CKMAppBundle:Analysis:removeAnalysis}
+CKMAppBundle_analyse_by_user:
+    pattern:  /analysis/byuser/{user_id}
+    defaults: { _controller: CKMAppBundle:Analysis:analysisByUser}
+# analyse 2eme version
+CKMAppBundle_analyse_create_step_1:
+    pattern:  /analysis/createAnalyse/step1
+    defaults: { _controller: CKMAppBundle:Analysis:createAnalyseStep1}
+CKMAppBundle_analyse_create_step_2:
+    pattern:  /analysis/createAnalyse/step2/{analyse}
+    defaults: { _controller: CKMAppBundle:Analysis:createAnalyseStep2}
+    requirements:
+        analyse:  \d+
+CKMAppBundle_analyse_create_step_3:
+    pattern:  /analysis/createAnalyse/step3/{analyse}/{step}
+    defaults: { _controller: CKMAppBundle:Analysis:createAnalyseStep3}
+    requirements:
+        analyse:  \d+
+## pages administration
+CKMAppBundle_administration_datacard_add:
+    pattern:  /administration/datacard/add
+    defaults: { _controller: CKMAppBundle:Administration:addDatacard}
+CKMAppBundle_administration_datacard:
+    pattern:  /administration/datacard/
+    defaults: { _controller: CKMAppBundle:Administration:datacard}
