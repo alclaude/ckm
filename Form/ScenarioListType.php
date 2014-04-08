@@ -24,11 +24,11 @@ class ScenarioListType extends AbstractType
               'validation_groups' => array('choice'),
               ))
             ->add('display', 'submit', array(
-              'attr'      => array('class' => ' form-control btn btn-primary'),
+              'attr'      => array('class' => 'btn btn-primary btn-lg btn-block'),
               'label'     => 'Display selected Scenario'
               ) )
             ->add('delete', 'submit', array(
-              'attr'      => array('class' => 'form-control btn btn-danger', 'onclick' => 'return confirm(\'Are you really sure to delete this Scenario file ?\');'),
+              'attr'      => array('class' => 'btn btn-danger btn-lg btn-block', 'onclick' => 'return confirm(\'Are you really sure to delete this Scenario file ?\');'),
               'label'     => 'Delete selected Scenario'
               ) )
         ;

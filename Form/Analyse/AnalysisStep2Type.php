@@ -18,38 +18,6 @@ class AnalysisStep2Type extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-      //\Doctrine\Common\Util\Debug::dump($builder);
-      $scan = $options['data']->getScanConstraint() ;
-
-        switch ( $scan ) {
-          case 1:
-            $this->step0ne($builder, $options);
-            break;
-          case 2:
-            $this->stepTwo($builder, $options);
-            break;
-        }
-    }
-
-    public function step0ne(FormBuilderInterface $builder, array $options)
-    {
-      # \Doctrine\Common\Util\Debug::dump( $options['data']->getScenario()->getWebPath() );
-      $path = $options['data']->getScenario()->getWebPath();
-
-      list($obs, $param) = $this->getListOfDatacardObservable( $path ) ;
-      $builder
-        ->add('targetObservable', 'choice'/*'entity'*/, array(
-             #'class' => 'CKM\AppBundle\Entity\Observable',
-             'choices'   => $obs,
-             'mapped'    => false,
-             'multiple'  => true,
-             'attr'      => array('class' => 'form-control'),
-             ))
-       ;
-    }
-
-    public function stepTwo(FormBuilderInterface $builder, array $options)
-    {
       $path = $options['data']->getScenario()->getWebPath();
 
       list($obs, $param) = $this->getListOfDatacardObservable( $path ) ;

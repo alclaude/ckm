@@ -2,10 +2,10 @@
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
 {% block titlePage %}
-Analysis - <small>Properties definition</small>
+Analysis - <small> {{ message }} </small>
 {% endblock %}
 {% block content %}
-<h3>Edit Properties Analysis</h3>
+<h3>Analysis Definition - {{ message1 }}</h3>
 
 {% for flashMessage in app.session.flashbag.get('notice') %}
   <div class="row">
@@ -23,9 +23,14 @@ Analysis - <small>Properties definition</small>
     <form role="form" method="post" {{ form_enctype(form) }}>
       {{ form_widget(form) }}
       <br />
-      <p>
-        <input type="submit" class="btn btn-primary" />
-      </p>
+      <div class="form-group row">
+        <div class="col-md-6">
+          {% if step==1 %}
+          <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_by_user', {'user_id':app.user.id} ) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
+          {% endif %}
+          <input type="submit" class="btn btn-primary " />
+        </div>
+      </div>
     </form>
   </div>
 </div>

@@ -51,7 +51,10 @@ class AnalysisController extends Controller
         }
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep.html.twig', array(
-        'form' => $form->createView(),
+        'form'     => $form->createView(),
+        'message1' => 'step 1',
+        'message'  => 'Scenario & Scan constraint',
+        'step'     => '1',
       ));
     }
 
@@ -97,7 +100,7 @@ class AnalysisController extends Controller
             );
             return $this->redirect(
                 $this->generateUrl('CKMAppBundle_analyse_create_step_2',
-                                    array('analyse' => $analyse->getId(), 'step' => 2 )
+                                    array('analyse' => $analyse->getId(), 'step' => 2)
                 )
             );
           }
@@ -120,6 +123,7 @@ class AnalysisController extends Controller
             $em->persist($targetPersist);
           }
 
+          $analyse->setStatus( 0 );
           $em->persist( $analyse );
           $em->flush();
 
@@ -135,6 +139,9 @@ class AnalysisController extends Controller
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep.html.twig', array(
         'form' => $form->createView(),
+        'message1' => 'step 2',
+        'message'  => 'Target Input',
+        'step'     => '2',
       ));
     }
 
@@ -212,6 +219,9 @@ class AnalysisController extends Controller
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep.html.twig', array(
         'form' => $form->createView(),
+        'message1' => 'step 3',
+        'message'  => 'Input Element',
+        'step'     => '3',
       ));
     }
 
@@ -460,19 +470,18 @@ echo '</pre>';
     }
 
 
-### ICI : verif ce cas pour observable et parameter
-    private function isRanged($tmp, $element, $id, $id_name) {
+    /*
+     * Verifie que la valeur est dans le range
+     */
+    private function isValueRanged($tmp, $element) {
       if( $tmp['value']<$element->getAllowedRangeMin() or $tmp['value']>$element->getAllowedRangeMax() ) {
         $this->get('session')->getFlashBag()->add(
             'notice',
             'Please respect the range value i.e. '.$element->getAllowedRangeMin().' < value < '.$element->getAllowedRangeMax()
         );
-        return $this->redirect(
-              $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_observable',
-                                  array($id_name => $id, 'type' => 'Observable' )
-              )
-        );
+        return false;
       }
+      return true;
     }
 
     public function editObservableAction($observable_id=0) {
@@ -497,7 +506,13 @@ echo '</pre>';
           //$em->persist($observable);
           $tmp = $request->request->get($form->getName());
 
-          $this->isRanged($tmp, $observable, $observable_id, 'observable_id');
+          if( ! $this->isValueRanged($tmp, $observable) ) {
+            return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_observable',
+                                      array('observable_id' => $observable_id, 'type' => 'Observable' )
+                  )
+            );
+          }
 
           $observable->setValue( $tmp['value'] );
           $observable->setExpUncertity( $tmp['expUncertity'] );
@@ -541,7 +556,13 @@ echo '</pre>';
           //$em->persist($observable);
           $tmp = $request->request->get($form->getName());
 
-          $this->isRanged($tmp, $parameter, $parameter_id, 'parameter_id');
+          if( ! $this->isValueRanged($tmp, $parameter) ) {
+            return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_parameter',
+                                      array('parameter_id' => $parameter_id, 'type' => 'Parameter' )
+                  )
+            );
+          }
 
           $parameter->setValue( $tmp['value'] );
           $parameter->setExpUncertity( $tmp['expUncertity'] );
@@ -623,8 +644,12 @@ echo '</pre>';
         throw $this->createNotFoundException('Sorry, you are not authorized to see the analysis of this user');
       }
 
+/*      $analysisListByUser = $em->getRepository('CKMAppBundle:Analysis')
+                              ->findByUser($user->getId());*/
+
+
       $analysisListByUser = $em->getRepository('CKMAppBundle:Analysis')
-                              ->findByUser($user->getId());
+                            ->findAnalysisByUserAndStatus($user->getId(), -1);
 
       #\Doctrine\Common\Util\Debug::dump( $analysisListByUser);
       #\Doctrine\Common\Util\Debug::dump( $user);

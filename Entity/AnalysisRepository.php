@@ -20,4 +20,18 @@ class AnalysisRepository extends EntityRepository
       $count = $query->getSingleScalarResult();
       return $count;
     }
+
+    public function findAnalysisByUserAndStatus($analyse, $status)
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT a FROM CKM\AppBundle\Entity\Analysis a WHERE a.user = :user and a.status > :status'
+          )
+          ->setParameters(array(
+                'user'   => $analyse,
+                'status' => $status,
+                )
+           )
+          ->getResult();
+    }
 }

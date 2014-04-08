@@ -101,7 +101,7 @@ class Analysis
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status=0;
+    private $status=-1;
 
     public function __construct()
     {
