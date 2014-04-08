@@ -11,8 +11,8 @@ Analysis - <small> {{ message }} </small>
   <div class="row">
     <div class="col-lg-6">
       <div class="alert alert-danger">
-              <h4>Warning!</h4>
-              <p>{{ flashMessage }}</p>
+          <p><span class="label label-primary"> Success </span></p>
+          <p>{{ flashMessage }}</p>
       </div>
     </div>
   </div>
@@ -28,7 +28,11 @@ Analysis - <small> {{ message }} </small>
           {% if step==1 %}
           <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_by_user', {'user_id':app.user.id} ) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
           {% endif %}
-          <input type="submit" class="btn btn-primary " />
+          {% if step==2 or step==3 %}
+          <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_create_analyse_remove', {'analyse': analyse}) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
+          {% endif %}
+
+          <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Submit</button
         </div>
       </div>
     </form>

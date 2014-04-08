@@ -34,8 +34,6 @@ class ScenarioListType extends AbstractType
         ;
     }
 
-
-
     /**
      * @param OptionsResolverInterface $resolver
      */

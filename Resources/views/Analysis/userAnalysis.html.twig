@@ -6,6 +6,7 @@ Analysis - <small>List </small>
 {% endblock %}
 {% block content %}
 
+
 {% if analysesbyuser is defined %}
 <div class="row">
   <div class="col-lg-8 ">
@@ -54,6 +55,13 @@ Analysis - <small>List </small>
 No analysis defined...
 {% endif %}
 <div class="col-lg-4">
+  {% for flashMessage in app.session.flashbag.get('information') %}
+      <div class="alert alert-success">
+              <h4>Success!</h4>
+              <p>{{ flashMessage }}</p>
+      </div>
+{% endfor %}
+
   <div class="panel panel-default">
     <div class="panel-heading">User</div>
       <div class="panel-body">

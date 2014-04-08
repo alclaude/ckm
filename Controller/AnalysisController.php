@@ -142,6 +142,7 @@ class AnalysisController extends Controller
         'message1' => 'step 2',
         'message'  => 'Target Input',
         'step'     => '2',
+        'analyse'  => $analyse->getId(),
       ));
     }
 
@@ -222,6 +223,7 @@ class AnalysisController extends Controller
         'message1' => 'step 3',
         'message'  => 'Input Element',
         'step'     => '3',
+        'analyse'  => $analyse->getId(),
       ));
     }
 
@@ -466,7 +468,17 @@ echo '</pre>';
       $em->remove($analyse);
       $em->flush();
 
-      return new Response('analyse '.$tmp.' supprimée');
+      $this->get('session')->getFlashBag()->add(
+        'information',
+        'Analysis '.$tmp.' deleted with success'
+        );
+
+      return $this->redirect(
+              $this->generateUrl('CKMAppBundle_analyse_by_user',
+                                  array('user_id' => $analyse->getUser()->getId() )
+              )
+      );
+      #return new Response('analyse '.$tmp.' supprimée'); Request $request, $user_id=0
     }
 
 
