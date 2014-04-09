@@ -85,20 +85,6 @@ class Analysis
     /**
      * @var integer
      *
-     * @ORM\Column(name="scan_max", type="integer")
-     */
-    private $scanMax;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="scan_min", type="integer")
-     */
-    private $scanMin;
-
-    /**
-     * @var integer
-     *
      * @ORM\Column(name="status", type="integer")
      */
     private $status=-1;

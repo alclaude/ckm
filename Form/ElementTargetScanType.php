@@ -10,7 +10,7 @@ use CKM\AppBundle\Entity\Observable;
 use CKM\AppBundle\Entity\Parameter;
 
 
-class AnalysisPropertiesType extends AbstractType
+class ElementTargetScanType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -19,8 +19,19 @@ class AnalysisPropertiesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
       $builder
-          ->add('granularity', 'number', array(
+          ->add('name', 'text', array(
+              'attr' => array(
+                'class' => 'form-control',
+                'read_only' => true
+              ),
+            ))
+          ->add('scanMax', 'number',  array(
             'attr' => array('class' => 'form-control'),
+            'invalid_message'            => 'the value must be a number',
+          ))
+          ->add('scanMin', 'number', array(
+            'attr' => array('class' => 'form-control'),
+            'invalid_message'            => 'the value must be a number',
           ))
       ;
     }
@@ -31,7 +42,7 @@ class AnalysisPropertiesType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CKM\AppBundle\Entity\Analysis',
+            'data_class' => 'CKM\AppBundle\Entity\ElementTarget',
             'cascade_validation' => true,
         ));
     }
@@ -41,6 +52,6 @@ class AnalysisPropertiesType extends AbstractType
      */
     public function getName()
     {
-        return 'ckm_appbundle_analysis_properties';
+        return 'ckm_appbundle_element_target_scan';
     }
 }

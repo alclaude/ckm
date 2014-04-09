@@ -123,25 +123,19 @@ No observable defined...
               <a class="list-group-item" href="#">
                 <i class="fa fa-check"></i> granularity <span class="badge">{{analyse.granularity}}</span>
               </a>
-              <a class="list-group-item" href="#">
-                <i class="fa fa-check"></i> scanMax <span class="badge">{{analyse.scanMax}}</span>
-              </a>
-              <a class="list-group-item" href="#">
-                <i class="fa fa-check"></i> scanMin <span class="badge">{{analyse.scanMin}}</span>
-              </a>
           </div>
         </div>
       </div>
 
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis will be run on</h3>
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Change scan target</h3>
       </div>
       <div class="panel-body">
         <div class="list-group">
           {% for target in targets %}
-            <a class="list-group-item" href="#">
-              <i class="fa fa-check"></i> {{target.name}}
+            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
+              <i class="fa fa-check"></i> {{target.name}} scan<span class="badge">{{target.scanMin}}</span> <span class="glyphicon glyphicon-arrow-right" style="float:right;margin:0 3px;"></span> <span class="badge">{{target.scanMax}}</span>
             </a>
           {% endfor %}
 

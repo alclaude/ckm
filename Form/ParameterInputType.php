@@ -30,7 +30,7 @@ class ParameterInputType extends AbstractType
                 'read_only' => true
               ),
             ))
-          ->add('expUncertity', 'text', array(
+          ->add('expUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
             ))
           ->add('expUncertityDefault', 'text', array(
@@ -39,7 +39,7 @@ class ParameterInputType extends AbstractType
                 'read_only' => true
               ),
             ))
-          ->add('thUncertity', 'text', array(
+          ->add('thUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
             ))
           ->add('thUncertityDefault', 'text', array(

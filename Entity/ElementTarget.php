@@ -41,6 +41,7 @@ class ElementTarget
      * @var float
      *
      * @ORM\Column(name="default_input", type="float")
+     *
      */
     private $defaultInput;
 
@@ -58,6 +59,21 @@ class ElementTarget
      */
     private $allowedRangeMin;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="scan_max", type="float")
+     * @Assert\Type(type="float")
+     */
+    private $scanMax;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="scan_min", type="float")
+     */
+    private $scanMin;
+
     public function __construct($analyse, $name='', $defaultInput=0, $allowedRangeMax=0, $allowedRangeMin=0)
     {
       $this->name            = $name;
@@ -65,6 +81,8 @@ class ElementTarget
       $this->allowedRangeMax = $allowedRangeMax;
       $this->allowedRangeMin = $allowedRangeMin;
       $this->analyse         = $analyse;
+      $this->scanMax         = 0.0;
+      $this->scanMin         = 0.0;
     }
 
     /**
@@ -190,5 +208,51 @@ class ElementTarget
     public function getAnalyse()
     {
         return $this->analyse;
+    }
+
+    /**
+     * Set scanMax
+     *
+     * @param float $scanMax
+     * @return ElementTarget
+     */
+    public function setScanMax($scanMax)
+    {
+        $this->scanMax = $scanMax;
+
+        return $this;
+    }
+
+    /**
+     * Get scanMax
+     *
+     * @return float
+     */
+    public function getScanMax()
+    {
+        return $this->scanMax;
+    }
+
+    /**
+     * Set scanMin
+     *
+     * @param float $scanMin
+     * @return ElementTarget
+     */
+    public function setScanMin($scanMin)
+    {
+        $this->scanMin = $scanMin;
+
+        return $this;
+    }
+
+    /**
+     * Get scanMin
+     *
+     * @return float
+     */
+    public function getScanMin()
+    {
+        return $this->scanMin;
     }
 }

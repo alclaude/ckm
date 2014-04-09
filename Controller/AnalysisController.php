@@ -19,6 +19,7 @@ use CKM\AppBundle\Form\AnalysisPropertiesType;
 use CKM\AppBundle\Form\Analyse\AnalysisStep1Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep2Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep3Type;
+use CKM\AppBundle\Form\ElementTargetScanType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,6 +63,10 @@ class AnalysisController extends Controller
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
       $request = $this->getRequest();
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
 
       $form = $this->createForm(new AnalysisStep2Type,  $analyse);
 
@@ -154,6 +159,10 @@ class AnalysisController extends Controller
       }
 
       $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
       $request = $this->getRequest();
 
       $form = $this->createForm(new AnalysisStep3Type,  $analyse);
@@ -498,14 +507,20 @@ echo '</pre>';
 
     public function editObservableAction($observable_id=0) {
 
-    $request = $this->getRequest();
+      $request = $this->getRequest();
 
-    $observable = $this->getDoctrine()
+      $observable = $this->getDoctrine()
         ->getRepository('CKMAppBundle:ObservableInput')
         ->findOneById($observable_id);
 
       if (!$observable) {
         throw $this->createNotFoundException('Observable not exist');
+      }
+
+      $this->isGranted('ROLE_ANALYSIS');
+
+      if ($observable->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
       }
 
       $form = $this->createForm(new ObservableInputType, $observable);
@@ -558,6 +573,12 @@ echo '</pre>';
         throw $this->createNotFoundException('parameter not exist');
       }
 
+      $this->isGranted('ROLE_ANALYSIS');
+
+      if ($parameter->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
+      }
+
       $form = $this->createForm(new ParameterInputType, $parameter);
 
       if ($request->getMethod() == 'POST') {
@@ -596,15 +617,52 @@ echo '</pre>';
       ));
     }
 
-    public function editAnalysisPropertiesAction($analyse=0) {
+    public function editAnalysisScanAction($target_id=0) {
+      $this->isGranted('ROLE_ANALYSIS');
+      $target = $this->getTarget($target_id);
       $request = $this->getRequest();
 
-      $analysis = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:Analysis')
-        ->findOneById($analyse);
 
-      if (!$analysis) {
-        throw $this->createNotFoundException('analysis not exist');
+      if ($target->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
+
+      $form = $this->createForm(new ElementTargetScanType, $target);
+
+      if ($request->getMethod() == 'POST') {
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+          $em = $this->getDoctrine()->getManager();
+          $data=$form->getData();
+          #$analysis->setGranularity( $data->getGranularity() );
+          $target->setScanMax( $data->getScanMax() );
+          $target->setScanMin( $data->getScanMin() );
+
+          $em->persist( $target );
+          $em->flush();
+
+          return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                                      array('analyse' => $target->getAnalyse()->getId(), 'step' => 2 )
+                  )
+          );
+        }
+      }
+      return $this->render('CKMAppBundle:Analysis:editAnalysisProperties.html.twig', array(
+        'form' => $form->createView(),
+        'message' => 'Target Input',
+        'type'    => 'scan',
+      ));
+
+    }
+
+    public function editAnalysisPropertiesAction($analyse=0) {
+      $this->isGranted('ROLE_ANALYSIS');
+      $analysis = $this->getAnalysis($analyse);
+      $request = $this->getRequest();
+
+      if ($analysis->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
 
       $form = $this->createForm(new AnalysisPropertiesType, $analysis);
@@ -615,8 +673,8 @@ echo '</pre>';
           $em = $this->getDoctrine()->getManager();
           $data=$form->getData();
           $analysis->setGranularity( $data->getGranularity() );
-          $analysis->setScanMax( $data->getScanMax() );
-          $analysis->setScanMin( $data->getScanMin() );
+          #$analysis->setScanMax( $data->getScanMax() );
+          #$analysis->setScanMin( $data->getScanMin() );
           $analysis->setStatus( 1 );
 
 
@@ -632,8 +690,10 @@ echo '</pre>';
       }
       return $this->render('CKMAppBundle:Analysis:editAnalysisProperties.html.twig', array(
         'form' => $form->createView(),
+        'message' => 'Properties definition',
+        'type'    => 'property',
       ));
-    }
+    } #
 
     public function analysisByUserAction(Request $request, $user_id=0)
     {
@@ -733,6 +793,23 @@ print_r( $this->container->get('request')->getSession()->get('analyse') ) ;
         throw $this->createNotFoundException('analyse not exist');
       }
       return $analyse;
+    }
+
+    /*
+     * Teste et retourne l existance d un target
+     */
+    public function getTarget($id) {
+      $em = $this->getDoctrine()
+                 ->getManager();
+
+      $target = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:ElementTarget')
+        ->findOneById($id);
+
+      if (!$target) {
+        throw $this->createNotFoundException('Target not exist');
+      }
+      return $target;
     }
 
 }

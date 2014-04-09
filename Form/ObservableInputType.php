@@ -30,7 +30,7 @@ class ObservableInputType extends AbstractType
                 'read_only' => true
               ),
             ))
-          ->add('expUncertity', 'text', array(
+          ->add('expUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
               'label' => 'Experimental uncertity',
             ))
@@ -41,7 +41,7 @@ class ObservableInputType extends AbstractType
               ),
               'label' => 'Default experimental uncertity',
             ))
-          ->add('thUncertity', 'text', array(
+          ->add('thUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
               'label' => 'Theoretical uncertity',
             ))
