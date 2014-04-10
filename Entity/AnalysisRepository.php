@@ -34,4 +34,17 @@ class AnalysisRepository extends EntityRepository
            )
           ->getResult();
     }
+
+    public function findOnservableByAnalysis($analyse)
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\ObservableInput o WHERE o.analyse = :analyse'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                )
+           )
+          ->getResult();
+    }
 }

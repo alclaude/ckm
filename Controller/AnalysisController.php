@@ -186,6 +186,8 @@ class AnalysisController extends Controller
           }
 
           $em = $this->getDoctrine()->getManager();
+          # les observables de l analyse
+          $observables = array();
           # tous les parametres regroupes des observables
           $all_ar_parameters=array();
 
@@ -193,6 +195,7 @@ class AnalysisController extends Controller
           {
             $inputPersist = new ObservableInput( $analyse, $input, $analyse->getScenario()->getWebPath() );
             $em->persist($inputPersist);
+            $observables[]=$inputPersist;
 
             $parameters = $inputPersist->createAssociatedElement( $analyse->getScenario()->getWebPath() );
 
@@ -211,8 +214,9 @@ class AnalysisController extends Controller
                 $inputPersist->addParameterInput( $all_ar_parameters[$parameter->getName()] );
               }
             }
-
           }
+
+          $analyse->setDatacard( $observables, $all_ar_parameters );
 
           #$analyse = print_r($analyse,true);
           #die('debbug <pre>'.$analyse .'</pre>');
@@ -234,6 +238,33 @@ class AnalysisController extends Controller
         'step'     => '3',
         'analyse'  => $analyse->getId(),
       ));
+    }
+
+    public function seeDatacardAction($analyse=0) {
+      $this->isGranted('ROLE_ANALYSIS');
+
+      $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
+
+      return $this->render('CKMAppBundle:Analysis:seeDatacard.html.twig', array(
+        'datacard' => $analyse->getDatacard(),
+        'id'       => $analyse->getId(),
+      ));
+    }
+
+    public function testDatacardAction($analyse=0) {
+      $analyse = $this->getAnalysis($analyse);
+
+      $observables = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Analysis')
+        ->findOnservableByAnalysis( $analyse->getId() );
+
+      #$analyse->setDatacard($observables);
+
+      return new Response('debbug');
     }
 
     public function createAnalyseAction(Request $request) {

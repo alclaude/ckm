@@ -1,0 +1,34 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block titlePage %}
+Analysis - <small>Datacard </small>
+{% endblock %}
+
+{% block content %}
+<h3>Datacard</h3>
+<div class="row">
+  <div class="col-lg-8 ">
+    <p><span class="label label-primary">datacard analysis</span></p>
+<pre>{{ datacard }}</pre>
+  </div>
+
+
+  <div class="col-lg-4">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Current analysis</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_source', {'analyse': id}) }}">
+            <span class="badge">go</span>
+            <i class="fa fa-check"></i> return to analysis definition
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

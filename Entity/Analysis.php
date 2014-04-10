@@ -41,6 +41,13 @@ class Analysis
     private $scenario;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="datacard", type="text")
+     */
+    private $datacard;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
@@ -93,7 +100,7 @@ class Analysis
     {
         #$this->sourceElement = new ArrayCollection();
         #$this->targetElement = new ArrayCollection();
-        $this->datacard = "/home/alclaude/Documents/DEV_PHP/ckm-web2/src/CKM/globalCKMfit_scenario.txt";
+        $this->datacard =  '' ; #"/home/alclaude/Documents/DEV_PHP/ckm-web2/src/CKM/globalCKMfit_scenario.txt";
         $this->config = "config";
         $this->granularity = 0;
         $this->scanMax = 0;
@@ -266,11 +273,109 @@ class Analysis
      * @param string $datacard
      * @return Analysis
      */
-    public function setDatacard($datacard)
+    public function setDatacard($observables, $parameters)
     {
-        $this->datacard = $datacard;
+        #$this->datacard = $datacard;
+        $this->datacard = $this->initDatacard($observables, $parameters);
 
         return $this;
+    }
+
+    private function initDatacard($observables, $parameters)
+    {
+      #$this->datacard = $datacard;
+
+
+      $scenario  = $this->getScenario()->getWebPath();
+      $rl = "\n";
+
+      $datacard  = '';
+      $datacard .= '{';
+      $datacard .= $rl.$rl;
+
+      # gestion des observables
+      foreach( $observables as $observable ) {
+        #print '<pre>';
+        #print \Doctrine\Common\Util\Debug::dump($observable);
+        #print '</pre>';
+        switch ( $observable->getName() ) {
+          case '|Vud|':
+          case '|Vus|':
+          case '|Vub|':
+          case '|Vcb|':
+          case 'sin2beta':
+          case 'cos2beta':
+              $datacard .= $this->writeElement($observable,$rl);
+              break;
+          case '|epsilonK|':
+          case '|Deltamd|':
+          case '|Deltams|':
+              $datacard .= $this->writeParameterName($observable,$rl);
+              $datacard .= $this->writeElement($observable,$rl);
+              break;
+          case 'alpha':
+          case 'gamma':
+              $datacard .= $this->writeObservableWithFile($observable,$rl);
+              break;
+          default:
+            $datacard .= $rl.$rl.$observable->getName()." : observable not write".$rl;
+        }
+      }
+
+      # gestion des parametres
+      foreach( $parameters as $parameter ) {
+        $datacard .= $this->writeElement($parameter,$rl);
+      }
+
+      $datacard .= $rl.$rl;
+      $datacard .= '}';
+
+      #print '<pre>';
+      #echo $datacard;
+      #print '</pre>';
+      #die('debbug');
+
+      return $datacard;
+    }
+
+    private function writeObservableWithFile($observable,$rl) {
+      $datacard  = '{';
+      $datacard .= '"'.$observable->getName().'",';
+      $datacard .= '"this is a file ???"';
+      $datacard .= '}';
+      $datacard .= ',';
+      $datacard .= $rl.$rl;
+      return $datacard;
+    }
+
+    private function writeParameterName($observable,$rl) {
+      $datacard  = '{"All('.$observable->getName().')",';
+      $datacard .= '"'.$observable->getName().'",';
+      foreach ($observable->getParameterInputs() as $parameter) {
+        $datacard .= '"';
+        $datacard .= $parameter->getName();
+        $datacard .= '",';
+      }
+      rtrim($datacard, ",");
+      $datacard .= '},';
+      $datacard .= $rl;
+
+      return $datacard;
+    }
+
+    private function writeElement($element,$rl) {
+        $datacard  = '{';
+        $datacard .= '"'.$element->getName().'"';
+        $datacard .= ',';
+        $datacard .= $element->getValue();
+        $datacard .= ',';
+        $datacard .= $element->getExpUncertity();
+        $datacard .= ',';
+        $datacard .= $element->getThUncertity();
+        $datacard .= '}';
+        $datacard .= ',';
+        $datacard .= $rl.$rl;
+        return $datacard;
     }
 
     /**

@@ -57,6 +57,9 @@ CKMAppBundle_analyse_create_step_3:
     defaults: { _controller: CKMAppBundle:Analysis:createAnalyseStep3}
     requirements:
         analyse:  \d+
+CKMAppBundle_analyse_see_datacard:
+    pattern:  /analysis/datacard/see/{analyse}
+    defaults: { _controller: CKMAppBundle:Analysis:seeDatacard}
 ## pages administration
 CKMAppBundle_administration_datacard_add:
     pattern:  /administration/datacard/add
@@ -64,3 +67,7 @@ CKMAppBundle_administration_datacard_add:
 CKMAppBundle_administration_datacard:
     pattern:  /administration/datacard/
     defaults: { _controller: CKMAppBundle:Administration:datacard}
+## test
+CKMAppBundle_test_datacard:
+    pattern:  /administration/datacard/test/{analyse}
+    defaults: { _controller: CKMAppBundle:Analysis:testDatacard}

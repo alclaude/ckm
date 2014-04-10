@@ -208,7 +208,8 @@ class ObservableInput
       if( count($tmp_ar_obsParam) > 0) {
         foreach($tmp_ar_obsParam as $param) {
 
-          $paramPattern =  '/^'.preg_quote( $param ).'$/';
+          $paramPattern =  '/^'.preg_quote( $param, '/' ).'$/';
+
           foreach($lines as $line) {
             if( ! preg_match("/$new_line/", $line) ) {
               if( preg_match('/# parameter/', $line) ) {
@@ -216,12 +217,13 @@ class ObservableInput
               }
               elseif( $type==='parameter' ) {
                 $tmp_ar_param = explode(';',$line);
-                if( preg_match($paramPattern, $tmp_ar_param['0']) ) {
+                if( preg_match($paramPattern, preg_quote($tmp_ar_param['0']) ) ) {
 
                   $tmp_ar_param_allowed_range = explode(',',$tmp_ar_param['2']);
                   $tmp_obj_param = new ParameterInput($this, $tmp_ar_param['0'], $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'], $tmp_ar_param['4'], $tmp_ar_param['5'] ) ;
 
                   array_push($tmp_ar_params, $tmp_obj_param );
+                  break;
                 }
               }
             }
