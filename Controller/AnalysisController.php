@@ -623,7 +623,7 @@ echo '</pre>';
 
       $this->isGranted('ROLE_ANALYSIS');
 
-      if ($parameter->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+      if ($parameter->getObservableInputs()->first()->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
       }
 
