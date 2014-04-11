@@ -30,7 +30,6 @@ class AnalysisStep3Type extends AbstractType
          'multiple'  => true,
          'attr'      => array('class' => 'form-control', 'size' => 12),
          ))
-         //->add('step 2', 'submit')
       ;
     }
 

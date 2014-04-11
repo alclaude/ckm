@@ -133,17 +133,23 @@ class ObservableInput
       #die('debbug');
 
       if($ar_obs) {
-        $this->value               = $ar_obs['1'];
-        $this->defaultValue        = $ar_obs['1'];
-        $this->allowedRangeMax     = $ar_obs['3'];
-        $this->allowedRangeMin     = $ar_obs['2'];
-        $this->expUncertity        = $ar_obs['4'];
-        $this->thUncertity         = $ar_obs['5'];
-        $this->expUncertityDefault = $ar_obs['4'];
-        $this->thUncertityDefault  = $ar_obs['5'];
+        $this->value               = $this->cleanData( $ar_obs['1'] );
+        $this->defaultValue        = $this->cleanData( $ar_obs['1'] );
+        $this->allowedRangeMax     = $this->cleanData( $ar_obs['3'] );
+        $this->allowedRangeMin     = $this->cleanData( $ar_obs['2'] );
+        $this->expUncertity        = $this->cleanData( $ar_obs['4'] );
+        $this->thUncertity         = $this->cleanData( $ar_obs['5'] );
+        $this->expUncertityDefault = $this->cleanData( $ar_obs['4'] );
+        $this->thUncertityDefault  = $this->cleanData( $ar_obs['5'] );
       }
       else {
         throw new \Exception('observable does not exist :: observableInput can not be initialized');
+      }
+    }
+
+    private function cleanData($data) {
+      if( $data = preg_replace('/pi/', pi(), $data) ) {
+          return $data;
       }
     }
 
@@ -156,7 +162,7 @@ class ObservableInput
       $lines = explode("\n", $data);
 
       $new_line = "^\n$" ;
-      $observablePattern =  '/'.preg_quote( $this->getName() ).'/';
+      $observablePattern =  '/'.preg_quote( $this->getName(), '/' ).'/';
       // info obs
       $tmp_ar_obs = array();
 
@@ -181,7 +187,7 @@ class ObservableInput
       $lines = explode("\n", $data);
 
       $new_line = "^\n$" ;
-      $observablePattern =  '/'.preg_quote( $this->getName() ).'/';
+      $observablePattern =  '/'.preg_quote( $this->getName(), '/' ).'/';
       // info obs
       $tmp_ar_obs = array();
       // params de l obs

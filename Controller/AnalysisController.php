@@ -449,11 +449,28 @@ echo '</pre>';
       $liste_targetElement = $em->getRepository('CKMAppBundle:ElementTarget')
                                   ->findByAnalyse($analyse->getId());
 
+      $arMatchTargetObs=array();
+      foreach ( $liste_targetElement as $target ) {
+          $targetName = $target->getName();
+          foreach ( $liste_observable as $observable ) {
+            if( $targetName == $observable->getName() ) {
+              $arMatchTargetObs[]=$target->getName();
+            }
+          }
+      }
+
+      #echo '<pre>';
+      #\Doctrine\Common\Util\Debug::dump($liste_observable);
+      #\Doctrine\Common\Util\Debug::dump($liste_targetElement);
+      #echo '</pre>';
+      #die('debbug');
+
        return $this->render('CKMAppBundle:Analysis:source.html.twig', array(
             'observables' => $liste_observable,
             'analyse'  => $analyse,
             'step' => $step,
-            'targets' => $liste_targetElement
+            'targets' => $liste_targetElement,
+            'target_and_observable' => $arMatchTargetObs,
         ));
     }
 

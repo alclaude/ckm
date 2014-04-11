@@ -308,8 +308,8 @@ class Analysis
               $datacard .= $this->writeElement($observable,$rl);
               break;
           case '|epsilonK|':
-          case '|Deltamd|':
-          case '|Deltams|':
+          case 'Deltamd':
+          case 'Deltams':
               $datacard .= $this->writeParameterName($observable,$rl);
               $datacard .= $this->writeElement($observable,$rl);
               break;
