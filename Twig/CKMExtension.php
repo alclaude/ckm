@@ -20,10 +20,10 @@ class CKMExtension extends \Twig_Extension
         );
     }
 
-    public function getTargets(\CKM\AppBundle\Entity\Analysis $analyse)
+    public function getTargets($analyse)
     {
       $liste_targetElement = $this->em->getRepository('CKMAppBundle:ElementTarget')
-                          ->findByAnalyse($analyse->getId());
+                          ->findByAnalyse($analyse);
       return $liste_targetElement;
     }
 

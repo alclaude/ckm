@@ -85,7 +85,7 @@ class AnalysisController extends Controller
           elseif( isset($tmp["targetParameter"]) ) {
             $element_ar = $tmp["targetParameter"];
           }
-          else {
+          elseif( !isset($tmp["targetObservable"]) && !isset($tmp["targetObservable"]) ) {
             $this->get('session')->getFlashBag()->add(
                 'notice',
                 'Please fill in the form'
@@ -125,11 +125,21 @@ class AnalysisController extends Controller
           foreach( $element_ar as $key => $target )
           {
             $targetPersist = new ElementTarget($analyse, $target);
+            if($key==0) {
+              $targetPersist->setScanMax($tmp["scanMax1"]);
+              $targetPersist->setScanMin($tmp["scanMin1"]);
+            }
+            else {
+              $targetPersist->setScanMax($tmp["scanMax2"]);
+              $targetPersist->setScanMin($tmp["scanMin2"]);
+            }
+
             $em->persist($targetPersist);
           }
 
           $analyse->setStatus( 0 );
           $em->persist( $analyse );
+
           $em->flush();
 
           #$analyse = print_r($analyse,true);
@@ -142,12 +152,13 @@ class AnalysisController extends Controller
           );
         }
       }
-      return $this->render('CKMAppBundle:Analysis:createAnalysisStep.html.twig', array(
+      return $this->render('CKMAppBundle:Analysis:createAnalysisStep2.html.twig', array(
         'form' => $form->createView(),
         'message1' => 'step 2',
         'message'  => 'Target Input',
         'step'     => '2',
         'analyse'  => $analyse->getId(),
+        'constraint' => $analyse->getScanConstraint(),
       ));
     }
 

@@ -32,11 +32,33 @@ Analysis - <small> {{ message }} </small>
           <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_create_analyse_remove', {'analyse': analyse}) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
           {% endif %}
 
-          <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Submit</button
+          <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Submit</button>
         </div>
       </div>
     </form>
   </div>
+
+{% if step==3 %}
+ <div style="float:right;" class="col-lg-4">
+   <div >
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your target choice</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          {% for target in targets(analyse) %}
+            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
+              <i class="fa fa-check"></i> {{target.name}} scan<span class="badge">{{target.scanMin}}</span> <span class="glyphicon glyphicon-arrow-right" style="float:right;margin:0 3px;"></span> <span class="badge">{{target.scanMax}}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+   </div>
+ </div>
+{% endif %}
+
 </div>
 
 <script type="text/x-mathjax-config">

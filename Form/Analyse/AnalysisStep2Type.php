@@ -37,7 +37,37 @@ class AnalysisStep2Type extends AbstractType
              'multiple'  => true,
              'attr'      => array('class' => 'form-control'),
              ))
+        ->add('scanMin1', 'number', array(
+            'attr'             => array('class' => 'form-control'),
+            'mapped'           => false,
+            'invalid_message'  => 'the value must be a number',
+            'label'            => 'Scan min of the first target ',
+          ))
+        ->add('scanMax1', 'number',  array(
+            'attr'             => array('class' => 'form-control'),
+            'mapped'           => false,
+            'invalid_message'  => 'the value must be a number',
+            'label'            => 'Scan max of the first target',
+          ))
        ;
+
+      if( $options['data']->getScanConstraint()==2 ) {
+        $builder
+        ->add('scanMin2', 'number', array(
+            'attr'             => array('class' => 'form-control'),
+            'mapped'           => false,
+            'invalid_message'  => 'the value must be a number',
+            'label'            => 'Scan min of the second target',
+          ))
+        ->add('scanMax2', 'number',  array(
+            'attr'             => array('class' => 'form-control'),
+            'mapped'           => false,
+            'invalid_message'  => 'the value must be a number',
+            'label'            => 'Scan max of the second target',
+          ))
+       ;
+      }
+
     }
 
     private function getListOfDatacardObservable($datacardPath){
