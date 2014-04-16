@@ -143,7 +143,14 @@ No observable defined...
             </a>
           {% for target in targets %}
             <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
-              <i class="fa fa-check"></i> {{target.name}} scan<span class="badge">{{target.scanMin}}</span> <span class="glyphicon glyphicon-arrow-right" style="float:right;margin:0 3px;"></span> <span class="badge">{{target.scanMax}}</span>
+              <i class="fa fa-check"></i> \({{target.name}}\)
+              <span style="float:right;">
+              \([\)
+              \({{target.scanMin}}\)
+              \(,\)
+              \({{target.scanMax}}\)
+              \(]\)
+              </span>
             </a>
           {% endfor %}
         </div>

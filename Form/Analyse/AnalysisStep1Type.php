@@ -20,6 +20,9 @@ class AnalysisStep1Type extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
       $builder
+        ->add('name', 'text', array(
+              'attr' => array('class' => 'form-control'),
+              ))
         ->add('scenario', 'entity', array(
              'class' => 'CKMAppBundle:Scenario',
              'mapped'    => true,

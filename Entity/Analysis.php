@@ -48,6 +48,13 @@ class Analysis
     private $datacard;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="text")
+     */
+    private $name;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
@@ -501,5 +508,28 @@ class Analysis
     public function getScenario()
     {
         return $this->scenario;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Analysis
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

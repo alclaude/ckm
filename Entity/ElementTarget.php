@@ -5,6 +5,8 @@ namespace CKM\AppBundle\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Symfony\Component\Validator\ExecutionContextInterface;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="element_target")
  * @ORM\Entity(repositoryClass="CKM\AppBundle\Entity\ElementTargetRepository")
+ *
  */
 class ElementTarget
 {
@@ -83,6 +86,17 @@ class ElementTarget
       $this->analyse         = $analyse;
       $this->scanMax         = 0.0;
       $this->scanMin         = 0.0;
+    }
+
+    public function isScanValid(ExecutionContextInterface $context)
+    {
+        // Vous avez un tableau de « faux noms »
+        $fakeNames = array();
+
+        // vérifie si le nom est un faux
+        if ($this->getScanMax() < $this->getScanMin() ) {
+            $context->addViolationAt('scanMin', 'scanMax must be greater than scanMin ', array(), null);
+        }
     }
 
     /**

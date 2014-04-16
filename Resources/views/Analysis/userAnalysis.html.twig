@@ -20,6 +20,7 @@ Analysis - <small>List </small>
               <thead>
                 <tr>
                   <th class="header">Analysis </th>
+                  <th class="header">Name </th>
                   <th class="header">Date </th>
                   <th class="header">Element target </th>
                   <th class="header">scan constraint </th>
@@ -31,6 +32,7 @@ Analysis - <small>List </small>
                 {% for analyse in analysesbyuser %}
                     <tr>
                       <td>{{ analyse.id }}</td>
+                      <td>{{ analyse.name }}</td>
                       <td>{{ analyse.date|date("m/d/Y - H:i") }}</td>
                       <td>
                       {% for target in targets(analyse) %}
@@ -40,6 +42,7 @@ Analysis - <small>List </small>
                       </td>
                       <td>{{ analyse.scanConstraint }}</td>
                       <td>{{ analyse.status }}</td>
+                      <td>{{ analyse.scenario.name }} </td>
                       <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source', {'analyse': analyse.id}) }}">Edit analysis</a></td>
                     </tr>
                 {% endfor %}

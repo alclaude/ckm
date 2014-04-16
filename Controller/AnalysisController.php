@@ -86,39 +86,34 @@ class AnalysisController extends Controller
             $element_ar = $tmp["targetParameter"];
           }
           elseif( !isset($tmp["targetObservable"]) && !isset($tmp["targetObservable"]) ) {
-            $this->get('session')->getFlashBag()->add(
-                'notice',
-                'Please fill in the form'
-            );
-            return $this->redirect(
-                  $this->generateUrl('CKMAppBundle_analyse_create_step_2',
-                                      array('analyse' => $analyse->getId(), 'step' => 2 )
-                  )
-            );
+            return $this->errorForm('notice',
+              'Please fill in the form',
+              'CKMAppBundle_analyse_create_step_2',
+              array('analyse' => $analyse->getId(), 'step' => 2 )
+              );
           }
           # validation des contraintes sur les scan et nb d elements target
           $count = count( $element_ar );
           if ( $analyse->getScanConstraint() ==1 && $count!==1) {
-            $this->get('session')->getFlashBag()->add(
-                'notice',
-                'Please, in a 1D scan you must choose one element'
-            );
-            return $this->redirect(
-                $this->generateUrl('CKMAppBundle_analyse_create_step_2',
-                                    array('analyse' => $analyse->getId(), 'step' => 2)
-                )
-            );
+            return $this->errorForm('notice',
+              'Please, in a 1D scan you must choose one element',
+              'CKMAppBundle_analyse_create_step_2',
+              array('analyse' => $analyse->getId(), 'step' => 2 )
+              );
           }
           if ($analyse->getScanConstraint() ==2 && $count!==2) {
-            $this->get('session')->getFlashBag()->add(
-                'notice',
-                'Please, in a 2D scan you must choose two items in the boxes'
-            );
-            return $this->redirect(
-                $this->generateUrl('CKMAppBundle_analyse_create_step_2',
-                                    array('analyse' => $analyse->getId(), 'step' => 2 )
-                )
-            );
+            return $this->errorForm('notice',
+                'Please, in a 2D scan you must choose two items in the boxes',
+                'CKMAppBundle_analyse_create_step_2',
+                array('analyse' => $analyse->getId(), 'step' => 3 )
+                );
+          }
+          if( $tmp["scanMax1"] < $tmp["scanMin1"] ) {
+            return $this->errorForm('notice',
+                            'scanMax must be greater than scanMin',
+                            'CKMAppBundle_analyse_create_step_2',
+                            array('analyse' => $analyse->getId(), 'step' => 2 )
+                            );
           }
 
           $em = $this->getDoctrine()->getManager();
@@ -132,6 +127,13 @@ class AnalysisController extends Controller
             else {
               $targetPersist->setScanMax($tmp["scanMax2"]);
               $targetPersist->setScanMin($tmp["scanMin2"]);
+              if( $tmp["scanMax2"] < $tmp["scanMin2"] ) {
+                return $this->errorForm('notice',
+                                'scanMax must be greater than scanMin',
+                                'CKMAppBundle_analyse_create_step_2',
+                                array('analyse' => $analyse->getId(), 'step' => 2 )
+                                );
+              }
             }
 
             $em->persist($targetPersist);
@@ -162,6 +164,19 @@ class AnalysisController extends Controller
       ));
     }
 
+    private function errorForm($typeSession, $errorMsg, $template, $param ) {
+        $this->get('session')->getFlashBag()->add(
+            $typeSession,
+            $errorMsg
+        );
+
+      return $this->redirect(
+              $this->generateUrl($template,
+                                 $param
+              )
+      );
+    }
+
     public function createAnalyseStep3Action($analyse=0, $step=3 ) {
       $this->isGranted('ROLE_ANALYSIS');
 
@@ -185,14 +200,10 @@ class AnalysisController extends Controller
           $tmp = $request->request->get($form->getName()) ;
 
           if(!isset($tmp["sourceElement"])) {
-            $this->get('session')->getFlashBag()->add(
-                'notice',
-                'Please fill in the form'
-            );
-            return $this->redirect(
-                  $this->generateUrl('CKMAppBundle_analyse_create_step_3',
-                                      array('analyse' => $analyse->getId(), 'step' => $step )
-                  )
+            return $this->errorForm('notice',
+              'Please fill in the form',
+              'CKMAppBundle_analyse_create_step_3',
+              array('analyse' => $analyse->getId(), 'step' => $step )
             );
           }
 
