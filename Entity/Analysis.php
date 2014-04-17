@@ -109,7 +109,7 @@ class Analysis
         #$this->targetElement = new ArrayCollection();
         $this->datacard =  '' ; #"/home/alclaude/Documents/DEV_PHP/ckm-web2/src/CKM/globalCKMfit_scenario.txt";
         $this->config = "config";
-        $this->granularity = 0;
+        $this->granularity = 250;
         $this->scanMax = 0;
         $this->scanMin = 0;
 
@@ -526,7 +526,7 @@ class Analysis
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
