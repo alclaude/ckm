@@ -93,6 +93,12 @@ class Analysis
      * @var integer
      *
      * @ORM\Column(name="granularity", type="integer")
+     * @Assert\Range(
+     *      min = 50,
+     *      max = 1000,
+     *      minMessage = "Granularity must be greater than 50",
+     *      maxMessage = "Granularity must be lesser than 1000"
+     * )
      */
     private $granularity;
 

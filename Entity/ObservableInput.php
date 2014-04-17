@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="observable_input")
  * @ORM\Entity(repositoryClass="CKM\AppBundle\Entity\ObservableInputRepository")
+ *
  */
 class ObservableInput
 {

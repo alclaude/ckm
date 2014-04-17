@@ -4,6 +4,8 @@ namespace CKM\AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 /**
  * AnalysisRepository
  *
@@ -17,6 +19,19 @@ class AnalysisRepository extends EntityRepository
       $em = $this->getEntityManager();
       $query = $em->createQuery('SELECT COUNT(e.id) FROM CKM\AppBundle\Entity\ElementTarget e WHERE e.analyse_id = :analyse');
       $query->setParameter('analyse', $id );
+      $count = $query->getSingleScalarResult();
+      return $count;
+    }
+
+    public function countAnalysisByUser($analyse, $status)
+    {
+      $em = $this->getEntityManager();
+      $query = $em->createQuery('SELECT COUNT(a) FROM CKM\AppBundle\Entity\Analysis a WHERE a.user = :user and a.status > :status');
+      $query->setParameters(array(
+                                  'user'   => $analyse,
+                                  'status' => $status,
+                                 )
+                            );
       $count = $query->getSingleScalarResult();
       return $count;
     }
@@ -46,5 +61,31 @@ class AnalysisRepository extends EntityRepository
                 )
            )
           ->getResult();
+    }
+
+    /**
+      * Get the paginated list of published articles
+      *
+      * @param int $page
+      * @param int $maxperpage
+      * @param string $sortby
+      * @return Paginator
+      */
+    public function getList($page=1, $maxperpage=10, $analyse, $status)
+    {
+      $q = $this->getEntityManager()
+          ->createQuery(
+              'SELECT a FROM CKM\AppBundle\Entity\Analysis a WHERE a.user = :user and a.status > :status'
+          )
+          ->setParameters(array(
+                'user'   => $analyse,
+                'status' => $status,
+                )
+           );
+
+      $q->setFirstResult(($page-1) * $maxperpage)
+      ->setMaxResults($maxperpage);
+
+      return new Paginator($q);
     }
 }

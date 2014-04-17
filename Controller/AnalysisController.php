@@ -765,7 +765,7 @@ echo '</pre>';
       ));
     } #
 
-    public function analysisByUserAction(Request $request, $user_id=0)
+    public function analysisByUserAction(Request $request, $user_id=0, $page)
     {
       if (!$this->get('security.context')->isGranted('ROLE_ANALYSIS')) {
         throw new AccessDeniedHttpException('no credentials for this action');
@@ -789,15 +789,33 @@ echo '</pre>';
 /*      $analysisListByUser = $em->getRepository('CKMAppBundle:Analysis')
                               ->findByUser($user->getId());*/
 
+      $maxArticles=$this->container->getParameter('max_analysis_per_page');
 
       $analysisListByUser = $em->getRepository('CKMAppBundle:Analysis')
                             ->findAnalysisByUserAndStatus($user->getId(), -1);
+
+      $countListByUser = $em->getRepository('CKMAppBundle:Analysis')
+                            ->countAnalysisByUser($user->getId(), -1);
+
+      $analyse = $em->getRepository('CKMAppBundle:Analysis')
+                            ->getList($page, $maxArticles, $user->getId(), -1);
+
+      $pagination = array(
+        'page' => $page,
+        'route' => 'CKMAppBundle_analyse_by_user',
+        'pages_count' => ceil($countListByUser / $maxArticles),
+        'route_params' => array('user_id'=>$user_id)
+      );
+
 
       #\Doctrine\Common\Util\Debug::dump( $analysisListByUser);
       #\Doctrine\Common\Util\Debug::dump( $user);
 
       return $this->render('CKMAppBundle:Analysis:userAnalysis.html.twig', array(
-        'analysesbyuser' => $analysisListByUser,
+        'analysesbyuser' => $analyse,
+        'count'     =>  $countListByUser,
+        'page'=>$page,
+        'pagination' => $pagination
       ));
     }
 

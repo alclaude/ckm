@@ -41,8 +41,8 @@ CKMAppBundle_analyse_create_analyse_remove:
     pattern:  /analysis/createAnalyseRemove/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:removeAnalysis}
 CKMAppBundle_analyse_by_user:
-    pattern:  /analysis/byuser/{user_id}
-    defaults: { _controller: CKMAppBundle:Analysis:analysisByUser}
+    pattern:  /analysis/byuser/{user_id}/{page}
+    defaults: { _controller: CKMAppBundle:Analysis:analysisByUser, page: 1}
 # analyse 2eme version
 CKMAppBundle_analyse_create_step_1:
     pattern:  /analysis/createAnalyse/step1

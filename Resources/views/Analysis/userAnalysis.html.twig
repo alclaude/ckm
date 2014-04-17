@@ -6,7 +6,6 @@ Analysis - <small>List </small>
 {% endblock %}
 {% block content %}
 
-
 {% if analysesbyuser is defined %}
 <div class="row">
   <div class="col-lg-8 ">
@@ -53,7 +52,9 @@ Analysis - <small>List </small>
         </div>
       </div>
     </div>
+    {% include 'CKMAppBundle::pagination.html.twig' %}
   </div>
+
 {% else %}
 No analysis defined...
 {% endif %}

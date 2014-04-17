@@ -1,4 +1,5 @@
 {# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
 {% block stylesheets %}
@@ -129,7 +130,7 @@ No observable defined...
         <div class="panel-body">
           <div class="list-group">
               <a class="list-group-item" href="#">
-                <i class="fa fa-check"></i> granularity <span class="badge">{{analyse.granularity}}</span>
+                <i class="fa fa-check"></i> granularity <span style="float:right;">\({{analyse.granularity}}\)</span>
               </a>
           </div>
         </div>
