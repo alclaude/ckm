@@ -21,6 +21,7 @@ class AnalysisStep3Type extends AbstractType
       //\Doctrine\Common\Util\Debug::dump($builder);
       $path = $options['data']->getScenario()->getWebPath();
       list($obs, $param) = $this->getListOfDatacardObservable( $path ) ;
+      list($obs, $param) = $this->latexLike($obs, $param) ;
 
       $builder
         ->add('sourceElement', 'choice'/*'entity'*/, array(
@@ -31,6 +32,17 @@ class AnalysisStep3Type extends AbstractType
          'attr'      => array('class' => 'form-control', 'size' => 12),
          ))
       ;
+    }
+
+    private function latexLike($observables, $parameters){
+      foreach($observables as &$observable) {
+        $observable='\('.$observable.'\)';
+      }
+      foreach($parameters as &$parameter) {
+        $parameter='\('.$parameter.'\)';
+      }
+
+      return array($observables, $parameters);
     }
 
     private function getListOfDatacardObservable($datacardPath){

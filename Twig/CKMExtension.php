@@ -18,7 +18,17 @@ class CKMExtension extends \Twig_Extension
         return array(
             'targets'  => new \Twig_Function_Method($this, 'getTargets'),
             'scenario' => new \Twig_Function_Method($this, 'getScenario'),
+            'latex' => new \Twig_Function_Method($this, 'getLatexLike'),
+            'latexTransform' => new \Twig_Function_Method($this, 'getLatexTransform'),
         );
+    }
+
+    public function getLatexTransform($name){
+      return '\\'.$name;
+    }
+
+    public function getLatexLike($name){
+      return '\('.$name.'\)';
     }
 
     public function getTargets($analyse)

@@ -20,7 +20,15 @@ class AnalysisStep2Type extends AbstractType
     {
       $path = $options['data']->getScenario()->getWebPath();
 
-      list($obs, $param) = $this->getListOfDatacardObservable( $path ) ;
+      list($obs, $param) = $this->getListOfDatacardObservable( $path );
+      list($obs, $param) = $this->latexLike($obs, $param) ;
+
+      /*echo '<pre>';
+      print_r($obs);
+      print_r($param);
+      echo '</pre>';
+
+      die('debbug');*/
 
       $builder
         ->add('targetObservable', 'choice'/*'entity'*/, array(
@@ -68,6 +76,17 @@ class AnalysisStep2Type extends AbstractType
        ;
       }
 
+    }
+
+    private function latexLike($observables, $parameters){
+      foreach($observables as &$observable) {
+        $observable='\('.$observable.'\)';
+      }
+      foreach($parameters as &$parameter) {
+        $parameter='\('.$parameter.'\)';
+      }
+
+      return array($observables, $parameters);
     }
 
     private function getListOfDatacardObservable($datacardPath){

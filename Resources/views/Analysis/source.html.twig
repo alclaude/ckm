@@ -44,7 +44,7 @@ Analysis - <small>Personalize your analysis </small>
 
 {% for observable in observables %}
                 <tr>
-                  <td>{{observable.name}}</td>
+                  <td>{{latex( observable.name )}}</td>
                   <td>{{observable.value}}</td>
                   <td>{{observable.expUncertity}}</td>
                   <td>{{observable.thUncertity}}</td>
@@ -61,7 +61,7 @@ Analysis - <small>Personalize your analysis </small>
                   {% set paramGetObs = paramGetObs|merge({ (oneParameter.name): observable.name }) %}
                 {% endif %}
                   <tr style="{{ style|e }}" >
-                    <td>{{ oneParameter.name }}</td>
+                    <td>{{ latex(oneParameter.name) }}</td>
                     <td>{{ oneParameter.value }}</td>
                     <td>{{ oneParameter.expUncertity }}</td>
                     <td>{{ oneParameter.thUncertity }}</td>
@@ -130,7 +130,7 @@ No observable defined...
         <div class="panel-body">
           <div class="list-group">
               <a class="list-group-item" href="#">
-                <i class="fa fa-check"></i> granularity <span style="float:right;">\({{analyse.granularity}}\)</span>
+                <i class="fa fa-check"></i> granularity <span style="float:right;">{{ latex(analyse.granularity)}}</span>
               </a>
           </div>
         </div>
@@ -147,13 +147,9 @@ No observable defined...
             </a>
           {% for target in targets %}
             <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
-              <i class="fa fa-check"></i> \({{target.name}}\)
+              <i class="fa fa-check"></i> {{ latex(target.name) }}
               <span style="float:right;">
-              \([\)
-              \({{target.scanMin}}\)
-              \(,\)
-              \({{target.scanMax}}\)
-              \(]\)
+              {{ latex('['~target.scanMin~','~target.scanMax~']') }}
               </span>
             </a>
           {% endfor %}
@@ -168,7 +164,7 @@ No observable defined...
           </div>
           {% for tar_obs in target_and_observable %}
             <div class="panel-body">
-              {{tar_obs}}  is both a target and a observable...
+              {{ latex(tar_obs) }}  is both a target and a observable...
             </div>
           {% endfor %}
         </div>
