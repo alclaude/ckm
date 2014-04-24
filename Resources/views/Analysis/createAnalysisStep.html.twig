@@ -49,7 +49,7 @@ Analysis - <small> {{ message }} </small>
       <div class="panel-body">
         <div class="list-group">
           {% for target in targets(analyse) %}
-            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
+            <a class="list-group-item" href="#">
               <i class="fa fa-check"></i> \({{target.name}}\)
               <span style="float:right;">
               \([\)

@@ -68,9 +68,16 @@ class ParameterInput
     /**
      * @var float
      *
-     * @ORM\Column(name="exp_uncertity", type="float")
+     * @ORM\Column(name="exp_uncertity_plus", type="float")
      */
-    private $expUncertity;
+    private $expUncertityPlus;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="exp_uncertity_minus", type="float")
+     */
+    private $expUncertityMinus;
 
     /**
      * @var float
@@ -82,9 +89,16 @@ class ParameterInput
     /**
      * @var float
      *
-     * @ORM\Column(name="exp_uncertity_default", type="float")
+     * @ORM\Column(name="exp_uncertity_plus_default", type="float")
      */
-    private $expUncertityDefault;
+    private $expUncertityPlusDefault;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="exp_uncertity_minus_default", type="float")
+     */
+    private $expUncertityMinusDefault;
 
     /**
      * @var float
@@ -95,17 +109,19 @@ class ParameterInput
 
     public function __toString() { return 'ParameterInput : '.$this->name; }
 
-    public function __construct($observableInput, $name='', $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityDefault=0, $thUncertityDefault=0)
+    public function __construct($observableInput, $name='', $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityPlusDefault=0, $expUncertityMinusDefault=0,$thUncertityDefault=0)
     {
-      $this->name                = $name;
-      $this->value               = $defaultValue;
-      $this->defaultValue        = $defaultValue;
-      $this->allowedRangeMax     = $allowedRangeMax;
-      $this->allowedRangeMin     = $allowedRangeMin;
-      $this->expUncertity        = $expUncertityDefault;
-      $this->thUncertity         = $thUncertityDefault;
-      $this->expUncertityDefault = $expUncertityDefault;
-      $this->thUncertityDefault  = $thUncertityDefault;
+      $this->name                     = $name;
+      $this->value                    = $defaultValue;
+      $this->defaultValue             = $defaultValue;
+      $this->allowedRangeMax          = $allowedRangeMax;
+      $this->allowedRangeMin          = $allowedRangeMin;
+      $this->expUncertityPlus         = $expUncertityPlusDefault;
+      $this->expUncertityMinus        = $expUncertityMinusDefault;
+      $this->thUncertity              = $thUncertityDefault;
+      $this->expUncertityPlusDefault  = $expUncertityPlusDefault;
+      $this->expUncertityMinusDefault = $expUncertityMinusDefault;
+      $this->thUncertityDefault       = $thUncertityDefault;
 
       #$this->observableInput = $observableInput;
       $this->observableInputs = new \Doctrine\Common\Collections\ArrayCollection();
@@ -316,29 +332,6 @@ class ParameterInput
     }
 
     /**
-     * Set expUncertity
-     *
-     * @param float $expUncertity
-     * @return ParameterInput
-     */
-    public function setExpUncertity($expUncertity)
-    {
-        $this->expUncertity = $expUncertity;
-
-        return $this;
-    }
-
-    /**
-     * Get expUncertity
-     *
-     * @return float
-     */
-    public function getExpUncertity()
-    {
-        return $this->expUncertity;
-    }
-
-    /**
      * Set thUncertity
      *
      * @param float $thUncertity
@@ -405,5 +398,97 @@ class ParameterInput
     public function getThUncertityDefault()
     {
         return $this->thUncertityDefault;
+    }
+
+    /**
+     * Set expUncertityPlus
+     *
+     * @param float $expUncertityPlus
+     * @return ParameterInput
+     */
+    public function setExpUncertityPlus($expUncertityPlus)
+    {
+        $this->expUncertityPlus = $expUncertityPlus;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityPlus
+     *
+     * @return float
+     */
+    public function getExpUncertityPlus()
+    {
+        return $this->expUncertityPlus;
+    }
+
+    /**
+     * Set expUncertityMinus
+     *
+     * @param float $expUncertityMinus
+     * @return ParameterInput
+     */
+    public function setExpUncertityMinus($expUncertityMinus)
+    {
+        $this->expUncertityMinus = $expUncertityMinus;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityMinus
+     *
+     * @return float
+     */
+    public function getExpUncertityMinus()
+    {
+        return $this->expUncertityMinus;
+    }
+
+    /**
+     * Set expUncertityPlusDefault
+     *
+     * @param float $expUncertityPlusDefault
+     * @return ParameterInput
+     */
+    public function setExpUncertityPlusDefault($expUncertityPlusDefault)
+    {
+        $this->expUncertityPlusDefault = $expUncertityPlusDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityPlusDefault
+     *
+     * @return float
+     */
+    public function getExpUncertityPlusDefault()
+    {
+        return $this->expUncertityPlusDefault;
+    }
+
+    /**
+     * Set expUncertityMinusDefault
+     *
+     * @param float $expUncertityMinusDefault
+     * @return ParameterInput
+     */
+    public function setExpUncertityMinusDefault($expUncertityMinusDefault)
+    {
+        $this->expUncertityMinusDefault = $expUncertityMinusDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityMinusDefault
+     *
+     * @return float
+     */
+    public function getExpUncertityMinusDefault()
+    {
+        return $this->expUncertityMinusDefault;
     }
 }

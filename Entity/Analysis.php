@@ -382,7 +382,9 @@ class Analysis
         $datacard .= ',';
         $datacard .= $element->getValue();
         $datacard .= ',';
-        $datacard .= $element->getExpUncertity();
+        $datacard .= $element->getExpUncertityPlus();
+        $datacard .= ',';
+        $datacard .= $element->getExpUncertityMinus();
         $datacard .= ',';
         $datacard .= $element->getThUncertity();
         $datacard .= '}';

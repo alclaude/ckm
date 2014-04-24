@@ -139,7 +139,6 @@ class AnalysisController extends Controller
             $em->persist($targetPersist);
           }
 
-          $analyse->setStatus( 0 );
           $em->persist( $analyse );
 
           $em->flush();
@@ -242,6 +241,8 @@ class AnalysisController extends Controller
 
           #$analyse = print_r($analyse,true);
           #die('debbug <pre>'.$analyse .'</pre>');
+
+          $analyse->setStatus( 1 );
 
           $em->persist( $analyse );
           $em->flush();
@@ -612,7 +613,8 @@ echo '</pre>';
           }
 
           $observable->setValue( $tmp['value'] );
-          $observable->setExpUncertity( $tmp['expUncertity'] );
+          $observable->setExpUncertityPlus( $tmp['expUncertityPlus'] );
+          $observable->setExpUncertityMinus( $tmp['expUncertityMinus'] );
           $observable->setThUncertity( $tmp['thUncertity'] );
 
           $em->persist( $observable );
@@ -668,7 +670,8 @@ echo '</pre>';
           }
 
           $parameter->setValue( $tmp['value'] );
-          $parameter->setExpUncertity( $tmp['expUncertity'] );
+          $parameter->setExpUncertityPlus( $tmp['expUncertityPlus'] );
+          $parameter->setExpUncertityMinus( $tmp['expUncertityMinus'] );
           $parameter->setThUncertity( $tmp['thUncertity'] );
 
           $em->persist( $parameter );
@@ -745,7 +748,7 @@ echo '</pre>';
           $analysis->setGranularity( $data->getGranularity() );
           #$analysis->setScanMax( $data->getScanMax() );
           #$analysis->setScanMin( $data->getScanMin() );
-          $analysis->setStatus( 1 );
+          #$analysis->setStatus( 1 );
 
 
           $em->persist( $analysis );

@@ -30,27 +30,38 @@ class ObservableInputType extends AbstractType
                 'read_only' => true
               ),
             ))
-          ->add('expUncertity', 'number', array(
+          ->add('expUncertityPlus', 'number', array(
               'attr' => array('class' => 'form-control'),
-              'label' => 'Experimental uncertity',
+              'label' => 'Experimental uncertainty +',
             ))
-          ->add('expUncertityDefault', 'text', array(
+          ->add('expUncertityPlusDefault', 'text', array(
               'attr' => array(
                 'class' => 'form-control',
                 'read_only' => true
               ),
-              'label' => 'Default experimental uncertity',
+              'label' => 'Default experimental uncertainty +',
+            ))
+          ->add('expUncertityMinus', 'number', array(
+              'attr' => array('class' => 'form-control'),
+              'label' => 'Experimental uncertainty -',
+            ))
+          ->add('expUncertityMinusDefault', 'text', array(
+              'attr' => array(
+                'class' => 'form-control',
+                'read_only' => true
+              ),
+              'label' => 'Default experimental uncertainty -',
             ))
           ->add('thUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
-              'label' => 'Theoretical uncertity',
+              'label' => 'Theoretical uncertainty',
             ))
           ->add('thUncertityDefault', 'text', array(
               'attr' => array(
                 'class' => 'form-control',
-                'read_only' => true
+                'read_only' => true,
               ),
-              'label' => 'Default theoretical uncertity',
+              'label' => 'Default theoretical uncertainty',
             ))
           //->add('associatedElement')
         ;

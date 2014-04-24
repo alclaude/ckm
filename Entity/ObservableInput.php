@@ -82,9 +82,16 @@ class ObservableInput
     /**
      * @var float
      *
-     * @ORM\Column(name="exp_uncertity", type="float")
+     * @ORM\Column(name="exp_uncertity_plus", type="float")
      */
-    private $expUncertity;
+    private $expUncertityPlus;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="exp_uncertity_minus", type="float")
+     */
+    private $expUncertityMinus;
 
     /**
      * @var float
@@ -96,9 +103,16 @@ class ObservableInput
     /**
      * @var float
      *
-     * @ORM\Column(name="exp_uncertity_default", type="float")
+     * @ORM\Column(name="exp_uncertity_plus_default", type="float")
      */
-    private $expUncertityDefault;
+    private $expUncertityPlusDefault;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="exp_uncertity_minus_default", type="float")
+     */
+    private $expUncertityMinusDefault;
 
     /**
      * @var float
@@ -112,16 +126,18 @@ class ObservableInput
 
     public function __construct($analyse, $name='', $path='',  $defaultValue=0, $allowedRangeMax=0, $allowedRangeMin=0, $expUncertityDefault=0, $thUncertityDefault=0)
     {
-      $this->name                = $name;
-      $this->value               = $defaultValue;
-      $this->defaultValue        = $defaultValue;
-      $this->allowedRangeMax     = $allowedRangeMax;
-      $this->allowedRangeMin     = $allowedRangeMin;
-      $this->expUncertity        = $expUncertityDefault;
-      $this->thUncertity         = $thUncertityDefault;
-      $this->expUncertityDefault = $expUncertityDefault;
-      $this->thUncertityDefault  = $thUncertityDefault;
-      $this->analyse             = $analyse;
+      $this->name                    = $name;
+      $this->value                   = $defaultValue;
+      $this->defaultValue            = $defaultValue;
+      $this->allowedRangeMax         = $allowedRangeMax;
+      $this->allowedRangeMin         = $allowedRangeMin;
+      $this->expUncertityPlus        = 0;
+      $this->expUncertityMinus       = 0;
+      $this->thUncertity             = $thUncertityDefault;
+      $this->expUncertityPlusDefault = 0;
+      $this->expUncertityMinusDefault = 0;
+      $this->thUncertityDefault       = $thUncertityDefault;
+      $this->analyse                  = $analyse;
 
       $this->init($path);
 
@@ -134,14 +150,16 @@ class ObservableInput
       #die('debbug');
 
       if($ar_obs) {
-        $this->value               = $this->cleanData( $ar_obs['1'] );
-        $this->defaultValue        = $this->cleanData( $ar_obs['1'] );
-        $this->allowedRangeMax     = $this->cleanData( $ar_obs['3'] );
-        $this->allowedRangeMin     = $this->cleanData( $ar_obs['2'] );
-        $this->expUncertity        = $this->cleanData( $ar_obs['4'] );
-        $this->thUncertity         = $this->cleanData( $ar_obs['5'] );
-        $this->expUncertityDefault = $this->cleanData( $ar_obs['4'] );
-        $this->thUncertityDefault  = $this->cleanData( $ar_obs['5'] );
+        $this->value                    = $this->cleanData( $ar_obs['1'] );
+        $this->defaultValue             = $this->cleanData( $ar_obs['1'] );
+        $this->allowedRangeMax          = $this->cleanData( $ar_obs['3'] );
+        $this->allowedRangeMin          = $this->cleanData( $ar_obs['2'] );
+        $this->expUncertityPlus         = $this->cleanData( $ar_obs['4'] );
+        $this->expUncertityMinus        = $this->cleanData( $ar_obs['5'] );
+        $this->thUncertity              = $this->cleanData( $ar_obs['6'] );
+        $this->expUncertityPlusDefault  = $this->cleanData( $ar_obs['4'] );
+        $this->expUncertityMinusDefault = $this->cleanData( $ar_obs['5'] );
+        $this->thUncertityDefault       = $this->cleanData( $ar_obs['6'] );
       }
       else {
         throw new \Exception('observable does not exist :: observableInput can not be initialized');
@@ -204,7 +222,7 @@ class ObservableInput
           if( preg_match($observablePattern, $line) ) {
             $tmp_ar_obs = explode(';',$line);
             # les parametres associes a une observable sont le 6eme item dans le fichier :index=3
-            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['6']);
+            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['7']);
             break;
           }
         }
@@ -225,9 +243,7 @@ class ObservableInput
               elseif( $type==='parameter' ) {
                 $tmp_ar_param = explode(';',$line);
                 if( preg_match($paramPattern, preg_quote($tmp_ar_param['0']) ) ) {
-
-                  $tmp_ar_param_allowed_range = explode(',',$tmp_ar_param['2']);
-                  $tmp_obj_param = new ParameterInput($this, $tmp_ar_param['0'], $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'], $tmp_ar_param['4'], $tmp_ar_param['5'] ) ;
+                  $tmp_obj_param = new ParameterInput($this, $tmp_ar_param['0'], $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'], $tmp_ar_param['4'], $tmp_ar_param['5'],$tmp_ar_param['6'] ) ;
 
                   array_push($tmp_ar_params, $tmp_obj_param );
                   break;
@@ -448,29 +464,6 @@ class ObservableInput
     }
 
     /**
-     * Set expUncertity
-     *
-     * @param float $expUncertity
-     * @return ObservableInput
-     */
-    public function setExpUncertity($expUncertity)
-    {
-        $this->expUncertity = $expUncertity;
-
-        return $this;
-    }
-
-    /**
-     * Get expUncertity
-     *
-     * @return float
-     */
-    public function getExpUncertity()
-    {
-        return $this->expUncertity;
-    }
-
-    /**
      * Set thUncertity
      *
      * @param float $thUncertity
@@ -537,5 +530,97 @@ class ObservableInput
     public function getThUncertityDefault()
     {
         return $this->thUncertityDefault;
+    }
+
+    /**
+     * Set expUncertityPlus
+     *
+     * @param float $expUncertityPlus
+     * @return ObservableInput
+     */
+    public function setExpUncertityPlus($expUncertityPlus)
+    {
+        $this->expUncertityPlus = $expUncertityPlus;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityPlus
+     *
+     * @return float
+     */
+    public function getExpUncertityPlus()
+    {
+        return $this->expUncertityPlus;
+    }
+
+    /**
+     * Set expUncertityMinus
+     *
+     * @param float $expUncertityMinus
+     * @return ObservableInput
+     */
+    public function setExpUncertityMinus($expUncertityMinus)
+    {
+        $this->expUncertityMinus = $expUncertityMinus;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityMinus
+     *
+     * @return float
+     */
+    public function getExpUncertityMinus()
+    {
+        return $this->expUncertityMinus;
+    }
+
+    /**
+     * Set expUncertityPlusDefault
+     *
+     * @param float $expUncertityPlusDefault
+     * @return ObservableInput
+     */
+    public function setExpUncertityPlusDefault($expUncertityPlusDefault)
+    {
+        $this->expUncertityPlusDefault = $expUncertityPlusDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityPlusDefault
+     *
+     * @return float
+     */
+    public function getExpUncertityPlusDefault()
+    {
+        return $this->expUncertityPlusDefault;
+    }
+
+    /**
+     * Set expUncertityMinusDefault
+     *
+     * @param float $expUncertityMinusDefault
+     * @return ObservableInput
+     */
+    public function setExpUncertityMinusDefault($expUncertityMinusDefault)
+    {
+        $this->expUncertityMinusDefault = $expUncertityMinusDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityMinusDefault
+     *
+     * @return float
+     */
+    public function getExpUncertityMinusDefault()
+    {
+        return $this->expUncertityMinusDefault;
     }
 }

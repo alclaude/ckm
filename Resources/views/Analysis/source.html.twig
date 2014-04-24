@@ -31,7 +31,8 @@ Analysis - <small>Personalize your analysis </small>
                 <tr>
                   <th class="header">Observable </th>
                   <th class="header">Value </th>
-                  <th class="header">Experimental uncertainty </th>
+                  <th class="header">Experimental uncertainty +</th>
+                  <th class="header">Experimental uncertainty -</th>
                   <th class="header">Theoretical uncertainty </th>
                   <th class="header">Explanations </th>
                   <th class="header">Edit </th>
@@ -46,12 +47,13 @@ Analysis - <small>Personalize your analysis </small>
                 <tr>
                   <td>{{latex( observable.name )}}</td>
                   <td>{{observable.value}}</td>
-                  <td>{{observable.expUncertity}}</td>
+                  <td>{{observable.expUncertityPlus}}</td>
+                  <td>{{observable.expUncertityMinus}}</td>
                   <td>{{observable.thUncertity}}</td>
                   <td><a href="#">A help link</a></td>
                   <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">Edit observable</a></td>
             {% if observable.parameterInputs is defined %}
-                  <tr class="success"><td colspan="6" >Parameters of the Observable {{observable.name}}</td></tr>
+                  <tr class="success"><td colspan="7" >Parameters of the Observable {{observable.name}}</td></tr>
               {% for oneParameter in observable.parameterInputs %}
                 {% if oneParameter.name in paramEverInUse|keys %}
                   {% set style = "background:#eee" %}
@@ -63,7 +65,8 @@ Analysis - <small>Personalize your analysis </small>
                   <tr style="{{ style|e }}" >
                     <td>{{ latex(oneParameter.name) }}</td>
                     <td>{{ oneParameter.value }}</td>
-                    <td>{{ oneParameter.expUncertity }}</td>
+                    <td>{{ oneParameter.expUncertityPlus }}</td>
+                    <td>{{ oneParameter.expUncertityMinus }}</td>
                     <td>{{ oneParameter.thUncertity }}</td>
                     <td><a href="#">A help link</a></td>
                     <td>{{ line|raw }}</td>
@@ -76,7 +79,7 @@ Analysis - <small>Personalize your analysis </small>
                   <tr><td>No Parameter found...</td></tr>
             {% endif %}
                   </tr>
-                  <tr ><td colspan="6" >&nbsp;</td></tr>
+                  <tr ><td colspan="7" >&nbsp;</td></tr>
 {% endfor %}
             </table>
         </div>
@@ -94,10 +97,6 @@ No observable defined...
       </div>
       <div class="panel-body">
         <div class="list-group">
-          <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
-            <span class="badge">go</span>
-            <i class="fa fa-check"></i> Set the properties
-          </a>
           <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_step_3', {'analyse': analyse.id, 'step':0}) }}">
             <span class="badge">go</span>
             <i class="fa fa-check"></i> Re-choose input
@@ -129,7 +128,7 @@ No observable defined...
         </div>
         <div class="panel-body">
           <div class="list-group">
-              <a class="list-group-item" href="#">
+              <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
                 <i class="fa fa-check"></i> granularity <span style="float:right;">{{ latex(analyse.granularity)}}</span>
               </a>
           </div>

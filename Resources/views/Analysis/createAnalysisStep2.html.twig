@@ -40,21 +40,23 @@ Analysis - <small> {{ message }} </small>
         </div>
 
         <div class="col-lg-5">
+            {{ form_errors(form.scanMin1) }}
+            {{ form_label(form.scanMin1) }}&nbsp;<span id="target12"></span>
+            {{ form_widget(form.scanMin1) }}
+
             {{ form_errors(form.scanMax1) }}
             {{ form_label(form.scanMax1) }} &nbsp;<span id="target11"></span>
             {{ form_widget(form.scanMax1) }}
 
-            {{ form_errors(form.scanMin1) }}
-            {{ form_label(form.scanMin1) }}&nbsp;<span id="target12"></span>
-            {{ form_widget(form.scanMin1) }}
             {% if constraint==2 %}
+              {{ form_errors(form.scanMin2) }}
+              {{ form_label(form.scanMin2) }}&nbsp;<span id="target22"></span>
+              {{ form_widget(form.scanMin2) }}
+
               {{ form_errors(form.scanMax2) }}
               {{ form_label(form.scanMax2) }}&nbsp;<span id="target21"></span>
               {{ form_widget(form.scanMax2) }}
 
-              {{ form_errors(form.scanMin2) }}
-              {{ form_label(form.scanMin2) }}&nbsp;<span id="target22"></span>
-              {{ form_widget(form.scanMin2) }}
             {% endif %}
         </div>
  {{ form_rest(form) }}

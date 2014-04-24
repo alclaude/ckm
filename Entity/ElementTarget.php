@@ -86,6 +86,8 @@ class ElementTarget
       $this->analyse         = $analyse;
       $this->scanMax         = 0.0;
       $this->scanMin         = 0.0;
+
+      $this->observableInputs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function isScanValid(ExecutionContextInterface $context)
