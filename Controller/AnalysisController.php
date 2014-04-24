@@ -8,6 +8,8 @@ use CKM\AppBundle\Entity\Parameter;
 use CKM\AppBundle\Entity\ObservableInput;
 use CKM\AppBundle\Entity\ParameterInput;
 use CKM\AppBundle\Entity\ElementTarget;
+use CKM\AppBundle\Entity\ObservableTarget;
+use CKM\AppBundle\Entity\ParameterTarget;
 
 use CKM\AppBundle\Form\AnalysisType;
 use CKM\AppBundle\Form\ObservableType;
@@ -108,7 +110,7 @@ class AnalysisController extends Controller
                 array('analyse' => $analyse->getId(), 'step' => 3 )
                 );
           }
-          if( $tmp["scanMax1"] < $tmp["scanMin1"] ) {
+          if( $tmp["scanMax1"] < $tmp["scanMin1"] or (isset($tmp["scanMax2"]) and $tmp["scanMax2"] < $tmp["scanMin2"] ) ) {
             return $this->errorForm('notice',
                             'scanMax must be greater than scanMin',
                             'CKMAppBundle_analyse_create_step_2',
@@ -119,7 +121,13 @@ class AnalysisController extends Controller
           $em = $this->getDoctrine()->getManager();
           foreach( $element_ar as $key => $target )
           {
-            $targetPersist = new ElementTarget($analyse, $target);
+            if( $analyse->isObservable($target) ) {
+              $targetPersist = new ObservableTarget($analyse, $target);
+            }
+            else {
+              $targetPersist = new ParameterTarget($analyse, $target);
+            }
+
             if($key==0) {
               $targetPersist->setScanMax($tmp["scanMax1"]);
               $targetPersist->setScanMin($tmp["scanMin1"]);
@@ -127,13 +135,6 @@ class AnalysisController extends Controller
             else {
               $targetPersist->setScanMax($tmp["scanMax2"]);
               $targetPersist->setScanMin($tmp["scanMin2"]);
-              if( $tmp["scanMax2"] < $tmp["scanMin2"] ) {
-                return $this->errorForm('notice',
-                                'scanMax must be greater than scanMin',
-                                'CKMAppBundle_analyse_create_step_2',
-                                array('analyse' => $analyse->getId(), 'step' => 2 )
-                                );
-              }
             }
 
             $em->persist($targetPersist);

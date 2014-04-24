@@ -17,9 +17,15 @@ class ParameterInput
 {
     /**
      * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\ObservableInput", mappedBy="parameterInputs", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $observableInputs;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\ObservableTarget")
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
+     */
+    private $ObservableTarget;
 
     /**
      * @var integer
@@ -490,5 +496,28 @@ class ParameterInput
     public function getExpUncertityMinusDefault()
     {
         return $this->expUncertityMinusDefault;
+    }
+
+    /**
+     * Set ObservableTarget
+     *
+     * @param \CKM\AppBundle\Entity\ObservableTarget $observableTarget
+     * @return ParameterInput
+     */
+    public function setObservableTarget(\CKM\AppBundle\Entity\ObservableTarget $observableTarget = null)
+    {
+        $this->ObservableTarget = $observableTarget;
+
+        return $this;
+    }
+
+    /**
+     * Get ObservableTarget
+     *
+     * @return \CKM\AppBundle\Entity\ObservableTarget 
+     */
+    public function getObservableTarget()
+    {
+        return $this->ObservableTarget;
     }
 }

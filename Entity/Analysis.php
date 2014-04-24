@@ -540,4 +540,26 @@ class Analysis
     {
         return $this->name;
     }
+
+    public function isObservable($target)  {
+      $scenario  = $this->getScenario()->getWebPath();
+      $data = file_get_contents($scenario) or die("fichier non trouv&eacute;");
+      $lines = explode("\n", $data);
+
+      $new_line = "^\n$" ;
+      $targetPattern =  '/'.preg_quote( $target, '/' ).'/';
+
+      // recherche des params de l observable
+      foreach($lines as $line) {
+        if( ! preg_match("/$new_line/", $line) ) {
+          $name = explode(';',$line);
+          if( preg_match($targetPattern, $name[0]) ) {
+            return true;
+          }
+          if( preg_match('/# parameter/', $line) ) {
+            return false;
+          }
+        }
+      }
+    }
 }

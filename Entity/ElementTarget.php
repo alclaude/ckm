@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="CKM\AppBundle\Entity\ElementTargetRepository")
  *
  */
-class ElementTarget
+class elementTarget
 {
     /**
      * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\Analysis")
