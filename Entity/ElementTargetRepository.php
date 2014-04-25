@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class ElementTargetRepository extends EntityRepository
 {
+    public function findTargetByAnalysis($analyse)
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\ElementTarget o WHERE o.analyse = :analyse'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                )
+           )
+          ->getResult();
+    }
 }

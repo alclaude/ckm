@@ -50,7 +50,7 @@ class AnalysisRepository extends EntityRepository
           ->getResult();
     }
 
-    public function findOnservableByAnalysis($analyse)
+    public function findObservableByAnalysis($analyse)
     {
       return $this->getEntityManager()
           ->createQuery(

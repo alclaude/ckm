@@ -17,15 +17,15 @@ class ParameterInput
 {
     /**
      * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\ObservableInput", mappedBy="parameterInputs", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $observableInputs;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\ObservableTarget")
+     * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\ElementTarget", mappedBy="parameters", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
-    private $ObservableTarget;
+    private $elementTarget;
 
     /**
      * @var integer
@@ -514,10 +514,43 @@ class ParameterInput
     /**
      * Get ObservableTarget
      *
-     * @return \CKM\AppBundle\Entity\ObservableTarget 
+     * @return \CKM\AppBundle\Entity\ObservableTarget
      */
     public function getObservableTarget()
     {
         return $this->ObservableTarget;
+    }
+
+    /**
+     * Add elementTarget
+     *
+     * @param \CKM\AppBundle\Entity\ElementTarget $elementTarget
+     * @return ParameterInput
+     */
+    public function addElementTarget(\CKM\AppBundle\Entity\ElementTarget $elementTarget)
+    {
+        $this->elementTarget[] = $elementTarget;
+
+        return $this;
+    }
+
+    /**
+     * Remove elementTarget
+     *
+     * @param \CKM\AppBundle\Entity\ElementTarget $elementTarget
+     */
+    public function removeElementTarget(\CKM\AppBundle\Entity\ElementTarget $elementTarget)
+    {
+        $this->elementTarget->removeElement($elementTarget);
+    }
+
+    /**
+     * Get elementTarget
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getElementTarget()
+    {
+        return $this->elementTarget;
     }
 }

@@ -16,6 +16,7 @@ class CKMExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+            'targetsElement'  => new \Twig_Function_Method($this, 'getTargetsElement'),
             'targets'  => new \Twig_Function_Method($this, 'getTargets'),
             'scenario' => new \Twig_Function_Method($this, 'getScenario'),
             'latex' => new \Twig_Function_Method($this, 'getLatexLike'),
@@ -31,11 +32,22 @@ class CKMExtension extends \Twig_Extension
       return '\('.$name.'\)';
     }
 
-    public function getTargets($analyse)
+    public function getTargetsElement($analyse)
     {
       $liste_targetElement = $this->em->getRepository('CKMAppBundle:ElementTarget')
                           ->findByAnalyse($analyse);
       return $liste_targetElement;
+    }
+
+    public function getTargets($analyse)
+    {
+      $parameterElement = $this->em->getRepository('CKMAppBundle:ParameterTarget')
+                          ->findByAnalyse($analyse);
+
+      $observableElement = $this->em->getRepository('CKMAppBundle:ObservableTarget')
+                          ->findByAnalyse($analyse);
+
+      return array_merge($observableElement,$parameterElement);
     }
 
     public function getScenario($analyse)

@@ -90,6 +90,72 @@ Analysis - <small>Personalize your analysis </small>
 No observable defined...
 {% endif %}
 
+{% if analyse.status == 1 %}
+ <div class="col-lg-4">
+   <div >
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your target</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+            <a class="list-group-item active" href="#">
+              Change scan target
+            </a>
+          {% for target in targetsElement(analyse) %}
+            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
+              <i class="fa fa-check"></i> {{ latex(target.name) }}
+              <span style="float:right;">
+              {{ latex('['~target.scanMin~','~target.scanMax~']') }}
+              </span>
+            </a>
+            {% if analyse.isObservable(target.name) %}
+              {% for parameter in target.getParameters() %}
+                <a class="list-group-item" href="#">
+                  <i style="margin-left:30px;" class="fa fa-angle-right"></i> {{ latex(parameter.name) }}
+                </a>
+              {% endfor %}
+
+            {% endif %}
+          {% endfor %}
+        </div>
+
+
+{% if target_and_observable is defined and target_and_observable is not null and target_and_observable is not empty %}
+
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">Did you see...</h3>
+          </div>
+          {% for tar_obs in target_and_observable %}
+            <div class="panel-body">
+              {{ latex(tar_obs) }}  is both a target and a observable...
+            </div>
+          {% endfor %}
+        </div>
+{% endif %}
+
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis properties</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
+              <i class="fa fa-check"></i> granularity <span style="float:right;">{{ latex(analyse.granularity)}}</span>
+            </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+ </div>
+{% endif %}
+
   <div class="col-lg-4">
     <div class="panel panel-primary">
       <div class="panel-heading">
@@ -118,63 +184,6 @@ No observable defined...
       </div>
     </div>
   </div>
-
- {% if analyse.status == 1 %}
- <div class="col-lg-4">
-   <div >
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis properties</h3>
-        </div>
-        <div class="panel-body">
-          <div class="list-group">
-              <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
-                <i class="fa fa-check"></i> granularity <span style="float:right;">{{ latex(analyse.granularity)}}</span>
-              </a>
-          </div>
-        </div>
-      </div>
-
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your target</h3>
-      </div>
-      <div class="panel-body">
-        <div class="list-group">
-            <a class="list-group-item active" href="#">
-              Change scan target
-            </a>
-          {% for target in targets %}
-            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
-              <i class="fa fa-check"></i> {{ latex(target.name) }}
-              <span style="float:right;">
-              {{ latex('['~target.scanMin~','~target.scanMax~']') }}
-              </span>
-            </a>
-          {% endfor %}
-        </div>
-
-
-{% if target_and_observable is defined and target_and_observable is not null and target_and_observable is not empty %}
-
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h3 class="panel-title">Did you see...</h3>
-          </div>
-          {% for tar_obs in target_and_observable %}
-            <div class="panel-body">
-              {{ latex(tar_obs) }}  is both a target and a observable...
-            </div>
-          {% endfor %}
-        </div>
-{% endif %}
-
-      </div>
-    </div>
-  </div>
- </div>
-{% endif %}
-
 
 </div> <!-- row -->
 

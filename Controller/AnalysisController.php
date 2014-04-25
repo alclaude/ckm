@@ -119,13 +119,31 @@ class AnalysisController extends Controller
           }
 
           $em = $this->getDoctrine()->getManager();
+          # tous les parametres regroupes des target observables
+          $all_ar_parameters=array();
           foreach( $element_ar as $key => $target )
           {
+            $targetPersist = new ElementTarget($analyse, $target);
+            $em->persist($targetPersist);
+
             if( $analyse->isObservable($target) ) {
-              $targetPersist = new ObservableTarget($analyse, $target);
-            }
-            else {
-              $targetPersist = new ParameterTarget($analyse, $target);
+              $parameters = $targetPersist->createAssociatedElement( $analyse->getScenario()->getWebPath() );
+
+              foreach ( $parameters as $parameter ) {
+                if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
+                  $all_ar_parameters[$parameter->getName()] = $parameter;
+                }
+              }
+
+              foreach( $parameters as $key => $parameter ) {
+                if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
+                  $targetPersist->addParameter($parameters[$key]);
+                  $em->persist($parameters[$key]);
+                }
+                else {
+                  $targetPersist->addParameter( $all_ar_parameters[$parameter->getName()] );
+                }
+              }
             }
 
             if($key==0) {
@@ -137,7 +155,7 @@ class AnalysisController extends Controller
               $targetPersist->setScanMin($tmp["scanMin2"]);
             }
 
-            $em->persist($targetPersist);
+
           }
 
           $em->persist( $analyse );
@@ -180,6 +198,7 @@ class AnalysisController extends Controller
     public function createAnalyseStep3Action($analyse=0, $step=3 ) {
       $this->isGranted('ROLE_ANALYSIS');
 
+      # re choose unput
       if($step==0) {
         $this->removeInput($analyse);
       }
@@ -212,6 +231,21 @@ class AnalysisController extends Controller
           $observables = array();
           # tous les parametres regroupes des observables
           $all_ar_parameters=array();
+
+          # gestion des parametres existant si la target est une observable
+          /*
+          $targets = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:ElementTarget')
+            ->findTargetByAnalysis( $analyse->getId() );
+
+          foreach( $targets as $target ) {
+            if( $analyse->isObservable( $target->getname() ) ) {
+              foreach( ($target->getParameters()) as $parameter ) {
+                $all_ar_parameters[$parameter->getName()]=$parameter;
+              }
+            }
+          }
+          */
 
           foreach( $tmp["sourceElement"] as $key => $input )
           {
@@ -508,6 +542,10 @@ echo '</pre>';
 
       $em = $this->getDoctrine()->getEntityManager();
 
+      $targets = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:ElementTarget')
+            ->findTargetByAnalysis( $analyse->getId() );
+
       $observables = $this->getDoctrine()
         ->getRepository('CKMAppBundle:ObservableInput')
         ->findByAnalyse( $analyse->getId() );
@@ -515,10 +553,17 @@ echo '</pre>';
       foreach($observables as $observable) {
         $parameters = $observable->getParameterInputs();
         foreach($parameters as $parameter) {
-          $em->remove($parameter);
+
+          # verifier que le parametre n est pas egalement associe a une target observable
+          if( !$analyse->isParamOfObservableTarget($parameter->getName(), $targets ) ) {
+            $em->remove($parameter);
+            echo 'remove($parameter) '.$parameter->getName();
+          }
         }
         $em->remove($observable);
+        echo 'remove($observable) '.$observable->getName();
       }
+      #die("debbug:removeInput::AnalysisController");
     }
 
     public function removeAnalysisAction(Analysis $analyse ) {
@@ -534,6 +579,17 @@ echo '</pre>';
 
       $em = $this->getDoctrine()->getEntityManager();
       $tmp = $analyse->getId();
+
+      $targets = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:ElementTarget')
+        ->findByAnalyse( $analyse->getId() );
+
+      foreach($targets as $target) {
+        $parameters = $target->getParameters();
+        foreach($parameters as $parameter) {
+          $em->remove($parameter);
+        }
+      }
 
       $observables = $this->getDoctrine()
         ->getRepository('CKMAppBundle:ObservableInput')
