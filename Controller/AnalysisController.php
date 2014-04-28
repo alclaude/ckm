@@ -205,6 +205,11 @@ class AnalysisController extends Controller
 
       $analyse = $this->getAnalysis($analyse);
 
+echo "User analysis : ".$analyse->getUser()->getId()."<br />";
+echo "User context : ". $this->get('security.context')->getToken()->getUser()->getId()."<br />";
+
+die('debbug');
+
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
@@ -334,6 +339,10 @@ class AnalysisController extends Controller
 
         $formData = new Analysis(); // Your form data class. Has to be an object, won't work properly with an array.
 
+        if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+          throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        }
+
         $flow = $this->get('CKM.form.flow.createAnalyse'); // must match the flow's service id
         $flow->bind($formData);
 
@@ -411,11 +420,6 @@ class AnalysisController extends Controller
               $formData->setSourceElement( $this->container->get('request')->getSession()->get( 'inputElement' ) ) ;
               $formData->setUser( $this->get('security.context')->getToken()->getUser() );
               //$formData->setScenario( $this->container->get('request')->getSession()->get( 'scenario' ) ) ;
-
-echo '<pre>';
-\Doctrine\Common\Util\Debug::dump($formData);
-echo '</pre>';
-//die('debbug');
 
 
               $em = $this->getDoctrine()->getManager();
@@ -500,6 +504,9 @@ echo '</pre>';
         throw $this->createNotFoundException('analyse not exist');
       }
 
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
 
       $liste_observable = $em->getRepository('CKMAppBundle:ObservableInput')
                                   ->findByAnalyse($analyse->getId());
