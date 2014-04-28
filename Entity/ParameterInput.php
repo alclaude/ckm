@@ -23,7 +23,7 @@ class ParameterInput
 
     /**
      * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\ElementTarget", mappedBy="parameters", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $elementTarget;
 
@@ -131,6 +131,7 @@ class ParameterInput
 
       #$this->observableInput = $observableInput;
       $this->observableInputs = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->elementTarget    = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

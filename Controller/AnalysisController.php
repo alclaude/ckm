@@ -150,7 +150,7 @@ class AnalysisController extends Controller
               $targetPersist->setScanMax($tmp["scanMax1"]);
               $targetPersist->setScanMin($tmp["scanMin1"]);
             }
-            else {
+            elseif( isset($tmp["scanMax2"]) ) {
               $targetPersist->setScanMax($tmp["scanMax2"]);
               $targetPersist->setScanMin($tmp["scanMin2"]);
             }
@@ -205,11 +205,6 @@ class AnalysisController extends Controller
 
       $analyse = $this->getAnalysis($analyse);
 
-echo "User analysis : ".$analyse->getUser()->getId()."<br />";
-echo "User context : ". $this->get('security.context')->getToken()->getUser()->getId()."<br />";
-
-die('debbug');
-
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
@@ -238,7 +233,7 @@ die('debbug');
           $all_ar_parameters=array();
 
           # gestion des parametres existant si la target est une observable
-          /*
+
           $targets = $this->getDoctrine()
             ->getRepository('CKMAppBundle:ElementTarget')
             ->findTargetByAnalysis( $analyse->getId() );
@@ -250,7 +245,9 @@ die('debbug');
               }
             }
           }
-          */
+
+\Doctrine\Common\Util\Debug::dump($all_ar_parameters);
+\Doctrine\Common\Util\Debug::dump($targets);
 
           foreach( $tmp["sourceElement"] as $key => $input )
           {
@@ -276,6 +273,8 @@ die('debbug');
               }
             }
           }
+
+#die('debbug');
 
           $analyse->setDatacard( $observables, $all_ar_parameters );
 
@@ -504,6 +503,7 @@ die('debbug');
         throw $this->createNotFoundException('analyse not exist');
       }
 
+      // FS#9
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
@@ -523,12 +523,6 @@ die('debbug');
             }
           }
       }
-
-      #echo '<pre>';
-      #\Doctrine\Common\Util\Debug::dump($liste_observable);
-      #\Doctrine\Common\Util\Debug::dump($liste_targetElement);
-      #echo '</pre>';
-      #die('debbug');
 
        return $this->render('CKMAppBundle:Analysis:source.html.twig', array(
             'observables' => $liste_observable,
@@ -564,13 +558,11 @@ die('debbug');
           # verifier que le parametre n est pas egalement associe a une target observable
           if( !$analyse->isParamOfObservableTarget($parameter->getName(), $targets ) ) {
             $em->remove($parameter);
-            echo 'remove($parameter) '.$parameter->getName();
           }
         }
         $em->remove($observable);
-        echo 'remove($observable) '.$observable->getName();
       }
-      #die("debbug:removeInput::AnalysisController");
+      $em->flush();
     }
 
     public function removeAnalysisAction(Analysis $analyse ) {

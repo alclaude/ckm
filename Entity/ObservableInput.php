@@ -25,9 +25,9 @@ class ObservableInput
     private $analyse;
 
    /**
-    * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\ParameterInput", inversedBy="observableInputs", cascade={"persist", "remove"})
+    * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\ParameterInput", inversedBy="observableInputs", cascade={"persist"})
     * @ORM\JoinTable(name="observables_parameters_input",
-    *      joinColumns={@ORM\JoinColumn(nullable=false, onDelete="CASCADE")},
+    *      joinColumns={@ORM\JoinColumn(nullable=false)},
     *      inverseJoinColumns={@ORM\JoinColumn(nullable=false)}
     *      )
     */

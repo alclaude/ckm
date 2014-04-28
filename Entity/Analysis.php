@@ -567,19 +567,12 @@ class Analysis
       foreach($targets as $target) {
         if($this->isObservable($target->getName() )) {
           foreach( ($target->getParameters()) as $parameter) {
-            echo $parameter->getName();
-            echo " - ";
-            echo $paramName;
-            echo "<br />";
-
             if( $parameter->getName()=== $paramName) {
-              echo " ---> true<br /><br />";
               return true;
             }
           }
         }
       }
-      echo "false<br />";
       return false;
     }
 }
