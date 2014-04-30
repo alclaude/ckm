@@ -35,7 +35,7 @@ Analysis - <small>List </small>
                       <td>{{ analyse.name }}</td>
                       <td>{{ analyse.date|date("m/d/Y - H:i") }}</td>
                       <td>
-                      {% for target in targets(analyse) %}
+                      {% for target in targetsElement(analyse) %}
                         {{ target.name }}<br />
                       {% endfor %}
                       &nbsp;

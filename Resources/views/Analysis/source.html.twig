@@ -18,145 +18,149 @@ Analysis - <small>Personalize your analysis </small>
 {% block content %}
 
 {% if observables is defined %}
+  {% set paramEverInUse = {} %}
+  {% set paramGetObs    = {} %}
+  {% set style          = '' %}
+  {% set line           = '' %}
+  {% set counter        = 1  %}
 <div class="row">
-  <div class="col-lg-8 ">
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your input Observable(s)</h3>
-      </div>
-      <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th class="header">Observable </th>
-                  <th class="header">Value </th>
-                  <th class="header">Experimental uncertainty +</th>
-                  <th class="header">Experimental uncertainty -</th>
-                  <th class="header">Theoretical uncertainty </th>
-                  <th class="header">Explanations </th>
-                  <th class="header">Edit </th>
-                </tr>
-              </thead>
-{% set paramEverInUse = {} %}
-{% set paramGetObs    = {} %}
-{% set style          = '' %}
-{% set line          = '' %}
 
-{% for observable in observables %}
-                <tr>
-                  <td>{{latex( observable.name )}}</td>
-                  <td>{{observable.value}}</td>
-                  <td>{{observable.expUncertityPlus}}</td>
-                  <td>{{observable.expUncertityMinus}}</td>
-                  <td>{{observable.thUncertity}}</td>
-                  <td><a href="#">A help link</a></td>
-                  <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">Edit observable</a></td>
-            {% if observable.parameterInputs is defined %}
-                  <tr class="success"><td colspan="7" >Parameters of the Observable {{observable.name}}</td></tr>
-              {% for oneParameter in observable.parameterInputs %}
-                {% if oneParameter.name in paramEverInUse|keys %}
-                  {% set style = "background:#eee" %}
-                  {% set line = '<a href="#'~ oneParameter.name ~'">See '~ oneParameter.name ~' of '~ paramGetObs[oneParameter.name] ~'</a>' %}
-                {% else %}
-                  {% set line = '<div id="'~oneParameter.name~'"><a href="'~ path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': oneParameter.id}) ~'">Edit Parameter</a></div>' %}
-                  {% set paramGetObs = paramGetObs|merge({ (oneParameter.name): observable.name }) %}
-                {% endif %}
-                  <tr style="{{ style|e }}" >
-                    <td>{{ latex(oneParameter.name) }}</td>
-                    <td>{{ oneParameter.value }}</td>
-                    <td>{{ oneParameter.expUncertityPlus }}</td>
-                    <td>{{ oneParameter.expUncertityMinus }}</td>
-                    <td>{{ oneParameter.thUncertity }}</td>
-                    <td><a href="#">A help link</a></td>
-                    <td>{{ line|raw }}</td>
-                  </tr>
-                  {% set style = '' %}
-                  {% set line = '' %}
-                  {% set paramEverInUse = paramEverInUse|merge({ (oneParameter.name): observable.name }) %}
-              {% endfor %}
-            {% else %}
-                  <tr><td>No Parameter found...</td></tr>
-            {% endif %}
-                  </tr>
-                  <tr ><td colspan="7" >&nbsp;</td></tr>
-{% endfor %}
-            </table>
-        </div>
-      </div>
-    </div>
-  </div>
-{% else %}
-No observable defined...
-{% endif %}
+<div class="col-lg-8 ">
+  <div class="tabs">
+    <ul style="margin-bottom: 15px;" class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#targets">Targets</a></li>
+      <li><a data-toggle="tab" href="#inputs">Inputs</a></li>
+    </ul>
 
-{% if analyse.status == 1 %}
- <div class="col-lg-4">
-   <div >
+    <div class="tab-content" id="myTabContent">
 
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your target</h3>
-      </div>
-      <div class="panel-body">
-        <div class="list-group">
-            <a class="list-group-item active" href="#">
-              Change scan target
-            </a>
-          {% for target in targetsElement(analyse) %}
+      <div id="targets" class="tab-pane fade active in" class="col-lg-8 ">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your Target(s)</h3>
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive">
+            {% for target in targetsElement(analyse) %}
             <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
               <i class="fa fa-check"></i> {{ latex(target.name) }}
               <span style="float:right;">
               {{ latex('['~target.scanMin~','~target.scanMax~']') }}
               </span>
             </a>
-            {% if analyse.isObservable(target.name) %}
-              {% for parameter in target.getParameters() %}
-                <a class="list-group-item" href="#">
-                  <i style="margin-left:30px;" class="fa fa-angle-right"></i> {{ latex(parameter.name) }}
-                </a>
-              {% endfor %}
+              {% if analyse.isObservable(target.name) %}
+                  <table class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th class="header">Parameter </th>
+                        <th class="header">Value </th>
+                        <th class="header">Experimental uncertainty +</th>
+                        <th class="header">Experimental uncertainty -</th>
+                        <th class="header">Theoretical uncertainty </th>
+                        <th class="header">Explanations </th>
+                        <th class="header">Edit </th>
+                      </tr>
+                    </thead>
+                {% for parameter in target.getParameters() %}
+                  {% set paramEverInUse = paramEverInUse|merge({ (parameter.name): target.name }) %}
+                  {% set paramGetObs    = paramGetObs|merge({ (parameter.name): target.name }) %}
+                      <tr>
+                        <td> {{ parameter.name }} </td>
+                        <td> {{ parameter.value }}  </td>
+                        <td> {{ parameter.expUncertityPlus }} </td>
+                        <td> {{ parameter.expUncertityMinus }} </td>
+                        <td> {{ parameter.thUncertity }} </td>
+                        <td> explain  </td>
+                        <td> <div id="{{parameter.name}}"><a href="{{path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': parameter.id})}}">Edit </a></div></td>
+                      </tr>
+                {% endfor %}
+                    </table>
+              {% endif %}
 
-            {% endif %}
-          {% endfor %}
-        </div>
-
-
-{% if target_and_observable is defined and target_and_observable is not null and target_and_observable is not empty %}
-
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h3 class="panel-title">Did you see...</h3>
-          </div>
-          {% for tar_obs in target_and_observable %}
-            <div class="panel-body">
-              {{ latex(tar_obs) }}  is both a target and a observable...
+            {% endfor %}
             </div>
-          {% endfor %}
+          </div>
         </div>
-{% endif %}
 
-      </div>
-    </div>
+      </div> <!-- end targets -->
 
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis properties</h3>
-      </div>
-      <div class="panel-body">
-        <div class="list-group">
-            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
-              <i class="fa fa-check"></i> granularity <span style="float:right;">{{ latex(analyse.granularity)}}</span>
-            </a>
+      <div id="inputs" class="tab-pane fade" class="col-lg-8 ">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your input Observable(s)</h3>
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-responsive table-hover">
+                  <thead>
+                    <tr>
+                      <th class="header">Observable </th>
+                      <th class="header">Value </th>
+                      <th class="header">Experimental uncertainty +</th>
+                      <th class="header">Experimental uncertainty -</th>
+                      <th class="header">Theoretical uncertainty </th>
+                      <th class="header">Explanations </th>
+                      <th class="header">Edit </th>
+                    </tr>
+                  </thead>
+
+
+    {% for observable in observables %}
+                    <tr>
+                      <td>{{latex( observable.name )}}</td>
+                      <td>{{observable.value}}</td>
+                      <td>{{observable.expUncertityPlus}}</td>
+                      <td>{{observable.expUncertityMinus}}</td>
+                      <td>{{observable.thUncertity}}</td>
+                      <td><a href="#">A help link</a></td>
+                      <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">Edit observable</a></td>
+                {% if observable.parameterInputs is defined %}
+                      <tr class="clickable" data-toggle="collapse" id="row{{ counter }}" data-target=".row{{ counter }}" class="success"><td colspan="7" ><i class="glyphicon glyphicon-plus"></i> Parameters of the Observable {{observable.name}} <span style="float:right;" class="badge">See parameter...</span></td></tr>
+                  {% for oneParameter in observable.parameterInputs %}
+                    {% if oneParameter.name in paramEverInUse|keys %}
+                      {% set style = "background:#eee" %}
+                      {% set line = '<a href="#'~ oneParameter.name ~'">See '~ oneParameter.name ~' of '~ paramGetObs[oneParameter.name] ~'</a>' %}
+                    {% else %}
+                      {% set line = '<div id="'~oneParameter.name~'"><a href="'~ path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': oneParameter.id}) ~'">Edit Parameter</a></div>' %}
+                      {% set paramGetObs = paramGetObs|merge({ (oneParameter.name): observable.name }) %}
+                    {% endif %}
+                      <tr class="collapse row{{ counter }}" style="{{ style|e }}" >
+                        <td>{{ latex(oneParameter.name) }}</td>
+                        <td>{{ oneParameter.value }}</td>
+                        <td>{{ oneParameter.expUncertityPlus }}</td>
+                        <td>{{ oneParameter.expUncertityMinus }}</td>
+                        <td>{{ oneParameter.thUncertity }}</td>
+                        <td><a href="#">A help link</a></td>
+                        <td>{{ line|raw }}</td>
+                      </tr>
+                      {% set style = '' %}
+                      {% set line  = '' %}
+
+                      {% set paramEverInUse = paramEverInUse|merge({ (oneParameter.name): observable.name }) %}
+                  {% endfor %}
+                      {% set counter=counter+1 %}
+                {% else %}
+                      <tr><td>No Parameter found...</td></tr>
+                {% endif %}
+                      <tr ><td colspan="7" >&nbsp;</td></tr>
+    {% endfor %}
+                </table>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-
+    </div> <!-- end div tab-content -->
+  </div> <!-- end div tabs-->
   </div>
- </div>
+{% else %}
+No observable defined...
 {% endif %}
 
-  <div class="col-lg-4">
+
+{% if analyse.status == 1 %}
+ <div class="col-lg-4">
+   <div >
+
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Next step Analysis</h3>
@@ -183,7 +187,35 @@ No observable defined...
         </div>
       </div>
     </div>
-  </div>
+{% if target_and_observable is defined and target_and_observable is not null and target_and_observable is not empty %}
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h3 class="panel-title">Did you see...</h3>
+      </div>
+      {% for tar_obs in target_and_observable %}
+        <div class="panel-body">
+          {{ latex(tar_obs) }}  is both a target and a observable...
+        </div>
+      {% endfor %}
+    </div>
+{% endif %}
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis properties</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
+              <i class="fa fa-check"></i> granularity <span style="float:right;">{{ latex(analyse.granularity)}}</span>
+            </a>
+        </div>
+      </div>
+    </div>
+
+{% endif %}
+
+
+ </div>  <!-- end left -->
 
 </div> <!-- row -->
 

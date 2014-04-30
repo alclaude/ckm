@@ -246,9 +246,6 @@ class AnalysisController extends Controller
             }
           }
 
-\Doctrine\Common\Util\Debug::dump($all_ar_parameters);
-\Doctrine\Common\Util\Debug::dump($targets);
-
           foreach( $tmp["sourceElement"] as $key => $input )
           {
             $inputPersist = new ObservableInput( $analyse, $input, $analyse->getScenario()->getWebPath() );
@@ -273,8 +270,6 @@ class AnalysisController extends Controller
               }
             }
           }
-
-#die('debbug');
 
           $analyse->setDatacard( $observables, $all_ar_parameters );
 
