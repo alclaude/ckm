@@ -499,28 +499,6 @@ class ParameterInput
         return $this->expUncertityMinusDefault;
     }
 
-    /**
-     * Set ObservableTarget
-     *
-     * @param \CKM\AppBundle\Entity\ObservableTarget $observableTarget
-     * @return ParameterInput
-     */
-    public function setObservableTarget(\CKM\AppBundle\Entity\ObservableTarget $observableTarget = null)
-    {
-        $this->ObservableTarget = $observableTarget;
-
-        return $this;
-    }
-
-    /**
-     * Get ObservableTarget
-     *
-     * @return \CKM\AppBundle\Entity\ObservableTarget
-     */
-    public function getObservableTarget()
-    {
-        return $this->ObservableTarget;
-    }
 
     /**
      * Add elementTarget
