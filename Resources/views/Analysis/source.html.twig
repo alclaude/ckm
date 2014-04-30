@@ -71,7 +71,7 @@ Analysis - <small>Personalize your analysis </small>
                         <td> {{ parameter.expUncertityMinus }} </td>
                         <td> {{ parameter.thUncertity }} </td>
                         <td> explain  </td>
-                        <td> <div id="{{parameter.name}}"><a href="{{path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': parameter.id})}}">Edit </a></div></td>
+                        <td> <div class="text-right" id="{{parameter.name}}"><a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': parameter.id})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a></div></td>
                       </tr>
                 {% endfor %}
                     </table>
@@ -113,7 +113,13 @@ Analysis - <small>Personalize your analysis </small>
                       <td>{{observable.expUncertityMinus}}</td>
                       <td>{{observable.thUncertity}}</td>
                       <td><a href="#">A help link</a></td>
-                      <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">Edit observable</a></td>
+                      <td>
+                        <div class="text-right">
+                          <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">
+                            <i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit observable" title="Edit observable"></i>
+                          </a>
+                        </div>
+                      </td>
                 {% if observable.parameterInputs is defined %}
                       <tr class="clickable" data-toggle="collapse" id="row{{ counter }}" data-target=".row{{ counter }}" class="success"><td colspan="7" ><i class="glyphicon glyphicon-plus"></i> Parameters of the Observable {{observable.name}} <span style="float:right;" class="badge">See parameter...</span></td></tr>
                   {% for oneParameter in observable.parameterInputs %}
@@ -121,7 +127,7 @@ Analysis - <small>Personalize your analysis </small>
                       {% set style = "background:#eee" %}
                       {% set line = '<a href="#'~ oneParameter.name ~'">See '~ oneParameter.name ~' of '~ paramGetObs[oneParameter.name] ~'</a>' %}
                     {% else %}
-                      {% set line = '<div id="'~oneParameter.name~'"><a href="'~ path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': oneParameter.id}) ~'">Edit Parameter</a></div>' %}
+                      {% set line = '<div class="text-right" id="'~oneParameter.name~'"><a class="btn btn-success btn-xs" href="'~ path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': oneParameter.id}) ~'"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i></a></div>' %}
                       {% set paramGetObs = paramGetObs|merge({ (oneParameter.name): observable.name }) %}
                     {% endif %}
                       <tr class="collapse row{{ counter }}" style="{{ style|e }}" >
