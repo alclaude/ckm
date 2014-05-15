@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ObservableInputType extends AbstractType
+class ObservableType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -73,7 +73,7 @@ class ObservableInputType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CKM\AppBundle\Entity\ObservableInput',
+            'data_class' => 'CKM\AppBundle\Entity\Observable',
             'cascade_validation' => true,
         ));
     }
@@ -83,6 +83,6 @@ class ObservableInputType extends AbstractType
      */
     public function getName()
     {
-        return 'ckm_appbundle_observable_input';
+        return 'ckm_appbundle_observable';
     }
 }

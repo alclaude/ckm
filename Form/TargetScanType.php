@@ -10,7 +10,7 @@ use CKM\AppBundle\Entity\Observable;
 use CKM\AppBundle\Entity\Parameter;
 
 
-class ElementTargetScanType extends AbstractType
+class TargetScanType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -42,7 +42,7 @@ class ElementTargetScanType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CKM\AppBundle\Entity\ElementTarget',
+            'data_class' => 'CKM\AppBundle\Entity\Input',
             'cascade_validation' => true,
         ));
     }
@@ -52,6 +52,6 @@ class ElementTargetScanType extends AbstractType
      */
     public function getName()
     {
-        return 'ckm_appbundle_element_target_scan';
+        return 'ckm_appbundle_target_scan';
     }
 }

@@ -364,7 +364,7 @@ class Analysis
     private function writeParameterName($observable,$rl) {
       $datacard  = '{"All('.$observable->getName().')",';
       $datacard .= '"'.$observable->getName().'",';
-      foreach ($observable->getParameterInputs() as $parameter) {
+      foreach ($observable->getParameters() as $parameter) {
         $datacard .= '"';
         $datacard .= $parameter->getName();
         $datacard .= '",';

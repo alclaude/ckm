@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ParameterInputType extends AbstractType
+class ParameterType extends AbstractType
 {
         /**
      * @param FormBuilderInterface $builder
@@ -72,7 +72,7 @@ class ParameterInputType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CKM\AppBundle\Entity\ParameterInput'
+            'data_class' => 'CKM\AppBundle\Entity\Parameter'
         ));
     }
 
@@ -81,6 +81,6 @@ class ParameterInputType extends AbstractType
      */
     public function getName()
     {
-        return 'ckm_appbundle_parameterinput';
+        return 'ckm_appbundle_parameter';
     }
 }

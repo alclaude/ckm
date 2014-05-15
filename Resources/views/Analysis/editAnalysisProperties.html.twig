@@ -6,7 +6,19 @@
 Analysis - <small> Define {{ message }} </small>
 {% endblock %}
 {% block content %}
+
 <h3>{{ message }}</h3>
+
+{% for flashMessage in app.session.flashbag.get('notice') %}
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="alert alert-danger">
+              <h4>Warning!</h4>
+              <p>{{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 
 <div class="row">
   <div class="col-lg-6">

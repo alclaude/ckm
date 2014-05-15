@@ -36,6 +36,12 @@ class ElementTarget
     private $parameters;
 
     /**
+     * @ORM\OneToOne(targetEntity="CKM\AppBundle\Entity\ObservableInput", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $observable;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -98,7 +104,7 @@ class ElementTarget
       $this->scanMax         = 0.0;
       $this->scanMin         = 0.0;
 
-      $this->observableInputs = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->parameters = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function isScanValid(ExecutionContextInterface $context)

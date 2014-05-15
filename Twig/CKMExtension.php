@@ -21,6 +21,7 @@ class CKMExtension extends \Twig_Extension
             'scenario' => new \Twig_Function_Method($this, 'getScenario'),
             'latex' => new \Twig_Function_Method($this, 'getLatexLike'),
             'latexTransform' => new \Twig_Function_Method($this, 'getLatexTransform'),
+            'getIsTargets' => new \Twig_Function_Method($this, 'getIsTargets'),
         );
     }
 
@@ -49,6 +50,15 @@ class CKMExtension extends \Twig_Extension
 
       return array_merge($observableElement,$parameterElement);
     }
+
+    public function getIsTargets($analyse)
+    {
+      $targets = $this->em->getRepository('CKMAppBundle:Input')
+                          ->findTargetByAnalysis($analyse);
+
+      return $targets;
+    }
+
 
     public function getScenario($analyse)
     {

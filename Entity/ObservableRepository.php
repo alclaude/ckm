@@ -12,4 +12,61 @@ use Doctrine\ORM\EntityRepository;
  */
 class ObservableRepository extends EntityRepository
 {
+    /**
+     * select all observable input (target and input)
+     */
+    public function findByObservableAnalysis($analyse)
+    {
+      $input=true;
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\Observable o WHERE o.analyse = :analyse and o.isInput=:input'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                'input'    => $input,
+                )
+           )
+          ->getResult();
+    }
+
+    /**
+     * select all input (observables that are just input and are not target)
+     */
+    public function findByInputAnalysis($analyse)
+    {
+      $input  = true;
+      $target = false;
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\Observable o WHERE o.analyse = :analyse and o.isInput=:input and o.isTarget=:target'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                'input'     => $input,
+                'target'    => $target,
+                )
+           )
+          ->getResult();
+    }
+
+    /**
+     * select observables that are both input and target)
+     */
+    public function findByInputTargetAnalysis($analyse)
+    {
+      $input  = true;
+      $target = true;
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\Observable o WHERE o.analyse = :analyse and o.isInput=:input and o.isTarget=:target'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                'input'     => $input,
+                'target'    => $target,
+                )
+           )
+          ->getResult();
+    }
 }

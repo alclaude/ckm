@@ -48,7 +48,7 @@ Analysis - <small> {{ message }} </small>
       </div>
       <div class="panel-body">
         <div class="list-group">
-          {% for target in targetsElement(analyse) %}
+          {% for target in getIsTargets(analyse) %}
             <a class="list-group-item" href="#">
               <i class="fa fa-check"></i> \({{target.name}}\)
               <span style="float:right;">

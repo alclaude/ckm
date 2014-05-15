@@ -10,18 +10,18 @@ use CKM\AppBundle\Entity\ParameterInput;
 use CKM\AppBundle\Entity\ElementTarget;
 use CKM\AppBundle\Entity\ObservableTarget;
 use CKM\AppBundle\Entity\ParameterTarget;
+use CKM\AppBundle\Entity\Input;
 
 use CKM\AppBundle\Form\AnalysisType;
 use CKM\AppBundle\Form\ObservableType;
 use CKM\AppBundle\Form\AnalysisSourceUnitType;
-use CKM\AppBundle\Form\ObservableInputType;
-use CKM\AppBundle\Form\ParameterInputType;
+use CKM\AppBundle\Form\ParameterType;
 use CKM\AppBundle\Form\AnalysisPropertiesType;
 
 use CKM\AppBundle\Form\Analyse\AnalysisStep1Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep2Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep3Type;
-use CKM\AppBundle\Form\ElementTargetScanType;
+use CKM\AppBundle\Form\TargetScanType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,6 +70,11 @@ class AnalysisController extends Controller
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
 
+      # re choose target
+      if($step==0) {
+        $this->removeTarget($analyse);
+      }
+
       $form = $this->createForm(new AnalysisStep2Type,  $analyse);
 
       if ($request->getMethod() == 'POST') {
@@ -91,7 +96,7 @@ class AnalysisController extends Controller
             return $this->errorForm('notice',
               'Please fill in the form',
               'CKMAppBundle_analyse_create_step_2',
-              array('analyse' => $analyse->getId(), 'step' => 2 )
+              array('analyse' => $analyse->getId(), 'step' => $step )
               );
           }
           # validation des contraintes sur les scan et nb d elements target
@@ -100,49 +105,91 @@ class AnalysisController extends Controller
             return $this->errorForm('notice',
               'Please, in a 1D scan you must choose one element',
               'CKMAppBundle_analyse_create_step_2',
-              array('analyse' => $analyse->getId(), 'step' => 2 )
+              array('analyse' => $analyse->getId(), 'step' => $step )
               );
           }
           if ($analyse->getScanConstraint() ==2 && $count!==2) {
             return $this->errorForm('notice',
                 'Please, in a 2D scan you must choose two items in the boxes',
                 'CKMAppBundle_analyse_create_step_2',
-                array('analyse' => $analyse->getId(), 'step' => 3 )
+                array('analyse' => $analyse->getId(), 'step' => $step )
                 );
           }
           if( $tmp["scanMax1"] < $tmp["scanMin1"] or (isset($tmp["scanMax2"]) and $tmp["scanMax2"] < $tmp["scanMin2"] ) ) {
             return $this->errorForm('notice',
                             'scanMax must be greater than scanMin',
                             'CKMAppBundle_analyse_create_step_2',
-                            array('analyse' => $analyse->getId(), 'step' => 2 )
+                            array('analyse' => $analyse->getId(), 'step' => $step )
                             );
           }
 
           $em = $this->getDoctrine()->getManager();
           # tous les parametres regroupes des target observables
           $all_ar_parameters=array();
+          $all_ar_observables=array();
+
+          # TODO if findByInputAnalysis return empty ?
+          $observables = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Observable')
+            ->findByInputAnalysis( $analyse->getId() );
+
+          foreach( $observables as $observable ) {
+            $all_ar_observables[$observable->getName()]=$observable;
+            foreach( ($observable->getParameters()) as $parameter ) {
+                $all_ar_parameters[$parameter->getName()]=$parameter;
+            }
+          }
+
           foreach( $element_ar as $key => $target )
           {
-            $targetPersist = new ElementTarget($analyse, $target);
-            $em->persist($targetPersist);
+            #$targetPersist = new ElementTarget($analyse, $target);
+            #$em->persist($targetPersist);
 
             if( $analyse->isObservable($target) ) {
-              $parameters = $targetPersist->createAssociatedElement( $analyse->getScenario()->getWebPath() );
+              if( array_key_exists($target, $all_ar_observables) ) {
+                $targetPersist=$all_ar_observables[$target];
+                $targetPersist->setIstarget(true);
+                #$em->persist($targetPersist);
+              }
+              else {
+                $targetPersist = new Observable($analyse, $target, $analyse->getScenario()->getWebPath());
+                $targetPersist->setIsTarget(true);
+                $targetPersist->setIsInput(false);
+                $em->persist($targetPersist);
 
-              foreach ( $parameters as $parameter ) {
-                if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
-                  $all_ar_parameters[$parameter->getName()] = $parameter;
+                $parameters = $targetPersist->createAssociatedElement( $analyse->getScenario()->getWebPath() );
+
+                foreach ( $parameters as $parameter ) {
+                  if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
+                    $all_ar_parameters[$parameter->getName()] = $parameter;
+                  }
+                }
+
+                foreach( $parameters as $keyParam => $parameter ) {
+                  if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
+                    $targetPersist->addParameter($parameters[$keyParam]);
+                    $em->persist($parameters[$keyParam]);
+                  }
+                  else {
+                    $targetPersist->addParameter( $all_ar_parameters[$parameter->getName()] );
+                    $em->persist($targetPersist);
+                  }
                 }
               }
-
-              foreach( $parameters as $key => $parameter ) {
-                if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
-                  $targetPersist->addParameter($parameters[$key]);
-                  $em->persist($parameters[$key]);
-                }
-                else {
-                  $targetPersist->addParameter( $all_ar_parameters[$parameter->getName()] );
-                }
+            }
+            else {
+            # target is a parameter
+              if( !array_key_exists($target, $all_ar_parameters) ) {
+                $targetPersist = new Parameter($analyse, $target, $analyse->getScenario()->getWebPath());
+                $targetPersist->setIsTarget(true);
+                $targetPersist->setIsInput(false);
+                $em->persist($targetPersist);
+                $all_ar_parameters[$target] = $targetPersist;
+              }
+              else {
+                $targetPersist=$all_ar_parameters[$target];
+                $targetPersist->setIsTarget(true);
+                #$targetPersist->setIsInput(false);
               }
             }
 
@@ -154,7 +201,7 @@ class AnalysisController extends Controller
               $targetPersist->setScanMax($tmp["scanMax2"]);
               $targetPersist->setScanMin($tmp["scanMin2"]);
             }
-
+            $em->persist($targetPersist);
 
           }
 
@@ -165,11 +212,20 @@ class AnalysisController extends Controller
           #$analyse = print_r($analyse,true);
           #die('debbug <pre>'.$analyse .'</pre>');
 
-          return $this->redirect(
-                  $this->generateUrl('CKMAppBundle_analyse_create_step_3',
-                                      array('analyse' => $analyse->getId(), 'step' => 3 )
-                  )
-          );
+          if($step==0) {
+            return $this->redirect(
+                    $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                                        array('analyse' => $analyse->getId(), 'step' => 4 )
+                    )
+            );
+          }
+          else {
+            return $this->redirect(
+                    $this->generateUrl('CKMAppBundle_analyse_create_step_3',
+                                        array('analyse' => $analyse->getId(), 'step' => 3 )
+                    )
+            );
+          }
         }
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep2.html.twig', array(
@@ -198,16 +254,17 @@ class AnalysisController extends Controller
     public function createAnalyseStep3Action($analyse=0, $step=3 ) {
       $this->isGranted('ROLE_ANALYSIS');
 
-      # re choose unput
-      if($step==0) {
-        $this->removeInput($analyse);
-      }
-
       $analyse = $this->getAnalysis($analyse);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
+
+      # re choose input
+      if($step==0) {
+        $this->removeInput($analyse);
+      }
+
       $request = $this->getRequest();
 
       $form = $this->createForm(new AnalysisStep3Type,  $analyse);
@@ -228,50 +285,73 @@ class AnalysisController extends Controller
 
           $em = $this->getDoctrine()->getManager();
           # les observables de l analyse
-          $observables = array();
+          $observablesInputForPrintDatacard = array();
           # tous les parametres regroupes des observables
           $all_ar_parameters=array();
+          # toutes les observables de l'analyse target+input
+          $all_ar_observables=array();
 
           # gestion des parametres existant si la target est une observable
 
           $targets = $this->getDoctrine()
-            ->getRepository('CKMAppBundle:ElementTarget')
+            ->getRepository('CKMAppBundle:Input')
             ->findTargetByAnalysis( $analyse->getId() );
 
           foreach( $targets as $target ) {
             if( $analyse->isObservable( $target->getname() ) ) {
+              $all_ar_observables[$target->getName()]=$target;
               foreach( ($target->getParameters()) as $parameter ) {
                 $all_ar_parameters[$parameter->getName()]=$parameter;
               }
+            }
+            else {
+                # target = parameter a considerer
+                $all_ar_parameters[$target->getName()]=$target;
             }
           }
 
           foreach( $tmp["sourceElement"] as $key => $input )
           {
-            $inputPersist = new ObservableInput( $analyse, $input, $analyse->getScenario()->getWebPath() );
-            $em->persist($inputPersist);
-            $observables[]=$inputPersist;
-
-            $parameters = $inputPersist->createAssociatedElement( $analyse->getScenario()->getWebPath() );
-
-            foreach ( $parameters as $parameter ) {
-              if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
-                $all_ar_parameters[$parameter->getName()] = $parameter;
+            if( array_key_exists($input, $all_ar_observables) ) {
+              # target = obs = input
+              $inputPersist=$all_ar_observables[$input];
+              $inputPersist->setIsInput(true);
+              $parameters=$inputPersist->getParameters();
+              foreach ( $parameters as $parameter ) {
+                $parameter->setIsInput(true);
               }
+
+              $em->persist($inputPersist);
+              $observablesInputForPrintDatacard[]=$inputPersist;
             }
+            else {
+              $inputPersist = new Observable( $analyse, $input, $analyse->getScenario()->getWebPath() );
+              $em->persist($inputPersist);
+              $observablesInputForPrintDatacard[]=$inputPersist;
 
-            foreach( $parameters as $key => $parameter ) {
-              if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
-                $inputPersist->addParameterInput($parameters[$key]);
-                $em->persist($parameters[$key]);
+              $parameters = $inputPersist->createAssociatedElement( $analyse->getScenario()->getWebPath() );
+
+              foreach ( $parameters as $parameter ) {
+                if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
+                  $all_ar_parameters[$parameter->getName()] = $parameter;
+                }
               }
-              else {
-                $inputPersist->addParameterInput( $all_ar_parameters[$parameter->getName()] );
+
+              foreach( $parameters as $key => $parameter ) {
+                if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
+                  $inputPersist->addParameter($parameters[$key]);
+                  $em->persist($parameters[$key]);
+                }
+                else {
+                  $tmp=$all_ar_parameters[$parameter->getName()];
+                  $tmp->setIsInput(true);
+                  $inputPersist->addParameter( $all_ar_parameters[$parameter->getName()] );
+                }
               }
             }
           }
 
-          $analyse->setDatacard( $observables, $all_ar_parameters );
+          $analyse->setDatacard( $observablesInputForPrintDatacard, $all_ar_parameters );
 
           #$analyse = print_r($analyse,true);
           #die('debbug <pre>'.$analyse .'</pre>');
@@ -310,6 +390,18 @@ class AnalysisController extends Controller
         'datacard' => $analyse->getDatacard(),
         'id'       => $analyse->getId(),
       ));
+    }
+
+    public function finalizeAction($analyse=0 ) {
+      $this->isGranted('ROLE_ANALYSIS');
+
+      $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
+
+      $analyse->setStatus(2);
     }
 
     public function testDatacardAction($analyse=0) {
@@ -503,21 +595,17 @@ class AnalysisController extends Controller
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
 
-      $liste_observable = $em->getRepository('CKMAppBundle:ObservableInput')
-                                  ->findByAnalyse($analyse->getId());
+      $liste_observable = $em->getRepository('CKMAppBundle:Observable')
+                                  ->findByObservableAnalysis($analyse->getId());
 
-      $liste_targetElement = $em->getRepository('CKMAppBundle:ElementTarget')
-                                  ->findByAnalyse($analyse->getId());
+      $liste_targetElement = $em->getRepository('CKMAppBundle:Input')
+                                  ->findTargetByAnalysis($analyse->getId());
 
-      $arMatchTargetObs=array();
-      foreach ( $liste_targetElement as $target ) {
-          $targetName = $target->getName();
-          foreach ( $liste_observable as $observable ) {
-            if( $targetName == $observable->getName() ) {
-              $arMatchTargetObs[]=$target->getName();
-            }
-          }
-      }
+
+      $arMatchTargetObs= $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Observable')
+          ->findByInputTargetAnalysis( $analyse->getId() );
+
 
        return $this->render('CKMAppBundle:Analysis:source.html.twig', array(
             'observables' => $liste_observable,
@@ -526,6 +614,60 @@ class AnalysisController extends Controller
             'targets' => $liste_targetElement,
             'target_and_observable' => $arMatchTargetObs,
         ));
+    }
+
+    private function removeTarget($analyse ) {
+      $this->isGranted('ROLE_ANALYSIS');
+      $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+      }
+
+      $em = $this->getDoctrine()->getEntityManager();
+
+      # gestion des target = input
+      $TargetAndInputs = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Input')
+          ->findByInputTargetAnalysis( $analyse->getId() );
+
+      foreach($TargetAndInputs as $target) {
+        $target->setIsTarget(false);
+        $em->persist($target);
+      }
+      $em->flush();
+
+      # gestion des target qui ne sont pas des input
+      $targets = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Input')
+        ->findTargetByAnalysis( $analyse->getId() );
+
+      $observables = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Observable')
+        ->findByInputAnalysis( $analyse->getId() );
+
+      foreach($targets as $target) {
+        if( $target instanceof Observable) {
+          $parameters = $target->getParameters();
+          foreach($parameters as $parameter) {
+            # verifier que le parametre de la target n est pas egalement associe a un parametre d une input observable
+            if( !$analyse->isParamOfObservableTarget($parameter->getName(), $observables ) ) {
+              $em->remove($parameter);
+            }
+            $em->remove($target);
+          }
+        }
+        else { # target is a parameter
+          if( !$analyse->isParamOfObservableTarget($target->getName(), $observables ) ) {
+            $em->remove($target);
+          }
+        }
+        # on efface la quantite observable ou parameter
+
+      }
+
+      $em->flush();
+
     }
 
     private function removeInput($analyse ) {
@@ -538,26 +680,39 @@ class AnalysisController extends Controller
 
       $em = $this->getDoctrine()->getEntityManager();
 
+      $observablesTargetInput = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Input')
+          ->findByInputTargetAnalysis( $analyse->getId() );
+
+      foreach($observablesTargetInput as $observable) {
+        $observable->setIsInput(false);
+        $em->persist($observable);
+      }
+      $em->flush();
+
       $targets = $this->getDoctrine()
-            ->getRepository('CKMAppBundle:ElementTarget')
-            ->findTargetByAnalysis( $analyse->getId() );
+        ->getRepository('CKMAppBundle:Input')
+        ->findTargetByAnalysis( $analyse->getId() );
 
       $observables = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:ObservableInput')
-        ->findByAnalyse( $analyse->getId() );
+        ->getRepository('CKMAppBundle:Observable')
+        ->findByInputAnalysis( $analyse->getId() );
 
       foreach($observables as $observable) {
-        $parameters = $observable->getParameterInputs();
+        $parameters = $observable->getParameters();
         foreach($parameters as $parameter) {
-
+          #$parameter->setIsInput(false);
           # verifier que le parametre n est pas egalement associe a une target observable
-          if( !$analyse->isParamOfObservableTarget($parameter->getName(), $targets ) ) {
+          #if( !$analyse->isParamOfObservableTarget($parameter->getName(), $targets ) ) {
+          # FS#11
+          if( $parameter->getIsInput() and !$analyse->isParamOfObservableTarget($parameter->getName(), $targets )  ) {
             $em->remove($parameter);
           }
         }
         $em->remove($observable);
       }
       $em->flush();
+
     }
 
     public function removeAnalysisAction(Analysis $analyse ) {
@@ -575,22 +730,24 @@ class AnalysisController extends Controller
       $tmp = $analyse->getId();
 
       $targets = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:ElementTarget')
-        ->findByAnalyse( $analyse->getId() );
+        ->getRepository('CKMAppBundle:Input')
+        ->findTargetByAnalysis( $analyse->getId() );
 
       foreach($targets as $target) {
-        $parameters = $target->getParameters();
-        foreach($parameters as $parameter) {
-          $em->remove($parameter);
+        if($analyse->isObservable($target) ) {
+          $parameters = $target->getParameters();
+          foreach($parameters as $parameter) {
+            $em->remove($parameter);
+          }
         }
       }
 
       $observables = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:ObservableInput')
-        ->findByAnalyse( $analyse->getId() );
+        ->getRepository('CKMAppBundle:Observable')
+        ->findByInputAnalysis( $analyse->getId() );
 
       foreach($observables as $observable) {
-        $parameters = $observable->getParameterInputs();
+        $parameters = $observable->getParameters();
         foreach($parameters as $parameter) {
           $em->remove($parameter);
         }
@@ -632,7 +789,7 @@ class AnalysisController extends Controller
       $request = $this->getRequest();
 
       $observable = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:ObservableInput')
+        ->getRepository('CKMAppBundle:Input')
         ->findOneById($observable_id);
 
       if (!$observable) {
@@ -645,7 +802,7 @@ class AnalysisController extends Controller
         throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
       }
 
-      $form = $this->createForm(new ObservableInputType, $observable);
+      $form = $this->createForm(new ObservableType, $observable);
 
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);
@@ -689,7 +846,7 @@ class AnalysisController extends Controller
     $request = $this->getRequest();
 
     $parameter = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:ParameterInput')
+        ->getRepository('CKMAppBundle:Input')
         ->findOneById($parameter_id);
 
       if (!$parameter) {
@@ -698,11 +855,11 @@ class AnalysisController extends Controller
 
       $this->isGranted('ROLE_ANALYSIS');
 
-      if ($parameter->getObservableInputs()->first()->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+      if ($parameter->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
       }
 
-      $form = $this->createForm(new ParameterInputType, $parameter);
+      $form = $this->createForm(new ParameterType, $parameter);
 
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);
@@ -730,7 +887,7 @@ class AnalysisController extends Controller
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                                      array('analyse' => $parameter->getObservableInputs()->first()->getAnalyse()->getId() )
+                                      array('analyse' => $parameter->getAnalyse()->getId() )
                   )
           );
         }
@@ -751,7 +908,7 @@ class AnalysisController extends Controller
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
 
-      $form = $this->createForm(new ElementTargetScanType, $target);
+      $form = $this->createForm(new TargetScanType, $target);
 
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);
@@ -759,6 +916,15 @@ class AnalysisController extends Controller
           $em = $this->getDoctrine()->getManager();
           $data=$form->getData();
           #$analysis->setGranularity( $data->getGranularity() );
+
+          if( $data->getScanMax() < $data->getScanMin() ) {
+            return $this->errorForm('notice',
+              'Max must be greater than min',
+              'CKMAppBundle_analyse_create_analyse_scan',
+              array('target_id' => $target_id)
+              );
+          }
+
           $target->setScanMax( $data->getScanMax() );
           $target->setScanMin( $data->getScanMin() );
 
@@ -945,7 +1111,7 @@ print_r( $this->container->get('request')->getSession()->get('analyse') ) ;
                  ->getManager();
 
       $target = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:ElementTarget')
+        ->getRepository('CKMAppBundle:Input')
         ->findOneById($id);
 
       if (!$target) {
