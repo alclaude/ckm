@@ -61,7 +61,7 @@ CKMAppBundle_analyse_see_datacard:
     pattern:  /analysis/datacard/see/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:seeDatacard}
 CKMAppBundle_analyse_create_analyse_finalize:
-    pattern:  /analysis/datacard/see/{analyse}
+    pattern:  /analysis/run/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:finalize}
 ## pages administration
 CKMAppBundle_administration_datacard_add:

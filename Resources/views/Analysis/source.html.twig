@@ -17,6 +17,18 @@ Analysis - <small>Personalize your analysis </small>
 
 {% block content %}
 
+{% for flashMessage in app.session.flashbag.get('notice') %}
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="alert alert-success">
+              <h4>Success!</h4>
+              <p>{{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+
 {% if observables is defined %}
 
   {% set paramEverInUse = {} %}
@@ -164,8 +176,6 @@ No observable defined...
 {% endif %}
 
 {% include 'CKMAppBundle:Analysis:status_' ~ analyse.status ~ '.html.twig' %}
-
-
 
 </div> <!-- row -->
 

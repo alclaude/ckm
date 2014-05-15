@@ -402,6 +402,20 @@ class AnalysisController extends Controller
       }
 
       $analyse->setStatus(2);
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($analyse);
+      $em->flush();
+
+      $this->get('session')->getFlashBag()->add(
+            'notice',
+            'Your analysis ['.  $analyse->getId() .'] have been run'
+      );
+
+      return $this->redirect(
+        $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                            array('analyse' => $analyse->getId(), 'step' => 4 )
+        )
+      );
     }
 
     public function testDatacardAction($analyse=0) {
