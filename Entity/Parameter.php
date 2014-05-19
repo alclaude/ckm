@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Parameter extends Input
 {
     /**
-     * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\Observable", mappedBy="parameters")
+     * @ORM\ManyToMany(targetEntity="CKM\AppBundle\Entity\Observable", mappedBy="parameters", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $observables;
@@ -24,6 +24,15 @@ class Parameter extends Input
     public function __construct($analyse, $name='', $path='',  $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityDefaultPlus=0, $expUncertityDefaultMinus=0, $thUncertityDefault=0) {
         $this->observables = new \Doctrine\Common\Collections\ArrayCollection();
         parent::__construct($analyse, $name, $path, $defaultValue, $allowedRangeMin, $allowedRangeMax, $expUncertityDefaultPlus, $expUncertityDefaultMinus, $thUncertityDefault);
+    }
+
+
+    public function __clone() {
+      if ( parent::getId() ) {
+          parent::setId(null);
+
+      }
+#die('debbug clone Param');
     }
 
 
@@ -58,5 +67,16 @@ class Parameter extends Input
     public function getObservables()
     {
         return $this->observables;
+    }
+
+        /**
+     * Get observables
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function setObservables($observable)
+    {
+        $this->observables=$observable;
+        return $this;
     }
 }

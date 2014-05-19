@@ -69,4 +69,20 @@ class ObservableRepository extends EntityRepository
            )
           ->getResult();
     }
+
+    /**
+     * select all Observable
+     */
+    public function findByAnalysis($analyse)
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\Observable o WHERE o.analyse = :analyse'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                )
+           )
+          ->getResult();
+    }
 }

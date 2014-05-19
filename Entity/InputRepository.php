@@ -45,4 +45,19 @@ class InputRepository extends EntityRepository
            )
           ->getResult();
     }
+    /**
+     * select all input
+     */
+    public function findByAnalysis($analyse)
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\Input o WHERE o.analyse = :analyse'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                )
+           )
+          ->getResult();
+    }
 }

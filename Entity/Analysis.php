@@ -151,6 +151,19 @@ class Analysis
         return $this->id;
     }
 
+    /**
+     * Set Id
+     *
+     * @param integer $id
+     * @return Analysis
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getStatus()
     {
         return $this->status;
@@ -574,5 +587,12 @@ class Analysis
         }
       }
       return false;
+    }
+
+    public function __clone() {
+      if ($this->id) {
+        $this->setId(null);
+        $this->setDate(new \DateTime());
+      }
     }
 }

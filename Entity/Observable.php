@@ -37,15 +37,6 @@ class Observable extends Input
         parent::__construct($analyse, $name, $path);
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return parent::getId();
-    }
 
     /**
      * Set name
@@ -91,6 +82,14 @@ class Observable extends Input
     public function getDefaultInput()
     {
         return parent::getDefaultInput();
+    }
+
+    public function __clone() {
+      if ( parent::getId() ) {
+          parent::setId(null);
+
+      }
+#die('debbug clone Obs');
     }
 
     /**
@@ -155,6 +154,37 @@ class Observable extends Input
     public function createAssociatedElement($datacard)
     {
       return $this->getParameterForOneObservable( $datacard );
+    }
+
+
+
+    public function getParameterNameForObservable($scenarioPath){
+      $data = file_get_contents($scenarioPath) or die("fichier non trouv&eacute;");
+      $lines = explode("\n", $data);
+
+      $new_line = "^\n$" ;
+      $observablePattern =  '/'.preg_quote( $this->getName(), '/' ).'/';
+      // info obs
+      $tmp_ar_obs = array();
+      // params de l obs
+      $tmp_ar_obsParam = array();
+      // info param
+      $tmp_ar_param = array();
+      // array des param a retourner
+      $tmp_ar_params = array();
+
+      // recherche des params de l observable
+      foreach($lines as $line) {
+        if( ! preg_match("/$new_line/", $line) ) {
+          if( preg_match($observablePattern, $line) ) {
+            $tmp_ar_obs = explode(';',$line);
+            # les parametres associes a une observable sont le 6eme item dans le fichier :index=3
+            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['7']);
+            break;
+          }
+        }
+      }
+      return $tmp_ar_obsParam;
     }
 
     private function getParameterForOneObservable($scenarioPath){
@@ -258,6 +288,9 @@ class Observable extends Input
         $this->parameters[] = $parameters;
         $parameters->addObservable($this);
 
+        echo 'addParameter Obs: '.$this->getName().' - '.$this->getId().'<br />';
+        echo 'addParameter Param: '.$parameters->getName().' - '.$parameters->getId().'<br />';
+
         return $this;
     }
 
@@ -279,5 +312,16 @@ class Observable extends Input
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    /**
+     * Set parameters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function setParameters($parameter)
+    {
+        $this->parameters=$parameter;
+        return $this;
     }
 }

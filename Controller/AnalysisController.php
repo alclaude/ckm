@@ -64,6 +64,16 @@ class AnalysisController extends Controller
     public function createAnalyseStep2Action($analyse=0, $step=2 ) {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
+
+      if( $this->isForbiddenStep($analyse) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $analyse->getId() )
+        );
+      }
+
       $request = $this->getRequest();
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
@@ -251,10 +261,20 @@ class AnalysisController extends Controller
       );
     }
 
+
+
     public function createAnalyseStep3Action($analyse=0, $step=3 ) {
       $this->isGranted('ROLE_ANALYSIS');
-
       $analyse = $this->getAnalysis($analyse);
+
+      if( $this->isForbiddenStep($analyse) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $analyse->getId() )
+        );
+      }
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
@@ -390,6 +410,92 @@ class AnalysisController extends Controller
         'datacard' => $analyse->getDatacard(),
         'id'       => $analyse->getId(),
       ));
+    }
+
+    public function copyAction($analyse=0 ) {
+      $this->isGranted('ROLE_ANALYSIS');
+
+      $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
+
+      if( $analyse->getStatus()!=2 ){
+        return $this->errorForm(
+          'warning',
+          'You can only copy a finalized analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $analyse->getId() )
+        );
+      }
+      $em = $this->getDoctrine()->getManager();
+      $analyseClone = clone $analyse;
+      $analyseClone->setStatus(1);
+
+
+      $parameters = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Parameter')
+        ->findByAnalysis( $analyse->getId() );
+
+      $observables = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Observable')
+        ->findByAnalysis( $analyse->getId() );
+
+      $all_ar_parameters=array();
+      $all_ar_observables=array();
+
+      foreach( $parameters as $parameter )
+      {
+        $parameterClone = clone $parameter;
+        $parameterClone->setAnalyse($analyseClone );
+        $all_ar_parameters[$parameterClone->getName()]=$parameterClone;
+        #$em->persist($parameterClone);
+      }
+
+      foreach( $observables as $observable )
+      {
+        $observableClone = clone $observable;
+        $observableClone->setAnalyse($analyseClone );
+
+        $em->persist($observableClone);
+        $observableClone->setParameters(null);
+
+        $parametersNameClone = $observableClone->getParameterNameForObservable($analyseClone->getScenario()->getWebPath());
+        foreach( $parametersNameClone as $parameterNameClone ) {
+
+          $tmp = $all_ar_parameters[$parameterNameClone];
+          $tmp->setObservables(null);
+
+          $observableClone->addParameter( $tmp );
+
+
+          $tmp->addObservable($observableClone);
+
+          $em->persist( $all_ar_parameters[$parameterNameClone] );
+          $em->persist($observableClone);
+        }
+$em->persist($observableClone);
+
+        $all_ar_observables[]=$observableClone;
+      }
+
+
+      $em->persist($analyseClone);
+      $em->flush();
+
+      #die('debbug');
+
+      $this->get('session')->getFlashBag()->add(
+            'notice',
+            'Your analysis ['.  $analyse->getId() .'] have been copy in analysis ['.$analyseClone->getId().']'
+      );
+
+      return $this->redirect(
+        $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                            array('analyse' => $analyse->getId(), 'step' => 4 )
+        )
+      );
     }
 
     public function finalizeAction($analyse=0 ) {
@@ -799,7 +905,6 @@ class AnalysisController extends Controller
     }
 
     public function editObservableAction($observable_id=0) {
-
       $request = $this->getRequest();
 
       $observable = $this->getDoctrine()
@@ -811,6 +916,15 @@ class AnalysisController extends Controller
       }
 
       $this->isGranted('ROLE_ANALYSIS');
+
+      if( $this->isForbiddenStep( $this->getAnalysis($observable->getAnalyse()->getId() )) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $observable->getAnalyse()->getId() )
+        );
+      }
 
       if ($observable->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
@@ -869,6 +983,15 @@ class AnalysisController extends Controller
 
       $this->isGranted('ROLE_ANALYSIS');
 
+      if( $this->isForbiddenStep( $this->getAnalysis($parameter->getAnalyse()->getId() )) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $parameter->getAnalyse()->getId() )
+        );
+      }
+
       if ($parameter->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
       }
@@ -915,8 +1038,16 @@ class AnalysisController extends Controller
     public function editAnalysisScanAction($target_id=0) {
       $this->isGranted('ROLE_ANALYSIS');
       $target = $this->getTarget($target_id);
-      $request = $this->getRequest();
 
+      if( $this->isForbiddenStep( $this->getAnalysis($target->getAnalyse()->getId() )) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $target->getAnalyse()->getId() )
+        );
+      }
+      $request = $this->getRequest();
 
       if ($target->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
@@ -963,6 +1094,14 @@ class AnalysisController extends Controller
     public function editAnalysisPropertiesAction($analyse=0) {
       $this->isGranted('ROLE_ANALYSIS');
       $analysis = $this->getAnalysis($analyse);
+      if( $this->isForbiddenStep($analysis) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $analysis->getId() )
+        );
+      }
       $request = $this->getRequest();
 
       if ($analysis->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
@@ -1115,6 +1254,13 @@ print_r( $this->container->get('request')->getSession()->get('analyse') ) ;
         throw $this->createNotFoundException('analyse not exist');
       }
       return $analyse;
+    }
+
+    private function isForbiddenStep($analyse) {
+      if($analyse->getStatus()==2) {
+        return true;
+      }
+      return false;
     }
 
     /*

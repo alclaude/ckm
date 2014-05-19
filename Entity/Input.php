@@ -214,8 +214,27 @@ class Input
       return false;
     }
 
+    public function __clone() {
+      if ($this->id) {
+          $this->setId(null);
+      }
+    }
+
     /**
-     * Get id
+     * Set Id
+     *
+     * @param integer $id
+     * @return Analysis
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Set id
      *
      * @return integer
      */

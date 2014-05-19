@@ -12,4 +12,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class ParameterRepository extends EntityRepository
 {
+    /**
+     * select all Observable
+     */
+    public function findByAnalysis($analyse)
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT o FROM CKM\AppBundle\Entity\Parameter o WHERE o.analyse = :analyse'
+          )
+          ->setParameters(array(
+                'analyse'   => $analyse,
+                )
+           )
+          ->getResult();
+    }
 }
