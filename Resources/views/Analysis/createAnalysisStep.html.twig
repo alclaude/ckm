@@ -20,12 +20,12 @@ Analysis - <small> {{ message }} </small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-lg-6">
+  <div class="col-sm-6">
     <form role="form" method="post" {{ form_enctype(form) }}>
       {{ form_widget(form) }}
       <br />
-      <div class="form-group row">
-        <div class="col-md-6">
+      <div class="form-group">
+        <div class="col-sm-6">
           {% if step==1 %}
           <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_by_user', {'user_id':app.user.id} ) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
           {% endif %}
@@ -40,7 +40,7 @@ Analysis - <small> {{ message }} </small>
   </div>
 
 {% if step==3 %}
- <div style="float:right;" class="col-lg-4">
+ <div style="float:right;" class="col-sm-4">
    <div >
     <div class="panel panel-primary">
       <div class="panel-heading">

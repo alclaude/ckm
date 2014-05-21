@@ -30,27 +30,16 @@ class ObservableType extends AbstractType
                 'read_only' => true
               ),
             ))
-          ->add('expUncertityPlus', 'number', array(
+          ->add('expUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
-              'label' => 'Experimental uncertainty +',
+              'label' => 'Experimental uncertainty',
             ))
-          ->add('expUncertityPlusDefault', 'text', array(
+          ->add('expUncertityDefault', 'text', array(
               'attr' => array(
                 'class' => 'form-control',
                 'read_only' => true
               ),
-              'label' => 'Default experimental uncertainty +',
-            ))
-          ->add('expUncertityMinus', 'number', array(
-              'attr' => array('class' => 'form-control'),
-              'label' => 'Experimental uncertainty -',
-            ))
-          ->add('expUncertityMinusDefault', 'text', array(
-              'attr' => array(
-                'class' => 'form-control',
-                'read_only' => true
-              ),
-              'label' => 'Default experimental uncertainty -',
+              'label' => 'Default experimental uncertainty',
             ))
           ->add('thUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),

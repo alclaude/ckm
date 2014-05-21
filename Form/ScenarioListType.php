@@ -24,7 +24,7 @@ class ScenarioListType extends AbstractType
               'validation_groups' => array('choice'),
               ))
             ->add('display', 'submit', array(
-              'attr'      => array('class' => 'btn btn-primary btn-lg btn-block'),
+              'attr'      => array('class' => 'btn btn-primary btn-lg btn-block', 'style' => 'margin:4px 0;'),
               'label'     => 'Display selected Scenario'
               ) )
             ->add('delete', 'submit', array(

@@ -179,7 +179,7 @@ class Observable extends Input
           if( preg_match($observablePattern, $line) ) {
             $tmp_ar_obs = explode(';',$line);
             # les parametres associes a une observable sont le 6eme item dans le fichier :index=3
-            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['7']);
+            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['6']);
             break;
           }
         }
@@ -208,7 +208,7 @@ class Observable extends Input
           if( preg_match($observablePattern, $line) ) {
             $tmp_ar_obs = explode(';',$line);
             # les parametres associes a une observable sont le 6eme item dans le fichier :index=3
-            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['7']);
+            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['6']);
             break;
           }
         }
@@ -220,6 +220,7 @@ class Observable extends Input
         foreach($tmp_ar_obsParam as $param) {
 
           $paramPattern =  '/^'.preg_quote( $param, '/' ).'$/';
+          $searchOK=false;
 
           foreach($lines as $line) {
             if( ! preg_match("/$new_line/", $line) ) {
@@ -229,17 +230,19 @@ class Observable extends Input
               elseif( $type==='parameter' ) {
                 $tmp_ar_param = explode(';',$line);
                 if( preg_match($paramPattern, preg_quote($tmp_ar_param['0']) ) ) {
-                  $tmp_obj_param = new Parameter($this->getAnalyse(), $tmp_ar_param['0'], '', $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'], $tmp_ar_param['4'], $tmp_ar_param['5'],$tmp_ar_param['6'] ) ;
+                  $tmp_obj_param = new Parameter($this->getAnalyse(), $tmp_ar_param['0'], '', $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'], $tmp_ar_param['4'], $tmp_ar_param['5'] ) ;
 
                   array_push($tmp_ar_params, $tmp_obj_param );
+                  $searchOK=true;
                   break;
                 }
               }
             }
           }
+          if(!$searchOK) {
+            die("Pas de parametres $param pour l'observable : ". $this->getName() );
+          }
         }
-      } else  {
-        die("Pas de parametres pour l'observable : $this->getName()");
       }
       return $tmp_ar_params;
     }
@@ -288,8 +291,8 @@ class Observable extends Input
         $this->parameters[] = $parameters;
         $parameters->addObservable($this);
 
-        echo 'addParameter Obs: '.$this->getName().' - '.$this->getId().'<br />';
-        echo 'addParameter Param: '.$parameters->getName().' - '.$parameters->getId().'<br />';
+        #echo 'addParameter Obs: '.$this->getName().' - '.$this->getId().'<br />';
+        #echo 'addParameter Param: '.$parameters->getName().' - '.$parameters->getId().'<br />';
 
         return $this;
     }

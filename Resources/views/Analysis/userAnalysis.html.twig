@@ -8,14 +8,14 @@ Analysis - <small>List </small>
 
 {% if analysesbyuser is defined %}
 <div class="row">
-  <div class="col-lg-8 ">
+  <div class="col-sm-8 ">
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your Analysis</h3>
       </div>
       <div class="panel-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table table-striped table-condensed table-hover">
               <thead>
                 <tr>
                   <th class="header">Analysis </th>
@@ -43,7 +43,7 @@ Analysis - <small>List </small>
                       <td>{{ analyse.scanConstraint }}</td>
                       <td>{{ analyse.status }}</td>
                       <td>{{ analyse.scenario.name }} </td>
-                      <td><a href="{{ path('CKMAppBundle_analyse_create_analyse_source', {'analyse': analyse.id}) }}">Edit analysis</a></td>
+                      <td><a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source', {'analyse': analyse.id}) }}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i></a></td>
                     </tr>
                 {% endfor %}
               {% else %}
@@ -59,7 +59,7 @@ Analysis - <small>List </small>
 {% else %}
 No analysis defined...
 {% endif %}
-<div class="col-lg-4">
+<div class="col-sm-4">
   {% for flashMessage in app.session.flashbag.get('information') %}
       <div class="alert alert-success">
               <h4>Success!</h4>

@@ -20,13 +20,13 @@ Analysis - <small> {{ message }} </small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-lg-8">
+  <div class="col-sm-8">
     <form role="form" method="post" {{ form_enctype(form) }}>
 
-      <div class="form-group row">
+      <div class="form-group">
 
 
-        <div class="col-md-6">
+        <div class="col-sm-6">
             {{ form_errors(form.targetObservable) }}
             {{ form_label(form.targetObservable) }}
             {{ form_widget(form.targetObservable) }}
@@ -39,7 +39,7 @@ Analysis - <small> {{ message }} </small>
           <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Submit</button>
         </div>
 
-        <div class="col-lg-5">
+        <div class="col-sm-5">
             {{ form_errors(form.scanMin1) }}
             {{ form_label(form.scanMin1) }}&nbsp;<span id="target12"></span>
             {{ form_widget(form.scanMin1) }}

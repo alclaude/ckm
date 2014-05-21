@@ -432,6 +432,7 @@ class AnalysisController extends Controller
       $em = $this->getDoctrine()->getManager();
       $analyseClone = clone $analyse;
       $analyseClone->setStatus(1);
+      $analyseClone->setName( $analyseClone->getName().' [copy]' );
 
 
       $parameters = $this->getDoctrine()
@@ -949,8 +950,7 @@ $em->persist($observableClone);
           }
 
           $observable->setValue( $tmp['value'] );
-          $observable->setExpUncertityPlus( $tmp['expUncertityPlus'] );
-          $observable->setExpUncertityMinus( $tmp['expUncertityMinus'] );
+          $observable->setExpUncertity( $tmp['expUncertity'] );
           $observable->setThUncertity( $tmp['thUncertity'] );
 
           $em->persist( $observable );
@@ -1015,8 +1015,7 @@ $em->persist($observableClone);
           }
 
           $parameter->setValue( $tmp['value'] );
-          $parameter->setExpUncertityPlus( $tmp['expUncertityPlus'] );
-          $parameter->setExpUncertityMinus( $tmp['expUncertityMinus'] );
+          $parameter->setExpUncertity( $tmp['expUncertity'] );
           $parameter->setThUncertity( $tmp['thUncertity'] );
 
           $em->persist( $parameter );

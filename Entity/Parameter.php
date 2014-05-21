@@ -21,9 +21,9 @@ class Parameter extends Input
      */
     private $observables;
 
-    public function __construct($analyse, $name='', $path='',  $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityDefaultPlus=0, $expUncertityDefaultMinus=0, $thUncertityDefault=0) {
+    public function __construct($analyse, $name='', $path='',  $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityDefault=0, $thUncertityDefault=0) {
         $this->observables = new \Doctrine\Common\Collections\ArrayCollection();
-        parent::__construct($analyse, $name, $path, $defaultValue, $allowedRangeMin, $allowedRangeMax, $expUncertityDefaultPlus, $expUncertityDefaultMinus, $thUncertityDefault);
+        parent::__construct($analyse, $name, $path, $defaultValue, $allowedRangeMin, $allowedRangeMax, $expUncertityDefault, $thUncertityDefault);
     }
 
 

@@ -42,26 +42,14 @@ Analysis - <small>{{ type }} definition</small>
       </div>
       <div class="form-group row">
         <div class="col-md-6">
-        {{ form_errors(form.expUncertityPlus) }}
-        {{ form_label(form.expUncertityPlus) }}
-        {{ form_widget(form.expUncertityPlus ) }}
+        {{ form_errors(form.expUncertity) }}
+        {{ form_label(form.expUncertity) }}
+        {{ form_widget(form.expUncertity ) }}
         </div>
         <div class="col-md-6">
-        {{ form_errors(form.expUncertityPlusDefault) }}
-        {{ form_label(form.expUncertityPlusDefault) }}
-        {{ form_widget(form.expUncertityPlusDefault, { 'attr': { 'readonly': 'true' } }) }}
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-md-6">
-        {{ form_errors(form.expUncertityMinus) }}
-        {{ form_label(form.expUncertityMinus) }}
-        {{ form_widget(form.expUncertityMinus ) }}
-        </div>
-        <div class="col-md-6">
-        {{ form_errors(form.expUncertityMinusDefault) }}
-        {{ form_label(form.expUncertityMinusDefault) }}
-        {{ form_widget(form.expUncertityMinusDefault, { 'attr': { 'readonly': 'true' } }) }}
+        {{ form_errors(form.expUncertityDefault) }}
+        {{ form_label(form.expUncertityDefault) }}
+        {{ form_widget(form.expUncertityDefault, { 'attr': { 'readonly': 'true' } }) }}
         </div>
       </div>
       <div class="form-group row">

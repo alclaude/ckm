@@ -71,16 +71,10 @@ class Input
     /**
      * @var float
      *
-     * @ORM\Column(name="exp_uncertity_plus", type="float")
+     * @ORM\Column(name="exp_uncertity", type="float")
      */
-    private $expUncertityPlus;
+    private $expUncertity;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="exp_uncertity_minus", type="float")
-     */
-    private $expUncertityMinus;
 
     /**
      * @var float
@@ -92,16 +86,9 @@ class Input
     /**
      * @var float
      *
-     * @ORM\Column(name="exp_uncertity_plus_default", type="float")
+     * @ORM\Column(name="exp_uncertity_default", type="float")
      */
-    private $expUncertityPlusDefault;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="exp_uncertity_minus_default", type="float")
-     */
-    private $expUncertityMinusDefault;
+    private $expUncertityDefault;
 
     /**
      * @var float
@@ -141,7 +128,7 @@ class Input
 
     public function __toString() { return 'Input : '.$this->name; }
 
-    public function __construct($analyse, $name='', $path='',  $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityDefaultPlus=0, $expUncertityDefaultMinus=0, $thUncertityDefault=0)
+    public function __construct($analyse, $name='', $path='',  $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityDefault=0, $thUncertityDefault=0)
     {
       $this->name                    = $name;
       $this->analyse                 = $analyse;
@@ -149,11 +136,9 @@ class Input
       $this->defaultValue            = $defaultValue;
       $this->allowedRangeMax         = $allowedRangeMax;
       $this->allowedRangeMin         = $allowedRangeMin;
-      $this->expUncertityPlus        = $expUncertityDefaultPlus;
-      $this->expUncertityMinus       = $expUncertityDefaultMinus;
+      $this->expUncertity            = $expUncertityDefault;
       $this->thUncertity             = $thUncertityDefault;
-      $this->expUncertityPlusDefault = $expUncertityDefaultPlus;
-      $this->expUncertityMinusDefault = $expUncertityDefaultMinus;
+      $this->expUncertityDefault     = $expUncertityDefault;
       $this->thUncertityDefault       = $thUncertityDefault;
 
       if($path!=='') {
@@ -172,12 +157,10 @@ class Input
         $this->defaultValue             = $this->cleanData( $ar_obs['1'] );
         $this->allowedRangeMax          = $this->cleanData( $ar_obs['3'] );
         $this->allowedRangeMin          = $this->cleanData( $ar_obs['2'] );
-        $this->expUncertityPlus         = $this->cleanData( $ar_obs['4'] );
-        $this->expUncertityMinus        = $this->cleanData( $ar_obs['5'] );
-        $this->thUncertity              = $this->cleanData( $ar_obs['6'] );
-        $this->expUncertityPlusDefault  = $this->cleanData( $ar_obs['4'] );
-        $this->expUncertityMinusDefault = $this->cleanData( $ar_obs['5'] );
-        $this->thUncertityDefault       = $this->cleanData( $ar_obs['6'] );
+        $this->expUncertity        = $this->cleanData( $ar_obs['4'] );
+        $this->thUncertity              = $this->cleanData( $ar_obs['5'] );
+        $this->expUncertityDefault  = $this->cleanData( $ar_obs['4'] );
+        $this->thUncertityDefault       = $this->cleanData( $ar_obs['5'] );
       }
       else {
         throw new \Exception('observable does not exist :: observableInput can not be initialized');
@@ -358,51 +341,9 @@ class Input
         return $this->allowedRangeMin;
     }
 
-    /**
-     * Set expUncertityPlus
-     *
-     * @param float $expUncertityPlus
-     * @return Input
-     */
-    public function setExpUncertityPlus($expUncertityPlus)
-    {
-        $this->expUncertityPlus = $expUncertityPlus;
 
-        return $this;
-    }
 
-    /**
-     * Get expUncertityPlus
-     *
-     * @return float
-     */
-    public function getExpUncertityPlus()
-    {
-        return $this->expUncertityPlus;
-    }
 
-    /**
-     * Set expUncertityMinus
-     *
-     * @param float $expUncertityMinus
-     * @return Input
-     */
-    public function setExpUncertityMinus($expUncertityMinus)
-    {
-        $this->expUncertityMinus = $expUncertityMinus;
-
-        return $this;
-    }
-
-    /**
-     * Get expUncertityMinus
-     *
-     * @return float
-     */
-    public function getExpUncertityMinus()
-    {
-        return $this->expUncertityMinus;
-    }
 
     /**
      * Set thUncertity
@@ -427,51 +368,12 @@ class Input
         return $this->thUncertity;
     }
 
-    /**
-     * Set expUncertityPlusDefault
-     *
-     * @param float $expUncertityPlusDefault
-     * @return Input
-     */
-    public function setExpUncertityPlusDefault($expUncertityPlusDefault)
-    {
-        $this->expUncertityPlusDefault = $expUncertityPlusDefault;
 
-        return $this;
-    }
 
-    /**
-     * Get expUncertityPlusDefault
-     *
-     * @return float
-     */
-    public function getExpUncertityPlusDefault()
-    {
-        return $this->expUncertityPlusDefault;
-    }
 
-    /**
-     * Set expUncertityMinusDefault
-     *
-     * @param float $expUncertityMinusDefault
-     * @return Input
-     */
-    public function setExpUncertityMinusDefault($expUncertityMinusDefault)
-    {
-        $this->expUncertityMinusDefault = $expUncertityMinusDefault;
 
-        return $this;
-    }
 
-    /**
-     * Get expUncertityMinusDefault
-     *
-     * @return float
-     */
-    public function getExpUncertityMinusDefault()
-    {
-        return $this->expUncertityMinusDefault;
-    }
+
 
     /**
      * Set thUncertityDefault
@@ -609,5 +511,51 @@ class Input
     public function getIsInput()
     {
         return $this->isInput;
+    }
+
+    /**
+     * Set expUncertity
+     *
+     * @param float $expUncertity
+     * @return Input
+     */
+    public function setExpUncertity($expUncertity)
+    {
+        $this->expUncertity = $expUncertity;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertity
+     *
+     * @return float
+     */
+    public function getExpUncertity()
+    {
+        return $this->expUncertity;
+    }
+
+    /**
+     * Set expUncertityDefault
+     *
+     * @param float $expUncertityDefault
+     * @return Input
+     */
+    public function setExpUncertityDefault($expUncertityDefault)
+    {
+        $this->expUncertityDefault = $expUncertityDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get expUncertityDefault
+     *
+     * @return float
+     */
+    public function getExpUncertityDefault()
+    {
+        return $this->expUncertityDefault;
     }
 }
