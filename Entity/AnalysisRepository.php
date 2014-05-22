@@ -50,6 +50,19 @@ class AnalysisRepository extends EntityRepository
           ->getResult();
     }
 
+    public function findAnalysisByStatus($status)
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'SELECT a FROM CKM\AppBundle\Entity\Analysis a WHERE a.status = :status'
+          )
+          ->setParameters(array(
+                'status' => $status,
+                )
+           )
+          ->getResult();
+    }
+
     public function findObservableByAnalysis($analyse)
     {
       return $this->getEntityManager()

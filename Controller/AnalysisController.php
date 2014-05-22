@@ -127,10 +127,10 @@ class AnalysisController extends Controller
           }
           if( $tmp["scanMax1"] < $tmp["scanMin1"] or (isset($tmp["scanMax2"]) and $tmp["scanMax2"] < $tmp["scanMin2"] ) ) {
             return $this->errorForm('notice',
-                            'scanMax must be greater than scanMin',
-                            'CKMAppBundle_analyse_create_step_2',
-                            array('analyse' => $analyse->getId(), 'step' => $step )
-                            );
+              'scanMax must be greater than scanMin',
+              'CKMAppBundle_analyse_create_step_2',
+              array('analyse' => $analyse->getId(), 'step' => $step )
+              );
           }
 
           $em = $this->getDoctrine()->getManager();
@@ -261,8 +261,6 @@ class AnalysisController extends Controller
       );
     }
 
-
-
     public function createAnalyseStep3Action($analyse=0, $step=3 ) {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
@@ -280,11 +278,6 @@ class AnalysisController extends Controller
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
 
-      # re choose input
-      if($step==0) {
-        $this->removeInput($analyse);
-      }
-
       $request = $this->getRequest();
 
       $form = $this->createForm(new AnalysisStep3Type,  $analyse);
@@ -293,6 +286,11 @@ class AnalysisController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+          # re choose input
+          if($step==0) {
+            $this->removeInput($analyse);
+          }
+
           $tmp = $request->request->get($form->getName()) ;
 
           if(!isset($tmp["sourceElement"])) {
@@ -395,6 +393,24 @@ class AnalysisController extends Controller
         'step'     => '3',
         'analyse'  => $analyse->getId(),
       ));
+    }
+
+    private function setDatacard($analyse=0) {
+      $analyse = $this->getAnalysis($analyse);
+
+      $observables= $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Observable')
+          ->findByObservableAnalysis( $analyse->getId() );
+
+      $parameters= $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Parameter')
+          ->findByParameterAnalysis( $analyse->getId() );
+
+      $em = $this->getDoctrine()
+                 ->getManager();
+      $analyse->setDatacard($observables, $parameters);
+      $em->persist($analyse);
+      $em->flush();
     }
 
     public function seeDatacardAction($analyse=0) {
@@ -537,184 +553,18 @@ $em->persist($observableClone);
       return new Response('debbug');
     }
 
-    public function createAnalyseAction(Request $request) {
-
-        if (!$this->get('security.context')->isGranted('ROLE_ANALYSIS')) {
-          // Sinon on déclenche une exception « Accès interdit »
-          throw new AccessDeniedHttpException('no credentials for this action');
-        }
-
-        $formData = new Analysis(); // Your form data class. Has to be an object, won't work properly with an array.
-
-        if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-          throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
-        }
-
-        $flow = $this->get('CKM.form.flow.createAnalyse'); // must match the flow's service id
-        $flow->bind($formData);
-
-        // form of the current step
-        $form = $flow->createForm();
-
-        #var_dump( $request->request->get($form->getName()) );
-        if ($flow->isValid($form)) {
-
-          if ( $flow->getCurrentStepNumber() === 1 ) {
-            $tmp = $request->request->get($form->getName()) ;
-            $scenario = $this->getDoctrine()
-              ->getRepository('CKMAppBundle:Scenario')
-              ->findOneById($tmp["scenario"][0]);
-
-            $this->container->get('request')->getSession()->set( 'scenario', $scenario );
-            $formData->setScenario( $this->container->get('request')->getSession()->get( 'scenario' ) ) ;
-          }
-
-          # gestion des target et scan constraint
-          if ( $flow->getCurrentStepNumber() === 2 ) {
-            $tmp = $request->request->get($form->getName()) ;
-
-            # gestion des saisies des target
-            if ( isset($tmp["targetParameter"]) && isset($tmp["targetObservable"]) ) {
-              $element_ar = array_merge( $tmp["targetObservable"], $tmp["targetParameter"] );
-            }
-            elseif( isset($tmp["targetObservable"]) ) {
-              $element_ar = $tmp["targetObservable"];
-            }
-            elseif( isset($tmp["targetParameter"]) ) {
-              $element_ar = $tmp["targetParameter"];
-            }
-            else {
-                $this->get('session')->getFlashBag()->add(
-                    'notice',
-                    'Please fill in the form'
-                );
-                return $this->redirect($this->generateUrl('CKMAppBundle_analyse_create_analyse' ));
-            }
-
-            $this->container->get('request')->getSession()->set( 'targetElement', $element_ar );
-            $count = count( $this->container->get('request')->getSession()->get( 'targetElement' ) );
-
-            # validation des contraintes sur les scan et nb d elements target
-            if ($tmp["scanConstraint"]==1 && $count!==1) {
-                $this->get('session')->getFlashBag()->add(
-                    'notice',
-                    'Please, in a 1D scan you must choose one observable OR one parameter'
-                );
-                return $this->redirect($this->generateUrl('CKMAppBundle_analyse_create_analyse' ));
-            }
-            if ($tmp["scanConstraint"]==2 && $count!==2) {
-                $this->get('session')->getFlashBag()->add(
-                    'notice',
-                    'Please, in a 2D scan you must choose two items in the boxes'
-                );
-                return $this->redirect($this->generateUrl('CKMAppBundle_analyse_create_analyse' ));
-            }
-          }
-
-          if ( $flow->getCurrentStepNumber() === 3 ) {
-            $tmp = $request->request->get($form->getName()) ;
-            $this->container->get('request')->getSession()->set( 'inputElement', $tmp["sourceElement"] );
-          }
-
-          $flow->saveCurrentStepData($form);
-
-          if ($flow->nextStep()) {
-              // form for the next step
-              $form = $flow->createForm();
-          } else {
-              // flow finished
-              $formData->setTargetElement( $this->container->get('request')->getSession()->get( 'targetElement' ) ) ;
-              $formData->setSourceElement( $this->container->get('request')->getSession()->get( 'inputElement' ) ) ;
-              $formData->setUser( $this->get('security.context')->getToken()->getUser() );
-              //$formData->setScenario( $this->container->get('request')->getSession()->get( 'scenario' ) ) ;
-
-
-              $em = $this->getDoctrine()->getManager();
-
-              $em->persist($formData);
-
-              $tmpObs = array();
-              $tmpAssocedParam = array();
-
-              foreach( $this->container->get('request')->getSession()->get( 'targetElement' ) as $key => $target )
-              {
-                $targetPersist = new ElementTarget($formData, $target);
-                $em->persist($targetPersist);
-              }
-
-              # tous les parametres regroupes des observables
-              $all_ar_parameters=array();
-
-              foreach( $this->container->get('request')->getSession()->get( 'inputElement' ) as $key => $input )
-              {
-                $inputPersist = new ObservableInput($formData, $input);
-                $em->persist($inputPersist);
-
-                $parameters = $inputPersist->createAssociatedElement( $formData->getDatacard() );
-
-                foreach ( $parameters as $parameter ) {
-                  if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
-                    $all_ar_parameters[$parameter->getName()] = $parameter;
-                  }
-                }
-
-
-                foreach( $parameters as $key => $parameter ) {
-                  if( !array_key_exists($parameter->getName(), $all_ar_parameters) ) {
-                    $inputPersist->addParameterInput($parameters[$key]);
-                    $em->persist($parameters[$key]);
-                  }
-                  else {
-                    $inputPersist->addParameterInput( $all_ar_parameters[$parameter->getName()] );
-                  }
-                }
-
-              }
-
-              $em->flush();
-
-              $this->getRequest()->getSession()->remove('targetElement');
-              $this->getRequest()->getSession()->remove('sourceElement');
-              $flow->reset(); // remove step data from the session
-
-
-              /*return $this->redirect(
-                $this->generateUrl('CKMAppBundle_analyse_create_analyse_source'),
-                array('analyse'=>$formData),
-              ); // redirect when done
-
-              return $this->forward('CKMAppBundle_analyse_create_analyse_source', array(
-                  'analyse'=>$formData,
-              ));
-              */
-              return $this->redirect($this->generateUrl('CKMAppBundle_analyse_create_analyse_source', array('analyse' => $formData->getId())
-              ));
-          }
-        }
-
-        return $this->render('CKMAppBundle:Analysis:createAnalyse.html.twig', array(
-            'form' => $form->createView(),
-            'flow' => $flow,
-            'analyse' => $formData,
-        ));
-    }
-
     public function createAnalyseSourceAction($analyse=0, $step ) {
-      $em = $this->getDoctrine()
-                 ->getManager();
-
-      $analyse = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:Analysis')
-        ->findOneById($analyse);
-
-      if (!$analyse) {
-        throw $this->createNotFoundException('analyse not exist');
-      }
-
+      $this->isGranted('ROLE_ANALYSIS');
+      $analyse = $this->getAnalysis($analyse);
       // FS#9
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
+
+      $em = $this->getDoctrine()
+                 ->getManager();
+      #maj de la datacard
+      $this->setDatacard($analyse->getId() );
 
       $liste_observable = $em->getRepository('CKMAppBundle:Observable')
                                   ->findByObservableAnalysis($analyse->getId());
@@ -1189,43 +1039,6 @@ $em->persist($observableClone);
         'page'=>$page,
         'pagination' => $pagination
       ));
-    }
-
-
-    public function sourceAction(Request $request)
-    {
-      $type = new AnalysisType();
-$type->setStep();
-echo "sourceAction::".$type->stepName()."<br/>";
-      $form = $this->createForm($type, $this->container->get('request')->getSession()->get('analyse') , array(
-            'validation_groups' => array($type->getName())
-      ));
-
-
-      //$form->handleRequest($request);
-
-
-      if ( isset($data['ckm_appbundle_analysis_2']) ) {
-
-print_r( $this->container->get('request')->getSession()->get('analyse') ) ;
-
-        return $this->redirect(
-            $this->generateUrl('CKMAppBundle_testform')
-          );
-      }
-
-      // On passe la méthode createView() du formulaire à la vue afin qu'elle puisse afficher le formulaire toute seule
-      return $this->render('CKMAppBundle:Analysis:source.html.twig', array(
-        'form' => $form->createView(),
-        'test' => $form->getData()
-      ));
-    }
-
-    public function testformAction(Request $request) {
-        return $this->render('CKMAppBundle:Analysis:testform.html.twig', array(
-          'analyse' => $request//$this->container->get('request')->getSession()->get('analyse')
-          )
-      );
     }
 
     /*
