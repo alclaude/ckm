@@ -12,7 +12,6 @@ use CKM\AppBundle\Entity\Parameter;
 
 class AnalysisStep1Type extends AbstractType
 {
-
     /**
      * @param FormBuilderInterface $builder
      * @param array $options

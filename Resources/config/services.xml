@@ -20,7 +20,7 @@
             </call>
         </service>
 
-        <service id="CKM.twig.ckm_extension" class="CKM\AppBundle\Twig\CKMExtension">
+        <service id="CKM.services.ckm_extension" class="CKM\AppBundle\Twig\CKMExtension">
             <tag name="twig.extension" />
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>

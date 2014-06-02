@@ -12,6 +12,13 @@ use CKM\AppBundle\Entity\Parameter;
 
 class AnalysisStep2Type extends AbstractType
 {
+    protected $em;
+
+    public function __construct( \Doctrine\ORM\EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -80,10 +87,21 @@ class AnalysisStep2Type extends AbstractType
 
     private function latexLike($observables, $parameters){
       foreach($observables as &$observable) {
-        $observable='\('.$observable.'\)';
+        $latex = $this->em
+          ->getRepository('CKMAppBundle:Latex')
+          ->findOneByName( $observable );
+
+        if($latex) {
+          $observable=$latex->getLatex().' ('.$observable.')';
+        }
       }
       foreach($parameters as &$parameter) {
-        $parameter='\('.$parameter.'\)';
+        $latex = $this->em
+          ->getRepository('CKMAppBundle:Latex')
+          ->findOneByName( $parameter );
+        if($latex) {
+          $parameter=$latex->getLatex().' ('.$parameter.')';
+        }
       }
 
       return array($observables, $parameters);

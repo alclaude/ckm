@@ -25,6 +25,12 @@ class Input
     private $analyse;
 
     /**
+     * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\Latex")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $latex;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -140,6 +146,8 @@ class Input
       $this->thUncertity             = $thUncertityDefault;
       $this->expUncertityDefault     = $expUncertityDefault;
       $this->thUncertityDefault       = $thUncertityDefault;
+
+      $this->setlatex();
 
       if($path!=='') {
         # observable case
@@ -557,5 +565,28 @@ class Input
     public function getExpUncertityDefault()
     {
         return $this->expUncertityDefault;
+    }
+
+    /**
+     * Set latex
+     *
+     * @param \CKM\AppBundle\Entity\Latex $latex
+     * @return Input
+     */
+    public function setLatex(\CKM\AppBundle\Entity\Latex $latex = null)
+    {
+        $this->latex = $latex;
+
+        return $this;
+    }
+
+    /**
+     * Get latex
+     *
+     * @return \CKM\AppBundle\Entity\Latex
+     */
+    public function getLatex()
+    {
+        return $this->latex;
     }
 }

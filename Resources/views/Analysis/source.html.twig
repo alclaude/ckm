@@ -73,7 +73,7 @@ Analysis - <small>Personalize your analysis </small>
             <div class="table-responsive">
             {% for target in getIsTargets(analyse) %}
             <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
-              <i class="fa fa-check"></i>  #{{ target.id }} - {{ latex(target.name) }}
+              <i class="fa fa-check"></i>  #{{ target.id }} - {{ target.latex.latex }}
               <span style="float:right;">
               {{ latex('['~target.scanMin~','~target.scanMax~']') }}
               </span>
@@ -134,7 +134,7 @@ Analysis - <small>Personalize your analysis </small>
 
     {% for observable in observables %}
                     <tr>
-                      <td> #{{ observable.id }} - {{latex( observable.name )}}</td>
+                      <td> #{{ observable.id }} - {{ observable.latex.latex}}</td>
                       <td>{{observable.value}}</td>
                       <td>{{observable.expUncertity}}</td>
                       <td>{{observable.thUncertity}}</td>
@@ -157,7 +157,7 @@ Analysis - <small>Personalize your analysis </small>
                       {% set paramGetObs = paramGetObs|merge({ (oneParameter.name): observable.name }) %}
                     {% endif %}
                       <tr class="collapse row{{ counter }}" style="{{ style|e }}" >
-                        <td>#{{ oneParameter.id }} - {{ latex(oneParameter.name) }}</td>
+                        <td>#{{ oneParameter.id }} - {{ oneParameter.latex.latex }}</td>
                         <td>{{ oneParameter.value }}</td>
                         <td>{{ oneParameter.expUncertity }}</td>
                         <td>{{ oneParameter.thUncertity }}</td>

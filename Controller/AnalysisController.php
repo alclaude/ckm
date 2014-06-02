@@ -85,7 +85,7 @@ class AnalysisController extends Controller
         $this->removeTarget($analyse);
       }
 
-      $form = $this->createForm(new AnalysisStep2Type,  $analyse);
+      $form = $this->createForm(new AnalysisStep2Type($this->getDoctrine()->getManager() ),  $analyse);
 
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);
@@ -215,9 +215,12 @@ class AnalysisController extends Controller
 
           }
 
+
           $em->persist( $analyse );
 
+
           $em->flush();
+          $this->setLatexAnalysis($analyse);
 
           #$analyse = print_r($analyse,true);
           #die('debbug <pre>'.$analyse .'</pre>');
@@ -376,8 +379,12 @@ class AnalysisController extends Controller
 
           $analyse->setStatus( 1 );
 
+
+
+
           $em->persist( $analyse );
           $em->flush();
+          $this->setLatexAnalysis($analyse);
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
@@ -1049,6 +1056,27 @@ $em->persist($observableClone);
           // Sinon on déclenche une exception « Accès interdit »
           throw new AccessDeniedHttpException('no credentials for this action');
       }
+    }
+
+    private function setLatexAnalysis($analyse) {
+      $em = $this->getDoctrine()->getEntityManager();
+      $inputs = $em
+        ->getRepository('CKMAppBundle:Input')
+        ->findByAnalysis($analyse->getId() );
+
+
+      foreach($inputs as $input) {
+        echo $input->getName().'<br />';
+        $input->setLatex(
+          $em
+          ->getRepository('CKMAppBundle:Latex')
+          ->findOneByName( $input->getName() )
+        );
+        $em->persist($input);
+      }
+
+     // die('debbug');
+      $em->flush();
     }
 
     /*
