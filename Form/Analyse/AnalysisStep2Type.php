@@ -43,14 +43,14 @@ class AnalysisStep2Type extends AbstractType
              'choices'   => $obs,
              'mapped'    => false,
              'multiple'  => true,
-             'attr'      => array('class' => 'form-control'),
+             'attr'      => array('class' => 'demo form-control', 'style' => "margin:4px;"),
              ))
         ->add('targetParameter', 'choice'/*'entity'*/, array(
              #'class' => 'CKM\AppBundle\Entity\Parameter',
              'choices'   => $param,
              'mapped'    => false,
              'multiple'  => true,
-             'attr'      => array('class' => 'form-control'),
+             'attr'      => array('class' => 'demo form-control'),
              ))
         ->add('scanMin1', 'number', array(
             'attr'             => array('class' => 'form-control'),

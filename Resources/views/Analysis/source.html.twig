@@ -9,6 +9,9 @@
       if (location.hash) shiftWindow();
       window.addEventListener("hashchange", shiftWindow);
     </script>
+
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+
 {% endblock %}
 
 {% block titlePage %}
@@ -17,6 +20,8 @@ Analysis - <small>Personalize your analysis </small>
 
 
 {% block content %}
+
+
 
 {% for flashMessage in app.session.flashbag.get('notice') %}
   <div class="row">
@@ -94,7 +99,7 @@ Analysis - <small>Personalize your analysis </small>
                   {% set paramEverInUse = paramEverInUse|merge({ (parameter.name): target.name }) %}
                   {% set paramGetObs    = paramGetObs|merge({ (parameter.name): target.name }) %}
                       <tr>
-                        <td> #{{ parameter.id }} - {{ parameter.name }} </td>
+                        <td> #{{ parameter.id }} - {{ parameter.latex.latex }} </td>
                         <td> {{ parameter.value }}  </td>
                         <td> {{ parameter.expUncertity }} </td>
                         <td> {{ parameter.thUncertity }} </td>
@@ -191,17 +196,8 @@ No observable defined...
 
 </div> <!-- row -->
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ["\\(","\\)"] ],
-      displayMath: [ ["\\[","\\]"] ],
-      processEscapes: true
-    },
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
-</script>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+
+
+
+
 {% endblock %}

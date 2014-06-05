@@ -5,16 +5,10 @@ namespace CKM\AppBundle\Controller;
 use CKM\AppBundle\Entity\Analysis;
 use CKM\AppBundle\Entity\Observable;
 use CKM\AppBundle\Entity\Parameter;
-use CKM\AppBundle\Entity\ObservableInput;
-use CKM\AppBundle\Entity\ParameterInput;
-use CKM\AppBundle\Entity\ElementTarget;
-use CKM\AppBundle\Entity\ObservableTarget;
-use CKM\AppBundle\Entity\ParameterTarget;
 use CKM\AppBundle\Entity\Input;
 
 use CKM\AppBundle\Form\AnalysisType;
 use CKM\AppBundle\Form\ObservableType;
-use CKM\AppBundle\Form\AnalysisSourceUnitType;
 use CKM\AppBundle\Form\ParameterType;
 use CKM\AppBundle\Form\AnalysisPropertiesType;
 
