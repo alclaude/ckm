@@ -24,33 +24,13 @@ class ParameterType extends AbstractType
           ->add('value', 'text', array(
               'attr' => array('class' => 'form-control'),
             ))
-          ->add('defaultValue', 'text', array(
-              'attr' => array(
-                'class' => 'form-control',
-                'read_only' => true
-              )
-            ))
           ->add('expUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
               'label' => 'Experimental uncertainty',
             ))
-          ->add('expUncertityDefault', 'text', array(
-              'attr' => array(
-                'class' => 'form-control',
-                'read_only' => true,
-              ),
-              'label' => 'Default experimental uncertainty',
-            ))
           ->add('thUncertity', 'number', array(
               'attr' => array('class' => 'form-control'),
               'label' => 'Theoretical uncertainty',
-            ))
-          ->add('thUncertityDefault', 'text', array(
-              'attr' => array(
-                'class' => 'form-control',
-                'read_only' => true,
-              ),
-              'label' => 'Default theoretical uncertainty',
             ))
         ;
     }

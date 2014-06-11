@@ -9,6 +9,7 @@ use CKM\AppBundle\Entity\Input;
 
 use CKM\AppBundle\Form\AnalysisType;
 use CKM\AppBundle\Form\ObservableType;
+use CKM\AppBundle\Form\ObservableTagType;
 use CKM\AppBundle\Form\ParameterType;
 use CKM\AppBundle\Form\AnalysisPropertiesType;
 
@@ -277,7 +278,7 @@ class AnalysisController extends Controller
 
       $request = $this->getRequest();
 
-      $form = $this->createForm(new AnalysisStep3Type,  $analyse);
+      $form = $this->createForm(new AnalysisStep3Type($this->getDoctrine()->getManager() ),  $analyse);
 
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);
@@ -756,6 +757,60 @@ $em->persist($observableClone);
       return true;
     }
 
+    public function editObservableTagAction($observable_id=0) {
+      $request = $this->getRequest();
+
+      $observable = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Input')
+        ->findOneById($observable_id);
+
+      if (!$observable) {
+        throw $this->createNotFoundException('Observable not exist');
+      }
+
+      $this->isGranted('ROLE_ANALYSIS');
+
+      if( $this->isForbiddenStep( $this->getAnalysis($observable->getAnalyse()->getId() )) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $observable->getAnalyse()->getId() )
+        );
+      }
+
+      if ($observable->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
+      }
+
+      $form1 = $this->createForm(new ObservableTagType, $observable);
+
+      if ($request->getMethod() == 'POST') {
+        $form1->handleRequest($request);
+        if ($form1->isValid()) {
+          $em = $this->getDoctrine()->getManager();
+          $data=$form1->getData();
+          //$em->persist($observable);
+          $tmp = $request->request->get($form1->getName());
+
+
+          $em->persist( $observable );
+          $em->flush();
+
+          return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                                      array('analyse' => $observable->getAnalyse()->getId() )
+                  )
+          );
+        }
+      }
+      return $this->render('CKMAppBundle:Analysis:editObservableInputTag.html.twig', array(
+        'form1' => $form1->createView(),
+        'type' => 'Observable',
+        'observable'   => $observable,
+      ));
+    }
+
     public function editObservableAction($observable_id=0) {
       $request = $this->getRequest();
 
@@ -817,6 +872,7 @@ $em->persist($observableClone);
       return $this->render('CKMAppBundle:Analysis:editObservableInput.html.twig', array(
         'form' => $form->createView(),
         'type' => 'Observable',
+        'observable'   => $observable,
       ));
     }
 

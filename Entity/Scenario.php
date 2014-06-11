@@ -5,14 +5,17 @@ namespace CKM\AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContext;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Datacard
  *
  * @ORM\Table(name="ckm_scenario")
- * @ORM\Entity(repositoryClass="CKM\AppBundle\Entity\DatacardRepository")
+ * @ORM\Entity(repositoryClass="CKM\AppBundle\Entity\ScenarioRepository")
  * @ORM\HasLifecycleCallbacks
  * @UniqueEntity("name")
  */
@@ -35,7 +38,7 @@ class Scenario
      *      minMessage = "You must specify one scenario", groups={"choice"}
      * )
      */
-    public $name;
+    private $name;
 
     /**
      * @var string
@@ -69,6 +72,13 @@ class Scenario
      * @ORM\Column(name="date_update", type="datetime")
      */
     private $dateUpdate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tag", type="string", length=255)
+     */
+    private $tag;
 
     public function __construct()
     {
@@ -303,5 +313,28 @@ class Scenario
         if ($file = $this->getAbsolutePath()) {
             unlink($file);
         }
+    }
+
+    /**
+     * Set tag
+     *
+     * @param string $tag
+     * @return Scenario
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Get tag
+     *
+     * @return string
+     */
+    public function getTag()
+    {
+        return $this->tag;
     }
 }

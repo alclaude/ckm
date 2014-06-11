@@ -2,11 +2,16 @@
 {% form_theme form 'CKMAppBundle::Form/errors.html.twig' %}
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
 {% block titlePage %}
 Analysis - <small>{{ type }} definition</small>
 {% endblock %}
 {% block content %}
-<h3>Edit {{ type }}</h3>
+<h3>Edit {{ type }}  {{ observable.latex.latex }} </h3>
 
 {% for flashMessage in app.session.flashbag.get('notice') %}
   <div class="row">
@@ -20,70 +25,66 @@ Analysis - <small>{{ type }} definition</small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-lg-6">
-    <form role="form" method="post" {{ form_enctype(form) }}>
-      <div class="form-group">
-        {{ form_errors(form.name) }}
-        {{ form_label(form.name) }}
-        {{ form_widget(form.name, { 'attr': { 'readonly': 'true' } }) }}
-      </div>
+  <div class="col-sm-12">
+    <p>In this interface, you can change the properties of your input.
+      <ul>You have two systems :
+      <li>a system tag where you can use either the default value of the datacard or none values</li>
+      <li>a specific system where you can put your own specific data (value, theoretuical and experimentale uncertainty)</li>
+      </ul>
+      Choose either one or the other.
+    </p>
+  </div>
 
-      <div class="form-group row">
-        <div class="col-md-6">
-        {{ form_errors(form.value) }}
-        {{ form_label(form.value) }}
-        {{ form_widget(form.value) }}
-        </div>
-        <div class="col-md-6">
-        {{ form_errors(form.defaultValue) }}
-        {{ form_label(form.defaultValue) }}
-        {{ form_widget(form.defaultValue, { 'attr': { 'readonly': 'true' } }) }}
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-md-6">
-        {{ form_errors(form.expUncertity) }}
-        {{ form_label(form.expUncertity) }}
-        {{ form_widget(form.expUncertity ) }}
-        </div>
-        <div class="col-md-6">
-        {{ form_errors(form.expUncertityDefault) }}
-        {{ form_label(form.expUncertityDefault) }}
-        {{ form_widget(form.expUncertityDefault, { 'attr': { 'readonly': 'true' } }) }}
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-md-6">
-        {{ form_errors(form.thUncertity) }}
-        {{ form_label(form.thUncertity) }}
-        {{ form_widget(form.thUncertity) }}
-        </div>
-        <div class="col-md-6">
-        {{ form_errors(form.thUncertityDefault) }}
-        {{ form_label(form.thUncertityDefault) }}
-        {{ form_widget(form.thUncertityDefault, { 'attr': { 'readonly': 'true' } }) }}
-        </div>
-      </div>
-      <br />
-      {{ form_rest(form) }}
-      <p>
-        <input type="submit" class="btn btn-primary" />
-      </p>
-    </form>
+  <div class="col-sm-4">
+    {{ render(controller('CKMAppBundle:Analysis:editObservableTag', {
+            'observable_id': observable.id
+        })) }}
+  </div>
+
+  <div class="col-sm-6">
+    <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> ... or change Specific values</h3>
+          </div>
+          <div class="panel-body">
+            <p>notice : you must change the three values at once</p>
+            <form role="form" method="post" {{ form_enctype(form) }}>
+              <div class="form-group">
+                {{ form_errors(form.name) }}
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, { 'attr': { 'readonly': 'true' } }) }}
+              </div>
+
+              <div class="form-group row">
+                <div class="col-md-6">
+                {{ form_errors(form.value) }}
+                {{ form_label(form.value) }}
+                {{ form_widget(form.value) }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                {{ form_errors(form.expUncertity) }}
+                {{ form_label(form.expUncertity) }}
+                {{ form_widget(form.expUncertity ) }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                {{ form_errors(form.thUncertity) }}
+                {{ form_label(form.thUncertity) }}
+                {{ form_widget(form.thUncertity) }}
+                </div>
+              </div>
+              <br />
+              {{ form_rest(form) }}
+              <p>
+                <input type="submit" class="btn btn-primary" />
+              </p>
+            </form>
+          </div>
+    </div>
   </div>
 </div>
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ["\\(","\\)"] ],
-      displayMath: [ ["\\[","\\]"] ],
-      processEscapes: true
-    },
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
-</script>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 {% endblock %}

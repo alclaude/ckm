@@ -1,6 +1,10 @@
 {# src/Blogger/BlogBundle/Resources/views/Analysis/createAnalysisStep.html.twig #}
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
 
 {% block titlePage %}
 Analysis - <small> {{ message }} </small>
@@ -65,19 +69,6 @@ Analysis - <small> {{ message }} </small>
   </div>
 </div>
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ["\\(","\\)"] ],
-      displayMath: [ ["\\[","\\]"] ],
-      processEscapes: true
-    },
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
-</script>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 {% endblock %}
 
 {% block document_ready %}

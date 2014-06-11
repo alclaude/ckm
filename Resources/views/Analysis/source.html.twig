@@ -88,21 +88,22 @@ Analysis - <small>Personalize your analysis </small>
                     <thead>
                       <tr>
                         <th class="header">Parameter </th>
-                        <th class="header">Value </th>
-                        <th class="header">Experimental uncertainty</th>
-                        <th class="header">Theoretical uncertainty </th>
+                        <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
+                        <th style="border-bottom:2px solid black;" class="header">Property </th>
+                        <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
                         <th class="header">Explanations </th>
                         <th class="header">Edit </th>
                       </tr>
                     </thead>
                 {% for parameter in target.getParameters() %}
-                  {% set paramEverInUse = paramEverInUse|merge({ (parameter.name): target.name }) %}
-                  {% set paramGetObs    = paramGetObs|merge({ (parameter.name): target.name }) %}
+                  {% set paramEverInUse = paramEverInUse|merge({ (parameter.latex.latex): target.latex.latex }) %}
+                  {% set paramGetObs    = paramGetObs|merge({ (parameter.latex.latex): target.latex.latex }) %}
                       <tr>
-                        <td> #{{ parameter.id }} - {{ parameter.latex.latex }} </td>
-                        <td> {{ parameter.value }}  </td>
-                        <td> {{ parameter.expUncertity }} </td>
-                        <td> {{ parameter.thUncertity }} </td>
+                        <td> #{{ parameter.id }} -
+                        {% if parameter.latex.latex %}
+                          {{ parameter.latex.latex}}
+                        {% endif %} </td>
+                        {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': parameter} only %}
                         <td> explain  </td>
                         <td> <div class="text-right" id="{{parameter.name}}"><a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': parameter.id})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a></div></td>
                       </tr>
@@ -128,9 +129,9 @@ Analysis - <small>Personalize your analysis </small>
                   <thead>
                     <tr>
                       <th class="header">Observable </th>
-                      <th class="header">Value </th>
-                      <th class="header">Experimental uncertainty</th>
-                      <th class="header">Theoretical uncertainty </th>
+                      <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
+                      <th style="border-bottom:2px solid black;" class="header">Property </th>
+                      <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
                       <th class="header">Explanations </th>
                       <th class="header">Edit </th>
                     </tr>
@@ -140,10 +141,7 @@ Analysis - <small>Personalize your analysis </small>
     {% for observable in observables %}
                     <tr>
                       <td> #{{ observable.id }} - {{ observable.latex.latex}}</td>
-                      <td>{{observable.value}}</td>
-                      <td>{{observable.expUncertity}}</td>
-                      <td>{{observable.thUncertity}}</td>
-                      <td><a href="#">A help link</a></td>
+                      {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': observable} only %}
                       <td>
                         <div class="text-right">
                           <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">
@@ -152,27 +150,30 @@ Analysis - <small>Personalize your analysis </small>
                         </div>
                       </td>
                 {% if observable.parameters is defined %}
-                      <tr class="clickable" data-toggle="collapse" id="row{{ counter }}" data-target=".row{{ counter }}" class="success"><td colspan="7" ><i class="glyphicon glyphicon-plus"></i> Parameters of the Observable {{observable.name}} <span style="float:right;" class="badge">See parameter...</span></td></tr>
+                      <tr class="clickable" data-toggle="collapse" id="row{{ counter }}" data-target=".row{{ counter }}" class="success"><td colspan="7" ><i class="glyphicon glyphicon-plus"></i> Parameters of the Observable {{observable.latex.latex}} <span style="float:right;" class="badge">See parameter...</span></td></tr>
                   {% for oneParameter in observable.parameters %}
-                    {% if oneParameter.name in paramEverInUse|keys %}
+                    {% if oneParameter.latex.latex in paramEverInUse|keys %}
                       {% set style = "background:#eee" %}
-                      {% set line = '<a href="#'~ oneParameter.name ~'">See '~ oneParameter.name ~' of '~ paramGetObs[oneParameter.name] ~'</a>' %}
+                      {% set line = '<a href="#'~ oneParameter.name ~'">See '~ oneParameter.latex.latex ~' of '~ paramGetObs[oneParameter.latex.latex] ~'</a>' %}
                     {% else %}
                       {% set line = '<div class="text-right" id="'~oneParameter.name~'"><a class="btn btn-success btn-xs" href="'~ path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': oneParameter.id}) ~'"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i></a></div>' %}
-                      {% set paramGetObs = paramGetObs|merge({ (oneParameter.name): observable.name }) %}
+                      {% set paramGetObs = paramGetObs|merge({ (oneParameter.latex.latex): observable.latex.latex }) %}
                     {% endif %}
                       <tr class="collapse row{{ counter }}" style="{{ style|e }}" >
-                        <td>#{{ oneParameter.id }} - {{ oneParameter.latex.latex }}</td>
-                        <td>{{ oneParameter.value }}</td>
-                        <td>{{ oneParameter.expUncertity }}</td>
-                        <td>{{ oneParameter.thUncertity }}</td>
-                        <td><a href="#">A help link</a></td>
+                        <td>#{{ oneParameter.id }} -
+                        {% if oneParameter.latex.latex is defined %}
+                          {{ oneParameter.latex.latex}}
+                        {% else %}
+                          {{ oneParameter.name}}
+                        {% endif %}
+                        </td>
+                          {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': oneParameter} only %}
                         <td>{{ line|raw }}</td>
                       </tr>
                       {% set style = '' %}
                       {% set line  = '' %}
 
-                      {% set paramEverInUse = paramEverInUse|merge({ (oneParameter.name): observable.name }) %}
+                      {% set paramEverInUse = paramEverInUse|merge({ (oneParameter.latex.latex): observable.latex.latex }) %}
                   {% endfor %}
                       {% set counter=counter+1 %}
                 {% else %}
@@ -196,8 +197,10 @@ No observable defined...
 
 </div> <!-- row -->
 
-
-
-
-
 {% endblock %}
+
+{% block document_ready %}
+{{ parent() }}
+$('.tool').tooltip();
+{% endblock %}
+

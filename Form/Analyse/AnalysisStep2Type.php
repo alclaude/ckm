@@ -43,14 +43,16 @@ class AnalysisStep2Type extends AbstractType
              'choices'   => $obs,
              'mapped'    => false,
              'multiple'  => true,
-             'attr'      => array('class' => 'demo form-control', 'style' => "margin:4px;"),
+             'attr'      => array('class' => 'form-control', 'style' => "margin:4px;"),
+             'required'  => false,
              ))
         ->add('targetParameter', 'choice'/*'entity'*/, array(
              #'class' => 'CKM\AppBundle\Entity\Parameter',
              'choices'   => $param,
              'mapped'    => false,
              'multiple'  => true,
-             'attr'      => array('class' => 'demo form-control'),
+             'attr'      => array('class' => 'form-control'),
+             'required'  => false,
              ))
         ->add('scanMin1', 'number', array(
             'attr'             => array('class' => 'form-control'),
@@ -92,7 +94,9 @@ class AnalysisStep2Type extends AbstractType
           ->findOneByName( $observable );
 
         if($latex) {
-          $observable=$latex->getLatex().' ('.$observable.')';
+          $observable=$latex->getLatex();
+        } else {
+          $observable= '('.$observable.')';
         }
       }
       foreach($parameters as &$parameter) {
@@ -100,7 +104,10 @@ class AnalysisStep2Type extends AbstractType
           ->getRepository('CKMAppBundle:Latex')
           ->findOneByName( $parameter );
         if($latex) {
-          $parameter=$latex->getLatex().' ('.$parameter.')';
+          $parameter=$latex->getLatex();
+        }
+        else {
+          $parameter='('.$parameter.')';
         }
       }
 

@@ -46,19 +46,13 @@ class Input
      */
     private $name;
 
-   /**
-     * @var float
-     *
-     * @ORM\Column(name="default_value", type="float")
-     */
-    private $defaultValue;
 
     /**
      * @var float
      *
      * @ORM\Column(name="value", type="float")
      */
-    private $value;
+    private $value=0;
 
     /**
      * @var float
@@ -79,7 +73,7 @@ class Input
      *
      * @ORM\Column(name="exp_uncertity", type="float")
      */
-    private $expUncertity;
+    private $expUncertity=0;
 
 
     /**
@@ -87,21 +81,7 @@ class Input
      *
      * @ORM\Column(name="th_uncertity", type="float")
      */
-    private $thUncertity;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="exp_uncertity_default", type="float")
-     */
-    private $expUncertityDefault;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="th_uncertity_default", type="float")
-     */
-    private $thUncertityDefault;
+    private $thUncertity=0;
 
     /**
      * @var boolean
@@ -132,20 +112,22 @@ class Input
      */
     private $scanMin=0;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tag", type="string", length=255)
+     */
+    private $tag='';
+
     public function __toString() { return 'Input : '.$this->name; }
 
-    public function __construct($analyse, $name='', $path='',  $defaultValue=0, $allowedRangeMin=0, $allowedRangeMax=0, $expUncertityDefault=0, $thUncertityDefault=0)
+    public function __construct($analyse, $name='', $path='',  $tag='', $allowedRangeMin=0, $allowedRangeMax=0)
     {
-      $this->name                    = $name;
-      $this->analyse                 = $analyse;
-      $this->value                   = $defaultValue;
-      $this->defaultValue            = $defaultValue;
-      $this->allowedRangeMax         = $allowedRangeMax;
-      $this->allowedRangeMin         = $allowedRangeMin;
-      $this->expUncertity            = $expUncertityDefault;
-      $this->thUncertity             = $thUncertityDefault;
-      $this->expUncertityDefault     = $expUncertityDefault;
-      $this->thUncertityDefault       = $thUncertityDefault;
+      $this->name              = $name;
+      $this->analyse           = $analyse;
+      $this->tag               = $tag;
+      $this->allowedRangeMax   = $allowedRangeMax;
+      $this->allowedRangeMin   = $allowedRangeMin;
 
       $this->setlatex();
 
@@ -161,14 +143,9 @@ class Input
       #die('debbug');
 
       if($ar_obs) {
-        $this->value                    = $this->cleanData( $ar_obs['1'] );
-        $this->defaultValue             = $this->cleanData( $ar_obs['1'] );
-        $this->allowedRangeMax          = $this->cleanData( $ar_obs['3'] );
-        $this->allowedRangeMin          = $this->cleanData( $ar_obs['2'] );
-        $this->expUncertity        = $this->cleanData( $ar_obs['4'] );
-        $this->thUncertity              = $this->cleanData( $ar_obs['5'] );
-        $this->expUncertityDefault  = $this->cleanData( $ar_obs['4'] );
-        $this->thUncertityDefault       = $this->cleanData( $ar_obs['5'] );
+        $this->tag               = $this->cleanData( $ar_obs['1'] );
+        $this->allowedRangeMax   = $this->cleanData( $ar_obs['3'] );
+        $this->allowedRangeMin   = $this->cleanData( $ar_obs['2'] );;
       }
       else {
         throw new \Exception('observable does not exist :: observableInput can not be initialized');
@@ -257,28 +234,6 @@ class Input
         return $this->name;
     }
 
-    /**
-     * Set defaultValue
-     *
-     * @param float $defaultValue
-     * @return Input
-     */
-    public function setDefaultValue($defaultValue)
-    {
-        $this->defaultValue = $defaultValue;
-
-        return $this;
-    }
-
-    /**
-     * Get defaultValue
-     *
-     * @return float
-     */
-    public function getDefaultValue()
-    {
-        return $this->defaultValue;
-    }
 
     /**
      * Set value
@@ -374,36 +329,6 @@ class Input
     public function getThUncertity()
     {
         return $this->thUncertity;
-    }
-
-
-
-
-
-
-
-
-    /**
-     * Set thUncertityDefault
-     *
-     * @param float $thUncertityDefault
-     * @return Input
-     */
-    public function setThUncertityDefault($thUncertityDefault)
-    {
-        $this->thUncertityDefault = $thUncertityDefault;
-
-        return $this;
-    }
-
-    /**
-     * Get thUncertityDefault
-     *
-     * @return float
-     */
-    public function getThUncertityDefault()
-    {
-        return $this->thUncertityDefault;
     }
 
     /**
@@ -545,29 +470,6 @@ class Input
     }
 
     /**
-     * Set expUncertityDefault
-     *
-     * @param float $expUncertityDefault
-     * @return Input
-     */
-    public function setExpUncertityDefault($expUncertityDefault)
-    {
-        $this->expUncertityDefault = $expUncertityDefault;
-
-        return $this;
-    }
-
-    /**
-     * Get expUncertityDefault
-     *
-     * @return float
-     */
-    public function getExpUncertityDefault()
-    {
-        return $this->expUncertityDefault;
-    }
-
-    /**
      * Set latex
      *
      * @param \CKM\AppBundle\Entity\Latex $latex
@@ -588,5 +490,28 @@ class Input
     public function getLatex()
     {
         return $this->latex;
+    }
+
+    /**
+     * Set tag
+     *
+     * @param string $tag
+     * @return Input
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Get tag
+     *
+     * @return string
+     */
+    public function getTag()
+    {
+        return $this->tag;
     }
 }

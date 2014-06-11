@@ -178,8 +178,8 @@ class Observable extends Input
         if( ! preg_match("/$new_line/", $line) ) {
           if( preg_match($observablePattern, $line) ) {
             $tmp_ar_obs = explode(';',$line);
-            # les parametres associes a une observable sont le 6eme item dans le fichier :index=3
-            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['6']);
+            # les parametres associes a une observable sont le 4eme item dans le fichier :index=3
+            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['4']);
             break;
           }
         }
@@ -208,7 +208,7 @@ class Observable extends Input
           if( preg_match($observablePattern, $line) ) {
             $tmp_ar_obs = explode(';',$line);
             # les parametres associes a une observable sont le 6eme item dans le fichier :index=3
-            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['6']);
+            $tmp_ar_obsParam = explode(',',$tmp_ar_obs['4']);
             break;
           }
         }
@@ -230,7 +230,7 @@ class Observable extends Input
               elseif( $type==='parameter' ) {
                 $tmp_ar_param = explode(';',$line);
                 if( preg_match($paramPattern, preg_quote($tmp_ar_param['0']) ) ) {
-                  $tmp_obj_param = new Parameter($this->getAnalyse(), $tmp_ar_param['0'], '', $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'], $tmp_ar_param['4'], $tmp_ar_param['5'] ) ;
+                  $tmp_obj_param = new Parameter($this->getAnalyse(), $tmp_ar_param['0'], '', $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'] ) ;
 
                   array_push($tmp_ar_params, $tmp_obj_param );
                   $searchOK=true;

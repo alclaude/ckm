@@ -96,22 +96,35 @@ class administrationController extends Controller
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
       if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $tmp = $request->request->get($form->getName()) ;
 
-      $em = $this->getDoctrine()->getManager();
+        $up = $form['file']->getData();
 
-      $em->persist($datacard);
-      $em->flush();
+        $tag = $this->getFirstTag( $up->getPathname() );
+        if ($tmp["name"] != $tag) {
+          $this->get('session')->getFlashBag()->add(
+              'error',
+              'Please the tag '.$tag.' inside file must match with the file name '.$tmp['name']
+          );
+          return $this->render('CKMAppBundle:Administration:addDatacardError.html.twig', array(
+            'form1' => $form->createView(),
+          ));
+        }
+        $datacard->setTag($tag);
+        $em->persist($datacard);
+        $em->flush();
 
-      $this->get('session')->getFlashBag()->add(
-        'notice',
-        'File upload '
-      );
+        $this->get('session')->getFlashBag()->add(
+          'notice',
+          'File upload '
+        );
 
-      return $this->redirect(
-              $this->generateUrl('CKMAppBundle_administration_datacard',
-                                  array()
-              )
-      );
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard',
+                                    array()
+                )
+        );
       }
       else{
           $this->get('session')->getFlashBag()->add(
@@ -130,5 +143,37 @@ class administrationController extends Controller
 
     #return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
     #));
+  }
+
+  private function getFirstTag($file)
+  {
+    $data = file_get_contents( $file ) or die("fichier non trouv&eacute;");
+    $lines = explode("\n", $data);
+
+    # stop reading in line 2
+    $i=0;
+    $tag='';
+    foreach($lines as $line) {
+      $tmp_ar = explode(';',$line);
+      $tag = $tmp_ar[1];
+      if ($i > 2) {
+        break;
+      }
+      $i++;
+    }
+
+    return $tag;
+  }
+  private function errorForm($typeSession, $errorMsg, $template, $param ) {
+      $this->get('session')->getFlashBag()->add(
+          $typeSession,
+          $errorMsg
+      );
+
+    return $this->redirect(
+            $this->generateUrl($template,
+                               $param
+            )
+    );
   }
 }

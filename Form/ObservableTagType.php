@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ObservableType extends AbstractType
+class ObservableTagType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -15,24 +15,11 @@ class ObservableType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array(
-              'attr' => array(
-                'class' => 'form-control',
-                'read_only' => true
-              ),
+          ->add('tag', 'choice', array(
+              'choices' => array('tag' => 'tag', 'none' => 'none'),
+              'expanded'  => true,
+              'multiple'  => false,
             ))
-          ->add('value', 'text', array(
-              'attr' => array('class' => 'form-control'),
-            ))
-          ->add('expUncertity', 'number', array(
-              'attr' => array('class' => 'form-control'),
-              'label' => 'Experimental uncertainty',
-            ))
-          ->add('thUncertity', 'number', array(
-              'attr' => array('class' => 'form-control'),
-              'label' => 'Theoretical uncertainty',
-            ))
-          //->add('associatedElement')
         ;
     }
 
