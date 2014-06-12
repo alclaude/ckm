@@ -14,6 +14,19 @@ class ObservableType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $value = $options['data']->getValue();
+        $placeholder='';
+        $htmlValue=$value;
+        $htmlExpUncertity=$options['data']->getExpUncertity();
+        $htmlThUncertity=$options['data']->getThUncertity();
+
+        if($value==0) {
+          $placeholder ="set a specific value";
+          $htmlValue = "";
+          $htmlExpUncertity="";
+          $htmlThUncertity="";
+        }
+
         $builder
             ->add('name', 'text', array(
               'attr' => array(
@@ -22,14 +35,14 @@ class ObservableType extends AbstractType
               ),
             ))
           ->add('value', 'text', array(
-              'attr' => array('class' => 'form-control'),
+              'attr' => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlValue),
             ))
           ->add('expUncertity', 'number', array(
-              'attr' => array('class' => 'form-control'),
+              'attr' => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlExpUncertity),
               'label' => 'Experimental uncertainty',
             ))
           ->add('thUncertity', 'number', array(
-              'attr' => array('class' => 'form-control'),
+              'attr' => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlThUncertity),
               'label' => 'Theoretical uncertainty',
             ))
           //->add('associatedElement')
@@ -42,7 +55,7 @@ class ObservableType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CKM\AppBundle\Entity\Observable',
+            'data_class' => 'CKM\AppBundle\Entity\Input',
             'cascade_validation' => true,
         ));
     }

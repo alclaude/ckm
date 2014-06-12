@@ -14,11 +14,15 @@ class ObservableTagType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $tag = $options['data']->getTag();
+
         $builder
-          ->add('tag', 'choice', array(
-              'choices' => array('tag' => 'tag', 'none' => 'none'),
+          ->add('currentTag', 'choice', array(
+              'choices' => array($tag => $tag, 'none' => 'none'),
               'expanded'  => true,
               'multiple'  => false,
+              'data' => $tag,
+              'label' => 'Define tag system for Input',
             ))
         ;
     }
@@ -29,7 +33,7 @@ class ObservableTagType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CKM\AppBundle\Entity\Observable',
+            'data_class' => 'CKM\AppBundle\Entity\Input',
             'cascade_validation' => true,
         ));
     }

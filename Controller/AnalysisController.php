@@ -757,12 +757,12 @@ $em->persist($observableClone);
       return true;
     }
 
-    public function editObservableTagAction($observable_id=0) {
+    public function editInputTagAction($input_id=0) {
       $request = $this->getRequest();
 
       $observable = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Input')
-        ->findOneById($observable_id);
+        ->findOneById($input_id);
 
       if (!$observable) {
         throw $this->createNotFoundException('Observable not exist');
@@ -785,6 +785,8 @@ $em->persist($observableClone);
 
       $form1 = $this->createForm(new ObservableTagType, $observable);
 
+
+
       if ($request->getMethod() == 'POST') {
         $form1->handleRequest($request);
         if ($form1->isValid()) {
@@ -793,6 +795,9 @@ $em->persist($observableClone);
           //$em->persist($observable);
           $tmp = $request->request->get($form1->getName());
 
+          $observable->setValue( 0 );
+          $observable->setExpUncertity( 0 );
+          $observable->setThUncertity( 0 );
 
           $em->persist( $observable );
           $em->flush();
@@ -806,17 +811,16 @@ $em->persist($observableClone);
       }
       return $this->render('CKMAppBundle:Analysis:editObservableInputTag.html.twig', array(
         'form1' => $form1->createView(),
-        'type' => 'Observable',
-        'observable'   => $observable,
+        'input_id' => $input_id,
       ));
     }
 
-    public function editObservableAction($observable_id=0) {
+    public function editInputAction($input_id=0, $type='Observable') {
       $request = $this->getRequest();
 
       $observable = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Input')
-        ->findOneById($observable_id);
+        ->findOneById($input_id);
 
       if (!$observable) {
         throw $this->createNotFoundException('Observable not exist');
@@ -849,8 +853,20 @@ $em->persist($observableClone);
 
           if( ! $this->isValueRanged($tmp, $observable) ) {
             return $this->redirect(
-                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_observable',
-                                      array('observable_id' => $observable_id, 'type' => 'Observable' )
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_input',
+                                      array('input_id' => $input_id, 'type' => $type )
+                  )
+            );
+          }
+
+          if( $tmp['value']==0 or $tmp['expUncertity']==0 or $tmp['thUncertity']==0 ) {
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                'Please, you must change the three values at once'
+            );
+            return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_input',
+                                      array('input_id' => $input_id, 'type' => $type )
                   )
             );
           }
@@ -864,14 +880,14 @@ $em->persist($observableClone);
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                                      array('analyse' => $observable->getAnalyse()->getId() )
+                      array('analyse' => $observable->getAnalyse()->getId() )
                   )
           );
         }
       }
       return $this->render('CKMAppBundle:Analysis:editObservableInput.html.twig', array(
         'form' => $form->createView(),
-        'type' => 'Observable',
+        'type' => $type,
         'observable'   => $observable,
       ));
     }

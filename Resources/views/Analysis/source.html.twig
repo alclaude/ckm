@@ -1,4 +1,4 @@
-{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{# src/Blogger/BlogBundle/Resources/views/Analysis/source.html.twig #}
 
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
@@ -105,7 +105,7 @@ Analysis - <small>Personalize your analysis </small>
                         {% endif %} </td>
                         {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': parameter} only %}
                         <td> explain  </td>
-                        <td> <div class="text-right" id="{{parameter.name}}"><a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': parameter.id})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a></div></td>
+                        <td> <div class="text-right" id="{{parameter.name}}"><a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': parameter.id, 'type':'Parameter'})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a></div></td>
                       </tr>
                 {% endfor %}
                     </table>
@@ -144,7 +144,7 @@ Analysis - <small>Personalize your analysis </small>
                       {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': observable} only %}
                       <td>
                         <div class="text-right">
-                          <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source_observable', {'observable_id': observable.id}) }}">
+                          <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': observable.id, 'type':'Observable'}) }}">
                             <i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit observable" title="Edit observable"></i>
                           </a>
                         </div>
@@ -156,7 +156,7 @@ Analysis - <small>Personalize your analysis </small>
                       {% set style = "background:#eee" %}
                       {% set line = '<a href="#'~ oneParameter.name ~'">See '~ oneParameter.latex.latex ~' of '~ paramGetObs[oneParameter.latex.latex] ~'</a>' %}
                     {% else %}
-                      {% set line = '<div class="text-right" id="'~oneParameter.name~'"><a class="btn btn-success btn-xs" href="'~ path('CKMAppBundle_analyse_create_analyse_source_parameter', {'parameter_id': oneParameter.id}) ~'"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i></a></div>' %}
+                      {% set line = '<div class="text-right" id="'~oneParameter.name~'"><a class="btn btn-success btn-xs" href="'~ path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': oneParameter.id, 'type':'Parameter'}) ~'"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i></a></div>' %}
                       {% set paramGetObs = paramGetObs|merge({ (oneParameter.latex.latex): observable.latex.latex }) %}
                     {% endif %}
                       <tr class="collapse row{{ counter }}" style="{{ style|e }}" >

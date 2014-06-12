@@ -1,0 +1,16 @@
+{# src/Blogger/BlogBundle/Resources/views/Documentation/index.html.twig #}
+
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
+{% block titlePage %}
+Documentation - <small>{{scenario }}::{{ input.latex.latex }}</small>
+{% endblock %}
+
+{% block content %}
+We know that we must document the input {{ input.latex.latex }} of the datacard {{scenario }}
+{% endblock %}

@@ -1,6 +1,11 @@
 {# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
 {% block titlePage %}
 Analysis - <small>List </small>
 {% endblock %}
@@ -36,7 +41,7 @@ Analysis - <small>List </small>
                       <td>{{ analyse.date|date("m/d/Y - H:i") }}</td>
                       <td>
                       {% for target in getIsTargets(analyse) %}
-                        {{ target.name }}<br />
+                        {{ target.latex.latex }}<br />
                       {% endfor %}
                       &nbsp;
                       </td>

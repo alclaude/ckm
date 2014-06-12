@@ -119,6 +119,13 @@ class Input
      */
     private $tag='';
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_tag", type="string", length=255)
+     */
+    private $currentTag='';
+
     public function __toString() { return 'Input : '.$this->name; }
 
     public function __construct($analyse, $name='', $path='',  $tag='', $allowedRangeMin=0, $allowedRangeMax=0)
@@ -126,6 +133,7 @@ class Input
       $this->name              = $name;
       $this->analyse           = $analyse;
       $this->tag               = $tag;
+      $this->currentTag        = $this->tag ;
       $this->allowedRangeMax   = $allowedRangeMax;
       $this->allowedRangeMin   = $allowedRangeMin;
 
@@ -144,6 +152,7 @@ class Input
 
       if($ar_obs) {
         $this->tag               = $this->cleanData( $ar_obs['1'] );
+        $this->currentTag        = $this->tag ;
         $this->allowedRangeMax   = $this->cleanData( $ar_obs['3'] );
         $this->allowedRangeMin   = $this->cleanData( $ar_obs['2'] );;
       }
@@ -513,5 +522,28 @@ class Input
     public function getTag()
     {
         return $this->tag;
+    }
+
+    /**
+     * Set currentTag
+     *
+     * @param string $currentTag
+     * @return Input
+     */
+    public function setCurrentTag($currentTag)
+    {
+        $this->currentTag = $currentTag;
+
+        return $this;
+    }
+
+    /**
+     * Get currentTag
+     *
+     * @return string 
+     */
+    public function getCurrentTag()
+    {
+        return $this->currentTag;
     }
 }

@@ -25,19 +25,22 @@ Analysis - <small>{{ type }} definition</small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-sm-12">
+  <div class="col-sm-10">
+    <div class="alert alert-dismissable alert-info">
     <p>In this interface, you can change the properties of your input.
       <ul>You have two systems :
-      <li>a system tag where you can use either the default value of the datacard or none values</li>
+      <li>a system tag where you can use either the default value of the datacard <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.name, 'input': observable.id }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or none values</li>
       <li>a specific system where you can put your own specific data (value, theoretuical and experimentale uncertainty)</li>
       </ul>
       Choose either one or the other.
     </p>
+    </div>
   </div>
-
+</div>
+<div class="row">
   <div class="col-sm-4">
-    {{ render(controller('CKMAppBundle:Analysis:editObservableTag', {
-            'observable_id': observable.id
+    {{ render(controller('CKMAppBundle:Analysis:editInputTag', {
+            'input_id': observable.id
         })) }}
   </div>
 

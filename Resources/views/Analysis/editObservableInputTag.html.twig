@@ -20,16 +20,15 @@
       <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Change Tag System...</h3>
     </div>
     <div class="panel-body">
-      <form role="form" method="post" {{ form_enctype(form1) }}>
-              <div class="form-group">
-                {{ form_errors(form1.tag) }}
-                {{ form_label(form1.tag) }}
-                {{ form_widget(form1.tag) }}
-              </div>
-
+      <form role="form" method="post" action="{{ path('CKMAppBundle_analyse_create_analyse_source_input_tag', {'input_id':input_id } ) }}" {{ form_enctype(form1) }}>
+          <div class="form-group">
+            {{ form_errors(form1.currentTag) }}
+            {{ form_label(form1.currentTag) }}
+            {{ form_widget(form1.currentTag) }}
+          </div>
+          {{ form_rest(form1) }}
           <input type="submit" class="btn btn-primary" />
         </p>
-        {{ form_rest(form1) }}
       </form>
     </div>
 </div>
