@@ -1,0 +1,33 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{% form_theme form1 'CKMAppBundle::Form/errors.html.twig' %}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block titlePage %}
+Administration - <small>Documentation management</small>
+{% endblock %}
+
+{% block content %}
+<h3>Document a Datacard</h3>
+
+{% for flashMessage in app.session.flashbag.get('error') %}
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="alert alert-danger">
+          <p><span class="label label-danger">Error</span> {{ flashMessage }} </p>
+
+          <p><span class="label label-default">Or return to</span>  <a href="{{ path('CKMAppBundle_administration_datacard_documentation') }}">Documenation Center</a></p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+  <div class="col-lg-6">
+    <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add') }}" method="post" {{ form_enctype(form1) }}>
+      {{ form_widget(form1) }}
+      <br />
+      <p>
+        <input type="submit" class="btn btn-primary" />
+      </p>
+    </form>
+  </div>
+{% endblock %}

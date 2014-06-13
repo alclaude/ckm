@@ -7,8 +7,10 @@ use CKM\AppBundle\Entity\Observable;
 use CKM\AppBundle\Entity\Parameter;
 use CKM\AppBundle\Entity\ObservableInput;
 use CKM\AppBundle\Entity\ParameterInput;
+
 use CKM\AppBundle\Entity\ElementTarget;
 use CKM\AppBundle\Entity\Scenario;
+use CKM\AppBundle\Entity\ScenarioDocumentation;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +20,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use CKM\AppBundle\Form\ScenarioType;
 use CKM\AppBundle\Form\ScenarioListType;
+use CKM\AppBundle\Form\DocumentationType;
 
 class administrationController extends Controller
 {
@@ -74,9 +77,9 @@ class administrationController extends Controller
         }
 
         return $this->redirect(
-                $this->generateUrl('CKMAppBundle_administration_datacard',
-                    array()
-                )
+            $this->generateUrl('CKMAppBundle_administration_datacard',
+                array()
+            )
         );
       }
     }
@@ -143,6 +146,115 @@ class administrationController extends Controller
 
     #return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
     #));
+  }
+
+  public function datacardDocumentationAction(Request $request) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $em = $this->getDoctrine()->getManager();
+
+    $scenarioDocumented = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Scenario')
+      ->findScenarioByDocumentation();
+
+    $scenarioNotDocumented = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Scenario')
+      ->findScenarioByDocumentation(false);
+
+    return $this->render('CKMAppBundle:Administration:datacardDocumentation.html.twig',
+      array(
+        'scenarioDocumented' => $scenarioDocumented,
+        'scenarioNotDocumented' => $scenarioNotDocumented,
+      )
+    );
+  }
+
+  public function addDatacardDocumentationAction(Request $request) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $datacardDocumentation = new ScenarioDocumentation();
+    $em = $this->getDoctrine()->getManager();
+    $scenarioNotDocumented = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Scenario')
+      ->findScenarioByDocumentation(false);
+
+    $listScenarioName = array();
+    foreach( $scenarioNotDocumented as $scenario ) {
+      $listScenarioName[$scenario->getName()]=$scenario->getName();
+    }
+
+    $form = $this->createForm(new DocumentationType($listScenarioName), $datacardDocumentation);
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+
+        $tmp = $request->request->get($form->getName()) ;
+
+        $scenario = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Scenario')
+          ->findOneByName($tmp['name']);
+
+        list($observables, $parameters) = $scenario->getInput();
+        $inputs=array_merge($observables, $parameters);
+
+        $lines = explode("\n", $tmp['explain']);
+        $new_line = "^\n$" ;
+        $errors = array();
+        $inputsFromUser_ar= array();
+
+        $trouve=0;
+
+        foreach($lines as $line) {
+          if( ! preg_match("/$new_line/", $line) ) {
+            $tmp_ar= array();
+            $tmp_ar = explode(';',$line);
+            $inputFromUser_ar[]=$tmp_ar['0'];
+          }
+        }
+
+        foreach($inputs as $input) {
+          $trouve=0;
+          foreach($inputsFromUser_ar as $inputFromUser_ar) {
+            if($input==$inputFromUser_ar) {
+              $trouve=1;
+              break;
+            }
+          }
+          if($trouve==0) {
+            $errors[]=$input;
+          }
+        }
+
+        if (count($errors)>0) {
+          $this->get('session')->getFlashBag()->add(
+              'error',
+              'Please the input '.join(", ",$errors).' inside file are missing'
+          );
+          return $this->render('CKMAppBundle:Administration:addDatacardDocumentationError.html.twig', array(
+            'form1' => $form->createView(),
+          ));
+        }
+
+        $em->persist($datacardDocumentation);
+        $em->flush();
+
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                                    array()
+                )
+        );
+      }
+
+    }
+    return $this->render('CKMAppBundle:Administration:addDatacardDocumentation.html.twig', array(
+      'form1' => $form->createView(),
+    ));
+
   }
 
   private function getFirstTag($file)

@@ -1,0 +1,58 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
+{% block titlePage %}
+Administration - <small>Documentation management</small>
+{% endblock %}
+{% block content %}
+{% for flashMessage in app.session.flashbag.get('notice') %}
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="alert alert-danger">
+              <h4>Warning!</h4>
+              <p>{{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<div class="row">
+  <div class="col-sm-4 ">
+    <blockquote>
+      <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Documented Scenarii </h3></p>
+
+      {% if scenarioDocumented is defined %}
+          <table class="table table-condensed table-hover">
+            <thead>
+              <tr>
+                <th class="header">Datacard name </th>
+                <th class="header">is documented ? </th>
+                <th class="header">Link </th>
+              </tr>
+            </thead>
+            {% for scenario in scenarioDocumented %}
+              <tr>
+                <td> {{scenario.name}}</td>
+                <td> {{scenario.isDocumented  ? 'true' : 'false' }} </td>
+                <td> <a>datacard explanation link</a></td>
+              </tr>
+            {% endfor %}
+            </table>
+    {% endif %}
+    </blockquote>
+  </div>
+
+</div> <!-- end row -->
+
+{{ render(controller('CKMAppBundle:Administration:addDatacardDocumentation', {
+        'error': 0
+    })) }}
+
+
+
+{% endblock %}

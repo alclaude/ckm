@@ -80,6 +80,13 @@ class Scenario
      */
     private $tag;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_documented", type="boolean")
+     */
+    private $isDocumented=false;
+
     public function __construct()
     {
         $this->path = "/home/alclaude/Documents/DEV_PHP/ckm-web2/src/CKM/globalCKMfit_scenario.txt";
@@ -184,9 +191,9 @@ class Scenario
         return $this->dateUpdate;
     }
 
-    public function getOservable()
+    public function getInput()
     {
-      $data = file_get_contents( $this->path ) or die("fichier non trouv&eacute;");
+      $data = file_get_contents( $this->getWebPath() ) or die("fichier non trouv&eacute;");
       $lines = explode("\n", $data);
 
 
@@ -336,5 +343,28 @@ class Scenario
     public function getTag()
     {
         return $this->tag;
+    }
+
+    /**
+     * Set isDocumented
+     *
+     * @param boolean $isDocumented
+     * @return Scenario
+     */
+    public function setIsDocumented($isDocumented)
+    {
+        $this->isDocumented = $isDocumented;
+
+        return $this;
+    }
+
+    /**
+     * Get isDocumented
+     *
+     * @return boolean
+     */
+    public function getIsDocumented()
+    {
+        return $this->isDocumented;
     }
 }

@@ -1,0 +1,33 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{% form_theme form1 'CKMAppBundle::Form/errors.html.twig' %}
+
+
+{% block content %}
+{% for flashMessage in app.session.flashbag.get('notice') %}
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="alert alert-success">
+              <h4>Success!</h4>
+              <p>{{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<div class="row">
+  <div class="col-sm-6 ">
+    <blockquote>
+
+      <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Document a Datacard</h3></p>
+
+      <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add') }}" method="post" {{ form_enctype(form1) }}>
+        {{ form_widget(form1) }}
+        <br />
+        <p>
+          <input type="submit"  class="btn btn-primary" />
+        </p>
+      </form>
+    </blockquote>
+  </div>
+</div>
+{% endblock %}
