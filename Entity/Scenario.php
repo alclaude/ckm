@@ -199,8 +199,7 @@ class Scenario
 
       $type='';
       $new_line = "^\n$" ;
-      $obs_ar = array();
-      $param_ar = array();
+      $input_ar = array();
 
       foreach($lines as $line) {
 
@@ -216,19 +215,21 @@ class Scenario
               $tmp_ar = explode(';',$line);
               #$obs_tmp = new Observable($tmp_ar['0'], $tmp_ar['0'], 1, 2, array("toto", "titi"));
               #$obs_ar[ "$tmp_ar[0]" ] = $obs_tmp;
-              $obs_ar[ "$tmp_ar[0]" ] = $tmp_ar[0];
+              #$obs_ar[ "$tmp_ar[0]" ] = $tmp_ar[0];
+              $input_ar[] = $tmp_ar[0];
             }
             if( $type==='parameter' ) {
               $tmp_ar = explode(';',$line);
               #$param_tmp = new Parameter($tmp_ar['0'], $tmp_ar['0'], 1, 2);
               #$param_ar[ "$tmp_ar[0]" ] = $param_tmp;
-              $param_ar[ "$tmp_ar[0]" ] = $tmp_ar[0];
+              #$param_ar[ "$tmp_ar[0]" ] = $tmp_ar[0];
+              $input_ar[] = $tmp_ar[0];
             }
           }
         }
 
       }
-      return array($obs_ar, $param_ar);
+      return $input_ar;
 
     }
 

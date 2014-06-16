@@ -199,8 +199,9 @@ class administrationController extends Controller
           ->getRepository('CKMAppBundle:Scenario')
           ->findOneByName($tmp['name']);
 
-        list($observables, $parameters) = $scenario->getInput();
-        $inputs=array_merge($observables, $parameters);
+        #list($observables, $parameters) = $scenario->getInput();
+        #$inputs=array_merge($observables, $parameters);
+        $inputs = $scenario->getInput();
 
         $lines = explode("\n", $tmp['explain']);
         $new_line = "^\n$" ;
@@ -213,34 +214,48 @@ class administrationController extends Controller
           if( ! preg_match("/$new_line/", $line) ) {
             $tmp_ar= array();
             $tmp_ar = explode(';',$line);
-            $inputFromUser_ar[]=$tmp_ar['0'];
+            $inputsFromUser_ar[$tmp_ar['0']]=$tmp_ar['1'];
           }
         }
 
         foreach($inputs as $input) {
           $trouve=0;
-          foreach($inputsFromUser_ar as $inputFromUser_ar) {
-            if($input==$inputFromUser_ar) {
-              $trouve=1;
-              break;
+          $input = trim($input, ' ');
+          if(!empty($input)) {
+            foreach($inputsFromUser_ar as $key => $inputFromUser) {
+              if($input==$key) {
+                $trouve=1;
+                break;
+              }
             }
-          }
-          if($trouve==0) {
-            $errors[]=$input;
+            if($trouve==0) {
+              $errors[]=$input;
+            }
           }
         }
 
         if (count($errors)>0) {
           $this->get('session')->getFlashBag()->add(
               'error',
-              'Please the input '.join(", ",$errors).' inside file are missing'
+              'Please the input '.rtrim(join(", ",$errors), ', ').' inside file are missing'
           );
           return $this->render('CKMAppBundle:Administration:addDatacardDocumentationError.html.twig', array(
             'form1' => $form->createView(),
           ));
         }
 
-        $em->persist($datacardDocumentation);
+        $datacardDocumentation_ar = array();
+        foreach($inputsFromUser_ar as $key => $inputFromUser) {
+
+          $datacardDocumentation->setExplanation($inputFromUser);
+          $datacardDocumentation->setInput($key);
+          $datacardDocumentation->setScenario($scenario->getName() );
+
+          $datacardDocumentation_ar[]= clone $datacardDocumentation;
+          $em->persist(end($datacardDocumentation_ar));
+
+        }
+
         $em->flush();
 
         return $this->redirect(

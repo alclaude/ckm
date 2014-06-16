@@ -39,7 +39,7 @@ Administration - <small>Documentation management</small>
               <tr>
                 <td> {{scenario.name}}</td>
                 <td> {{scenario.isDocumented  ? 'true' : 'false' }} </td>
-                <td> <a>datacard explanation link</a></td>
+                <td> <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.name, 'input': 0 }) }}">datacard explanation link</a></td>
               </tr>
             {% endfor %}
             </table>

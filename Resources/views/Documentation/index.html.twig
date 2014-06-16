@@ -8,9 +8,15 @@
 {% endblock %}
 
 {% block titlePage %}
-Documentation - <small>{{scenario }}::{{ input.latex.latex }}</small>
+Documentation - <small>{{ scenario }}::</small>
 {% endblock %}
 
 {% block content %}
-We know that we must document the input {{ input.latex.latex }} of the datacard {{scenario }}
+<p>We know that we must document the inputs of the datacard {{scenario }}<br /></p>
+
+{% for doc in docs %}
+<p><strong>{{ doc.input}}</strong></p>
+<p>{{ doc.explanation }}</p>
+{% endfor %}
+
 {% endblock %}

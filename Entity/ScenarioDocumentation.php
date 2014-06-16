@@ -50,11 +50,16 @@ class ScenarioDocumentation
 
     }
 
+    public function __clone() {
+      if ($this->id) {
+          $this->setId(null);
+      }
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -77,7 +82,7 @@ class ScenarioDocumentation
     /**
      * Get scenario
      *
-     * @return string 
+     * @return string
      */
     public function getScenario()
     {
@@ -100,7 +105,7 @@ class ScenarioDocumentation
     /**
      * Get input
      *
-     * @return string 
+     * @return string
      */
     public function getInput()
     {
@@ -123,7 +128,7 @@ class ScenarioDocumentation
     /**
      * Get explanation
      *
-     * @return string 
+     * @return string
      */
     public function getExplanation()
     {
