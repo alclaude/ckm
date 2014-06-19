@@ -22,7 +22,7 @@ Administration - <small>Documentation management</small>
 {% endfor %}
 
   <div class="col-lg-6">
-    <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add') }}" method="post" {{ form_enctype(form1) }}>
+    <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
       {{ form_widget(form1) }}
       <br />
       <p>

@@ -21,8 +21,6 @@ class ObservableTagType extends AbstractType
     {
         $tag = $options['data']->getTag();
 
-        $tag_ar = array($tag => $tag, 'none' => 'No default input');
-
         $builder
           ->add('currentTag', 'choice', array(
               'choices' => $this->scenario,

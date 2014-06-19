@@ -171,7 +171,7 @@ class administrationController extends Controller
     );
   }
 
-  public function addDatacardDocumentationAction(Request $request) {
+  public function addDatacardDocumentationAction(Request $request, $display='') {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
@@ -188,86 +188,111 @@ class administrationController extends Controller
     }
 
     $form = $this->createForm(new DocumentationType($listScenarioName), $datacardDocumentation);
+    $explainText='';
 
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
       if ($form->isValid()) {
 
+
+
         $tmp = $request->request->get($form->getName()) ;
 
-        $scenario = $this->getDoctrine()
-          ->getRepository('CKMAppBundle:Scenario')
-          ->findOneByName($tmp['name']);
 
-        #list($observables, $parameters) = $scenario->getInput();
-        #$inputs=array_merge($observables, $parameters);
-        $inputs = $scenario->getInput();
+        if( $form->get('display')->isClicked() ) {
+          #$form['explain']->setData('totototototo');
+          $explainText='totototo';
 
-        $lines = explode("\n", $tmp['explain']);
-        $new_line = "^\n$" ;
-        $errors = array();
-        $inputsFromUser_ar= array();
+          $this->get('session')->getFlashBag()->add(
+            'explainText',
+            $tmp['name']
+        );
 
-        $trouve=0;
+          #die('display');
 
-        foreach($lines as $line) {
-          if( ! preg_match("/$new_line/", $line) ) {
-            $tmp_ar= array();
-            $tmp_ar = explode(';',$line);
-            $inputsFromUser_ar[$tmp_ar['0']]=$tmp_ar['1'];
-          }
+                    return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                                      array()
+                  )
+          );
         }
 
-        foreach($inputs as $input) {
+        if( $form->get('document')->isClicked() ) {
+          $scenario = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Scenario')
+            ->findOneByName($tmp['name']);
+
+          #list($observables, $parameters) = $scenario->getInput();
+          #$inputs=array_merge($observables, $parameters);
+          $inputs = $scenario->getInput();
+
+          $lines = explode("\n", $tmp['explain']);
+          $new_line = "^\n$" ;
+          $errors = array();
+          $inputsFromUser_ar= array();
+
           $trouve=0;
-          $input = trim($input, ' ');
-          if(!empty($input)) {
-            foreach($inputsFromUser_ar as $key => $inputFromUser) {
-              if($input==$key) {
-                $trouve=1;
-                break;
+
+          foreach($lines as $line) {
+            if( ! preg_match("/$new_line/", $line) ) {
+              $tmp_ar= array();
+              $tmp_ar = explode(';',$line);
+              $inputsFromUser_ar[$tmp_ar['0']]=$tmp_ar['1'];
+            }
+          }
+
+          foreach($inputs as $input) {
+            $trouve=0;
+            $input = trim($input, ' ');
+            if(!empty($input)) {
+              foreach($inputsFromUser_ar as $key => $inputFromUser) {
+                if($input==$key) {
+                  $trouve=1;
+                  break;
+                }
+              }
+              if($trouve==0) {
+                $errors[]=$input;
               }
             }
-            if($trouve==0) {
-              $errors[]=$input;
-            }
           }
-        }
 
-        if (count($errors)>0) {
-          $this->get('session')->getFlashBag()->add(
-              'error',
-              'Please the input '.rtrim(join(", ",$errors), ', ').' inside file are missing'
+          if (count($errors)>0) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Please the input '.rtrim(join(", ",$errors), ', ').' inside file are missing'
+            );
+            return $this->render('CKMAppBundle:Administration:addDatacardDocumentationError.html.twig', array(
+              'form1' => $form->createView(),
+            ));
+          }
+
+          $datacardDocumentation_ar = array();
+          foreach($inputsFromUser_ar as $key => $inputFromUser) {
+
+            $datacardDocumentation->setExplanation($inputFromUser);
+            $datacardDocumentation->setInput($key);
+            $datacardDocumentation->setScenario($scenario->getName() );
+
+            $datacardDocumentation_ar[]= clone $datacardDocumentation;
+            $em->persist(end($datacardDocumentation_ar));
+
+          }
+
+          $em->flush();
+
+          return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                                      array()
+                  )
           );
-          return $this->render('CKMAppBundle:Administration:addDatacardDocumentationError.html.twig', array(
-            'form1' => $form->createView(),
-          ));
         }
-
-        $datacardDocumentation_ar = array();
-        foreach($inputsFromUser_ar as $key => $inputFromUser) {
-
-          $datacardDocumentation->setExplanation($inputFromUser);
-          $datacardDocumentation->setInput($key);
-          $datacardDocumentation->setScenario($scenario->getName() );
-
-          $datacardDocumentation_ar[]= clone $datacardDocumentation;
-          $em->persist(end($datacardDocumentation_ar));
-
-        }
-
-        $em->flush();
-
-        return $this->redirect(
-                $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
-                                    array()
-                )
-        );
       }
 
     }
     return $this->render('CKMAppBundle:Administration:addDatacardDocumentation.html.twig', array(
       'form1' => $form->createView(),
+      'explainText' => $explainText,
     ));
 
   }

@@ -1,6 +1,10 @@
 {# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
 {% form_theme form1 'CKMAppBundle::Form/errors.html.twig' %}
 
+{% set explainText='' %}
+{% for flashMessage in app.session.flashbag.get('explainText') %}
+{% set explainText=flashMessage %}
+{% endfor %}
 
 {% block content %}
 {% for flashMessage in app.session.flashbag.get('notice') %}
@@ -20,12 +24,24 @@
 
       <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Document a Datacard</h3></p>
 
-      <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add') }}" method="post" {{ form_enctype(form1) }}>
-        {{ form_widget(form1) }}
-        <br />
-        <p>
-          <input type="submit"  class="btn btn-primary" />
-        </p>
+      <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
+        {{ form_errors(form1.name) }}
+        {{ form_label(form1.name) }}
+        {{ form_widget(form1.name) }}
+
+        {# form_errors(form1.display) #}
+        {# form_label(form1.display) #}
+        {{ form_widget(form1.display) }}
+
+        {{ form_errors(form1.explain) }}
+        {{ form_label(form1.explain) }}
+        {{ form_widget(form1.explain, { 'value' : explainText }) }}
+
+        {# form_errors(form1.document) #}
+        {# form_label(form1.document) #}
+        {{ form_widget(form1.document) }}
+
+        {{ form_rest(form1) }}
       </form>
     </blockquote>
   </div>

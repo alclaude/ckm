@@ -30,11 +30,20 @@ class DocumentationType extends AbstractType
                     'attr' => array('class' => 'form-control'),
                     'choices' => $this->choices,
               ))
+            ->add('display', 'submit', array(
+              'attr'      => array('class' => 'btn btn-primary btn-lg btn-block', 'style' => 'margin:4px 0;'),
+              'label'     => 'Display selected Scenario'
+              ) )
             ->add('explain', 'textarea', array(
                     'attr'    => array('class' => 'form-control', 'rows' => '10'),
                     'mapped'  => false,
                     'label' => 'Explanations',
+                    'required' => false,
               ))
+         ->add('document', 'submit', array(
+              'attr'      => array('class' => 'btn btn-danger btn-lg btn-block', 'onclick' => 'return confirm(\'Are you really sure to delete this Scenario file ?\');'),
+              'label'     => 'Document'
+              ) )
         ;
     }
 

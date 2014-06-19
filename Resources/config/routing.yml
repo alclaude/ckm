@@ -81,10 +81,10 @@ CKMAppBundle_administration_datacard:
     pattern:  /administration/datacard/
     defaults: { _controller: CKMAppBundle:Administration:datacard}
 CKMAppBundle_administration_datacard_documentation:
-    pattern:  /administration/datacard/documentation
+    pattern:  /administration/datacard/documentation/
     defaults: { _controller: CKMAppBundle:Administration:datacardDocumentation}
 CKMAppBundle_administration_datacard_documentation_add:
-    pattern:  /administration/datacard/documentation/add
+    pattern:  /administration/datacard/documentation/add/{display}
     defaults: { _controller: CKMAppBundle:Administration:addDatacardDocumentation}
 ## test
 CKMAppBundle_test_datacard:
