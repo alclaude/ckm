@@ -25,6 +25,10 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
 
+        <service id="CKM.services.analysisManager" class="CKM\AppBundle\Entity\AnalysisManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+
         <service id="dimension_rules_validator" class="CKM\AppBundle\Validator\DimensionRulesValidator">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument type="service" id="request_stack"/>

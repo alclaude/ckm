@@ -8,6 +8,11 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ObservableTagType extends AbstractType
 {
+
+  public function __construct($scenarios) {
+    $this->scenario = $scenarios;
+  }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -16,13 +21,16 @@ class ObservableTagType extends AbstractType
     {
         $tag = $options['data']->getTag();
 
+        $tag_ar = array($tag => $tag, 'none' => 'No default input');
+
         $builder
           ->add('currentTag', 'choice', array(
-              'choices' => array($tag => $tag, 'none' => 'none'),
-              'expanded'  => true,
+              'choices' => $this->scenario,
+              'expanded'  => false,
               'multiple'  => false,
-              'data' => $tag,
+              #'data' => $tag,
               'label' => 'Define tag system for Input',
+              'attr'      => array('class' => 'form-control'),
             ))
         ;
     }

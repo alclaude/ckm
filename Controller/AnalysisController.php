@@ -760,32 +760,34 @@ $em->persist($observableClone);
     public function editInputTagAction($input_id=0) {
       $request = $this->getRequest();
 
-      $observable = $this->getDoctrine()
+      $input = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Input')
         ->findOneById($input_id);
 
-      if (!$observable) {
+      if (!$input) {
         throw $this->createNotFoundException('Observable not exist');
       }
 
       $this->isGranted('ROLE_ANALYSIS');
 
-      if( $this->isForbiddenStep( $this->getAnalysis($observable->getAnalyse()->getId() )) ){
+      if( $this->isForbiddenStep( $this->getAnalysis($input->getAnalyse()->getId() )) ){
         return $this->errorForm(
           'warning',
           'You can not modify with analysis',
           'CKMAppBundle_analyse_create_analyse_source',
-          array('analyse' => $observable->getAnalyse()->getId() )
+          array('analyse' => $input->getAnalyse()->getId() )
         );
       }
 
-      if ($observable->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+      if ($input->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
       }
 
-      $form1 = $this->createForm(new ObservableTagType, $observable);
-
-
+      $form1 = $this->createForm(
+                              new ObservableTagType(
+                                $this->get('CKM.services.analysisManager')->getScenariosForInput($input)
+                              ),
+                              $input);
 
       if ($request->getMethod() == 'POST') {
         $form1->handleRequest($request);
@@ -795,16 +797,16 @@ $em->persist($observableClone);
           //$em->persist($observable);
           $tmp = $request->request->get($form1->getName());
 
-          $observable->setValue( 0 );
-          $observable->setExpUncertity( 0 );
-          $observable->setThUncertity( 0 );
+          $input->setValue( 0 );
+          $input->setExpUncertity( 0 );
+          $input->setThUncertity( 0 );
 
-          $em->persist( $observable );
+          $em->persist( $input );
           $em->flush();
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                                      array('analyse' => $observable->getAnalyse()->getId() )
+                                      array('analyse' => $input->getAnalyse()->getId() )
                   )
           );
         }

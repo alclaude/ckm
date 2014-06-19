@@ -30,7 +30,7 @@ Analysis - <small>{{ type }} definition</small>
     <p>In this interface, you can change the properties of your input.
       <ul>You have two systems :
       <li>a system tag where you can use either the default value of the datacard <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.name, 'input': observable.id }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or none values</li>
-      <li>a specific system where you can put your own specific data (value, theoretuical and experimentale uncertainty)</li>
+      <li>a specific system where you can put your own specific data (value, theoretical and experimentale uncertainty)</li>
       </ul>
       Choose either one or the other.
     </p>
@@ -39,9 +39,14 @@ Analysis - <small>{{ type }} definition</small>
 </div>
 <div class="row">
   <div class="col-sm-4">
-    {{ render(controller('CKMAppBundle:Analysis:editInputTag', {
-            'input_id': observable.id
-        })) }}
+    {{
+      render(controller('CKMAppBundle:Analysis:editInputTag',
+                        {
+                          'input_id': observable.id
+                        }
+                        )
+            )
+    }}
   </div>
 
   <div class="col-sm-6">
@@ -50,7 +55,7 @@ Analysis - <small>{{ type }} definition</small>
             <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> ... or change Specific values</h3>
           </div>
           <div class="panel-body">
-            <p>notice : you must change the three values at once</p>
+            <p>Notice : you must change the three values at once</p>
             <form role="form" method="post" {{ form_enctype(form) }}>
               <div class="form-group">
                 {{ form_errors(form.name) }}
