@@ -29,7 +29,6 @@ class ScenarioDocumentationRepository extends EntityRepository
 
     public function findDocByScenario($scenarioName='')
     {
-      $target=true;
       return $this->getEntityManager()
           ->createQuery(
               'SELECT o FROM CKM\AppBundle\Entity\ScenarioDocumentation o WHERE o.scenario = :scenario'
@@ -39,5 +38,17 @@ class ScenarioDocumentationRepository extends EntityRepository
                 )
            )
           ->getResult();
+    }
+    
+	public function findByScenarioCSV($scenarioName='')
+    {
+			$documentations = $this->findDocByScenario($scenarioName);
+
+			$csv = array();
+			
+			foreach ($documentations as $documentation) {
+				$csv[]= $documentation->getInput().';'.$documentation->getExplanation();
+			}
+			return count($csv)>0 ? $csv : array('There is no documentation for this scenario');
     }
 }

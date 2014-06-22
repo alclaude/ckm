@@ -41,8 +41,8 @@ class DocumentationType extends AbstractType
                     'required' => false,
               ))
          ->add('document', 'submit', array(
-              'attr'      => array('class' => 'btn btn-danger btn-lg btn-block', 'onclick' => 'return confirm(\'Are you really sure to delete this Scenario file ?\');'),
-              'label'     => 'Document'
+              'attr'      => array('class' => 'btn btn-primary btn-lg btn-block'),
+              'label'     => 'Document this scenario'
               ) )
         ;
     }

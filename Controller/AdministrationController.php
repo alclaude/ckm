@@ -200,17 +200,19 @@ class administrationController extends Controller
 
 
         if( $form->get('display')->isClicked() ) {
-          #$form['explain']->setData('totototototo');
-          $explainText='totototo';
+            #$form['explain']->setData('totototototo');
+            $doc = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:ScenarioDocumentation')
+              ->findByScenarioCSV($tmp['name']);
 
-          $this->get('session')->getFlashBag()->add(
+            #print_r($doc);die('display');
+
+            $this->get('session')->getFlashBag()->add(
             'explainText',
-            $tmp['name']
-        );
+            $doc
+            );
 
-          #die('display');
-
-                    return $this->redirect(
+          return $this->redirect(
                   $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
                                       array()
                   )
@@ -265,6 +267,17 @@ class administrationController extends Controller
             return $this->render('CKMAppBundle:Administration:addDatacardDocumentationError.html.twig', array(
               'form1' => $form->createView(),
             ));
+          }
+
+          # suppression des anciennes docs
+          foreach($inputs as $input) {
+            $docsInput = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:ScenarioDocumentation')
+              ->findDocByInputAndScenario($tmp['name'], $input);
+
+            foreach ($docsInput as $docInput) {
+                $em->remove($docInput);
+            }
           }
 
           $datacardDocumentation_ar = array();

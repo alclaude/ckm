@@ -3,7 +3,9 @@
 
 {% set explainText='' %}
 {% for flashMessage in app.session.flashbag.get('explainText') %}
-{% set explainText=flashMessage %}
+	{% for doc in flashMessage %}
+		{% set explainText=explainText~doc %}
+	{% endfor %}
 {% endfor %}
 
 {% block content %}
