@@ -264,7 +264,7 @@ class Input
      */
     public function getValue()
     {
-        return $this->value;
+        return (float)$this->value;
     }
 
     /**
@@ -540,7 +540,7 @@ class Input
     /**
      * Get currentTag
      *
-     * @return string 
+     * @return string
      */
     public function getCurrentTag()
     {

@@ -311,6 +311,8 @@ class Analysis
     {
       #$this->datacard = $datacard;
 
+      # parameter not to print : A, lambda, rhobar, etabar
+      $notToPrints=array('A', 'lambda', 'rhobar', 'etabar');
 
       $scenario  = $this->getScenario()->getWebPath();
       $rl = "\n";
@@ -320,6 +322,7 @@ class Analysis
       $datacard .= $rl.$rl;
 
       # gestion des observables
+    /*
       foreach( $observables as $observable ) {
         #print '<pre>';
         #print \Doctrine\Common\Util\Debug::dump($observable);
@@ -347,13 +350,41 @@ class Analysis
             $datacard .= $rl.$rl.$observable->getName()." : observable not write".$rl;
         }
       }
+    */
+
+      # ecriture des observables
+      foreach( $observables as $observable ) {
+        $observableParameters = $observable->getParameters();
+        $observableParametersToUse = array();
+
+        #\Doctrine\Common\Util\Debug::dump($observableParameters);
+        #die('debbug');
+
+        # search if A, lambda, rhobar, etabar are presents
+        foreach( $observableParameters as $key => $observableParameter ) {
+          $trouve=0;
+          foreach( $notToPrints as $notToPrint ) {
+            if( $notToPrint === $observableParameter->getName() ) {
+              $trouve=1;
+              break;
+            }
+          }
+          if($trouve==0) { $observableParametersToUse[]=$observableParameter; }
+        }
+        if( count($observableParametersToUse) > 0 ) {
+          $datacard .= $this->writeParameterName($observable, $observableParametersToUse, $rl);
+          $datacard .= $this->writeElement($observable,$rl);
+        } else {
+          $datacard .= $this->writeElement($observable,$rl);
+        }
+      }
 
       # gestion des parametres
       foreach( $parameters as $parameter ) {
         $datacard .= $this->writeElement($parameter,$rl);
       }
 
-      $datacard .= $rl.$rl;
+      $datacard .= $rl;
       $datacard .= '}';
 
       #print '<pre>';
@@ -374,15 +405,15 @@ class Analysis
       return $datacard;
     }
 
-    private function writeParameterName($observable,$rl) {
+    private function writeParameterName($observable, $parameters=array(), $rl) {
       $datacard  = '{"All('.$observable->getName().')",';
       $datacard .= '"'.$observable->getName().'",';
-      foreach ($observable->getParameters() as $parameter) {
+      foreach ($parameters as $parameter) {
         $datacard .= '"';
         $datacard .= $parameter->getName();
         $datacard .= '",';
       }
-      rtrim($datacard, ",");
+      $datacard=rtrim($datacard, ",\s");
       $datacard .= '},';
       $datacard .= $rl;
 
@@ -393,11 +424,17 @@ class Analysis
         $datacard  = '{';
         $datacard .= '"'.$element->getName().'"';
         $datacard .= ',';
-        $datacard .= $element->getValue();
-        $datacard .= ',';
-        $datacard .= $element->getExpUncertity();
-        $datacard .= ',';
-        $datacard .= $element->getThUncertity();
+
+        if( $element->getValue()== 0 and $element->getExpUncertity()==0 and $element->getThUncertity()==0) {
+          #$datacard .= $element->getCurrentTag();
+          $datacard .= $element->getCurrentTag();
+        } else {
+          $datacard .= $element->getValue();
+          $datacard .= ',';
+          $datacard .= $element->getExpUncertity();
+          $datacard .= ',';
+          $datacard .= $element->getThUncertity();
+        }
         $datacard .= '}';
         $datacard .= ',';
         $datacard .= $rl.$rl;
