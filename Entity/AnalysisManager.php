@@ -28,7 +28,7 @@ class AnalysisManager
       }
     }
 
-    if( $input->getIsTarget() and !$input->getIsInput() ) {
+    if( ( $input->getIsTarget() and !$input->getIsInput() ) or $input->getTag()=='none' ) {
       $scenariosWithInput["none"]="no default input";
     }
 
