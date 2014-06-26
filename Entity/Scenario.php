@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContext;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use \ScenarioRepository;
+#use \ScenarioRepository;
 
 /**
  * Datacard
