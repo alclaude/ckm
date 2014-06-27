@@ -21,6 +21,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use CKM\AppBundle\Form\ScenarioType;
 use CKM\AppBundle\Form\ScenarioListType;
 use CKM\AppBundle\Form\DocumentationType;
+use CKM\AppBundle\Form\Admin\addLatexType;
 
 class administrationController extends Controller
 {
@@ -88,6 +89,8 @@ class administrationController extends Controller
     ));
   }
 
+
+
   public function addDatacardAction(Request $request) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
@@ -146,6 +149,46 @@ class administrationController extends Controller
 
     #return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
     #));
+  }
+
+  public function latexDocumentationAction(Request $request) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $em = $this->getDoctrine()->getManager();
+
+    $scenarios = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Scenario')
+      ->findScenarioByDocumentation();
+
+    $inputWithLatex=array();
+    $inputWithoutLatex=array();
+
+    foreach($scenarios as $scenario) {
+      # renvoie un tableau de chaine de caractere
+      $inputsScenario=$scenario->getInput();
+      foreach($inputsScenario as $input) {
+        $latex = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Latex')
+          ->findOneByName($input);
+
+        if( $latex ) {
+          $inputWithLatex[$latex->getName()]=$latex;
+        } else {
+          if($input!='')
+            $inputWithoutLatex[$input]=$input;
+        }
+      }
+    }
+
+
+    return $this->render('CKMAppBundle:Administration:latexDocumentation.html.twig',
+      array(
+        'inputWithLatex' => $inputWithLatex,
+        'inputWithoutLatex' => $inputWithoutLatex,
+      )
+    );
   }
 
   public function datacardDocumentationAction(Request $request) {
@@ -308,6 +351,51 @@ class administrationController extends Controller
       'explainText' => $explainText,
     ));
 
+  }
+
+  public function addLatexAction(Request $request) {
+    return new Response('add latex');
+  }
+
+  public function editLatexAction($latex) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $request = $this->getRequest();
+
+    $latex = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Latex')
+          ->findOneById($latex);
+
+    if (!$latex) {
+      throw $this->createNotFoundException('Latex not exist');
+    }
+
+    $form = $this->createForm(new addLatexType, $latex);
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist( $latex );
+        $em->flush();
+
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                    array()
+                )
+        );
+      }
+    }
+
+    return $this->render('CKMAppBundle:Administration:addLatex.html.twig', array(
+      'form' => $form->createView(),
+    ));
+  }
+
+  public function deleteLatexAction($latex) {
+    return new Response('delete latex');
   }
 
   private function getFirstTag($file)

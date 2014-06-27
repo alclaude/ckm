@@ -86,6 +86,18 @@ CKMAppBundle_administration_datacard_documentation:
 CKMAppBundle_administration_datacard_documentation_add:
     pattern:  /administration/datacard/documentation/add/{display}
     defaults: { _controller: CKMAppBundle:Administration:addDatacardDocumentation}
+CKMAppBundle_administration_latex_documentation:
+    pattern:  /administration/latex/documentation/
+    defaults: { _controller: CKMAppBundle:Administration:latexDocumentation}
+CKMAppBundle_administration_latex_documentation_add:
+    pattern:  /administration/latex/documentation/add
+    defaults: { _controller: CKMAppBundle:Administration:addLatex}
+CKMAppBundle_administration_latex_documentation_edit:
+    pattern:  /administration/latex/documentation/edit/{latex}
+    defaults: { _controller: CKMAppBundle:Administration:editLatex}
+CKMAppBundle_administration_latex_documentation_delete:
+    pattern:  /administration/latex/documentation/delete/{latex}
+    defaults: { _controller: CKMAppBundle:Administration:deleteLatex}
 ## test
 CKMAppBundle_test_datacard:
     pattern:  /administration/datacard/test/{analyse}

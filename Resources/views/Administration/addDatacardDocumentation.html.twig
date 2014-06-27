@@ -3,9 +3,9 @@
 
 {% set explainText='' %}
 {% for flashMessage in app.session.flashbag.get('explainText') %}
-	{% for doc in flashMessage %}
-		{% set explainText=explainText~doc %}
-	{% endfor %}
+  {% for doc in flashMessage %}
+    {% set explainText=explainText~doc %}
+  {% endfor %}
 {% endfor %}
 
 {% block content %}
@@ -21,9 +21,8 @@
 {% endfor %}
 
 <div class="row">
-  <div class="col-sm-6 ">
+  <div class="col-sm-8 ">
     <blockquote>
-
       <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Document a Datacard</h3></p>
 
       <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
@@ -48,4 +47,5 @@
     </blockquote>
   </div>
 </div>
+
 {% endblock %}
