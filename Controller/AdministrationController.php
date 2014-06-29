@@ -10,6 +10,7 @@ use CKM\AppBundle\Entity\ParameterInput;
 
 use CKM\AppBundle\Entity\ElementTarget;
 use CKM\AppBundle\Entity\Scenario;
+use CKM\AppBundle\Entity\Latex as Latex;
 use CKM\AppBundle\Entity\ScenarioDocumentation;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,7 +22,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use CKM\AppBundle\Form\ScenarioType;
 use CKM\AppBundle\Form\ScenarioListType;
 use CKM\AppBundle\Form\DocumentationType;
-use CKM\AppBundle\Form\Admin\addLatexType;
+use CKM\AppBundle\Form\Admin\latexType;
+
+use \Doctrine\ORM\NoResultException;
 
 class administrationController extends Controller
 {
@@ -191,7 +194,7 @@ class administrationController extends Controller
     );
   }
 
-  public function datacardDocumentationAction(Request $request) {
+  public function datacardDocumentationAction($tab='') {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
@@ -210,6 +213,7 @@ class administrationController extends Controller
       array(
         'scenarioDocumented' => $scenarioDocumented,
         'scenarioNotDocumented' => $scenarioNotDocumented,
+        'tab' => $tab,
       )
     );
   }
@@ -353,10 +357,6 @@ class administrationController extends Controller
 
   }
 
-  public function addLatexAction(Request $request) {
-    return new Response('add latex');
-  }
-
   public function editLatexAction($latex) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
@@ -372,7 +372,7 @@ class administrationController extends Controller
       throw $this->createNotFoundException('Latex not exist');
     }
 
-    $form = $this->createForm(new addLatexType, $latex);
+    $form = $this->createForm(new latexType, $latex);
 
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
@@ -389,13 +389,81 @@ class administrationController extends Controller
       }
     }
 
-    return $this->render('CKMAppBundle:Administration:addLatex.html.twig', array(
+    return $this->render('CKMAppBundle:Administration:editLatex.html.twig', array(
+      'form' => $form->createView(),
+    ));
+  }
+
+  public function addLatexAction() {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $request = $this->getRequest();
+          
+    $latex = new Latex();
+
+    $form = $this->createForm(new latexType, $latex);
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist( $latex );
+        $em->flush();
+
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                    array()
+                )
+        );
+      }
+    }
+
+    return $this->render('CKMAppBundle:Administration:editLatex.html.twig', array(
       'form' => $form->createView(),
     ));
   }
 
   public function deleteLatexAction($latex) {
-    return new Response('delete latex');
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    $request = $this->getRequest();
+
+    $latex = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Latex')
+          ->findOneById($latex);
+
+    if (!$latex) {
+      throw $this->createNotFoundException('Latex not exist');
+    }
+
+    $tmp=$latex->getName();
+    $em = $this->getDoctrine()->getEntityManager();
+
+    try {
+        $em->remove($latex);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add(
+        'success',
+        'Latex '.$tmp.' deleted with success'
+        );
+    } catch (\Exception $e) {
+    #} catch (\Doctrine\ORM\ORMException $e) {
+        $this->get('session')->getFlashBag()->add(
+            'danger',
+            'Impossible to delete '.$tmp.' cause it is still in use in one analysis : '.$e->getMessage()
+        );
+    }
+    
+    return $this->redirect(
+          $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                              array('tab' => 'latex')
+          )
+    );
   }
 
   private function getFirstTag($file)

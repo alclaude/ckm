@@ -1,11 +1,22 @@
 {# src/Blogger/BlogBundle/Resources/views/Doculmentation/latexDocumentation.html.twig #}
 
 {% block content %}
-{% for flashMessage in app.session.flashbag.get('notice') %}
+{% for flashMessage in app.session.flashbag.get('success') %}
   <div class="row">
     <div class="col-lg-6">
       <div class="alert alert-success">
               <h4>Success!</h4>
+              <p>{{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+{% for flashMessage in app.session.flashbag.get('danger') %}
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="alert alert-danger">
+              <h4>Failed!</h4>
               <p>{{ flashMessage }}</p>
       </div>
     </div>
