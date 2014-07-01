@@ -56,6 +56,9 @@ class AnalysisController extends Controller
       ));
     }
 
+    /*
+     * Target creation
+     */
     public function createAnalyseStep2Action($analyse=0, $step=2 ) {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);

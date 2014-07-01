@@ -140,13 +140,13 @@ class Input
       $this->setlatex();
 
       if($path!=='') {
-        # observable case
+        # observable case or a parameter target not include in parameter of the second target/Observable
         $this->init($path);
       }
     }
 
     private function init($path) {
-      $ar_obs = $this->findObservableInputLine($path);
+      $ar_obs = $this->findInputLine($path);
       #print_r($ar_obs);
       #die('debbug');
 
@@ -167,7 +167,7 @@ class Input
       }
     }
 
-    private function findObservableInputLine($path) {
+    private function findInputLine($path) {
       if ($path=='') {
         throw new \Exception('path file not defined :: observableInput can not be initialized');
       }
@@ -176,7 +176,7 @@ class Input
       $lines = explode("\n", $data);
 
       $new_line = "^\n$" ;
-      $observablePattern =  '/'.preg_quote( $this->getName(), '/' ).'/';
+      $observablePattern =  '/^'.preg_quote( $this->getName(), '/' ).'/';
       // info obs
       $tmp_ar_obs = array();
 
