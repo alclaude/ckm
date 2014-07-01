@@ -194,6 +194,42 @@ class administrationController extends Controller
     );
   }
 
+  public function analysesAction($page) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $em = $this->getDoctrine()->getManager();
+
+    $analysis = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Analysis')
+      ->findAll();
+
+    $max=$this->container->getParameter('max_analysis_per_page');
+
+    $countAnalysis = $em->getRepository('CKMAppBundle:Analysis')
+                          ->countAnalysis();
+
+    $analyse = $em->getRepository('CKMAppBundle:Analysis')
+                          ->getListAnalysisAdministration($page, $max);
+
+    $pagination = array(
+      'page' => $page,
+      'route' => 'CKMAppBundle_administration_analyse',
+      'pages_count' => ceil($countAnalysis / $max),
+      'route_params' => array()
+    );
+
+    return $this->render('CKMAppBundle:Administration:analysisDocumentation.html.twig',
+      array(
+        'analysis' => $analyse,
+        'count'     =>  $countAnalysis,
+        'page'=>$page,
+        'pagination' => $pagination
+      )
+    );
+  }
+
   public function datacardDocumentationAction($tab='') {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');

@@ -14,6 +14,12 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  */
 class AnalysisRepository extends EntityRepository
 {
+
+    public function findAll()
+    {
+        return $this->findBy(array()/*, array('user' => 'ASC')*/);
+    }
+
     public function countTargetByAnalyse($id)
     {
       $em = $this->getEntityManager();
@@ -23,15 +29,24 @@ class AnalysisRepository extends EntityRepository
       return $count;
     }
 
-    public function countAnalysisByUser($analyse, $status)
+    public function countAnalysisByUser($user, $status)
     {
       $em = $this->getEntityManager();
       $query = $em->createQuery('SELECT COUNT(a) FROM CKM\AppBundle\Entity\Analysis a WHERE a.user = :user and a.status > :status');
       $query->setParameters(array(
-                                  'user'   => $analyse,
+                                  'user'   => $user,
                                   'status' => $status,
                                  )
                             );
+      $count = $query->getSingleScalarResult();
+      return $count;
+    }
+
+    public function countAnalysis()
+    {
+      $em = $this->getEntityManager();
+      $query = $em->createQuery('SELECT COUNT(a) FROM CKM\AppBundle\Entity\Analysis a');
+
       $count = $query->getSingleScalarResult();
       return $count;
     }
@@ -95,6 +110,27 @@ class AnalysisRepository extends EntityRepository
                 'status' => $status,
                 )
            );
+
+      $q->setFirstResult(($page-1) * $maxperpage)
+      ->setMaxResults($maxperpage);
+
+      return new Paginator($q);
+    }
+
+    /**
+      * Get the paginated list of published articles
+      *
+      * @param int $page
+      * @param int $maxperpage
+      * @param string $sortby
+      * @return Paginator
+      */
+    public function getListAnalysisAdministration($page=1, $maxperpage=10)
+    {
+      $q = $this->getEntityManager()
+          ->createQuery(
+              'SELECT a FROM CKM\AppBundle\Entity\Analysis a'
+          );
 
       $q->setFirstResult(($page-1) * $maxperpage)
       ->setMaxResults($maxperpage);
