@@ -12,22 +12,30 @@ use CKM\AppBundle\Entity\Parameter;
 
 class AnalysisStep1Type extends AbstractType
 {
+    public function __construct($scenarios) {
+      $this->scenario = $scenarios;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+      count($this->scenario)>0 ? $empty_value=false : $empty_value='Sorry no scenario available. Please cancel your analysis and contact your administrator';
+
       $builder
         ->add('name', 'text', array(
               'attr' => array('class' => 'form-control'),
               ))
         ->add('scenario', 'entity', array(
              'class' => 'CKMAppBundle:Scenario',
+             'choices' => $this->scenario,
              'mapped'    => true,
              'multiple'  => false,
              'property' => 'name',
              'attr'      => array('class' => 'form-control'),
+             'empty_value' => $empty_value,
              ))
         ->add('scanConstraint', 'choice', array(
              'choices' => array('1' => '1D', '2' => '2D'),

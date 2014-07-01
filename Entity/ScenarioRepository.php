@@ -26,6 +26,8 @@ class ScenarioRepository extends EntityRepository
       }
       if($builder!=0) return $query;
 
-      return $query->getQuery()->getResult();
+      $scenarios = $query->getQuery()->getResult();
+      return $scenarios;
+      #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
     }
 }

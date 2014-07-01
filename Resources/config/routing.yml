@@ -98,6 +98,9 @@ CKMAppBundle_administration_latex_documentation_edit:
 CKMAppBundle_administration_latex_documentation_delete:
     pattern:  /administration/latex/documentation/delete/{latex}
     defaults: { _controller: CKMAppBundle:Administration:deleteLatex}
+CKMAppBundle_administration_datacard_swith_documentation:
+    pattern:  /administration/datacard/documentation/switchDocumented/{scenario}
+    defaults: { _controller: CKMAppBundle:Administration:switchIsDocumented}
 ## test
 CKMAppBundle_test_datacard:
     pattern:  /administration/datacard/test/{analyse}

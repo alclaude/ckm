@@ -422,6 +422,59 @@ class administrationController extends Controller
     ));
   }
 
+  public function switchIsDocumentedAction($scenario) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    $scenario = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Scenario')
+      ->findOneById($scenario);
+
+    if (!$scenario) {
+      throw $this->createNotFoundException('scenario not exist');
+    }
+
+    $request = $this->getRequest();
+    $form = $this->createFormBuilder($scenario)
+            ->add('token', 'hidden',array(
+                'mapped'           => false,
+            ))
+            ->add('switch',
+                  'submit',
+                    array(
+                        'attr' => array('class' => 'form-control btn btn-default'),
+                        )
+                  )
+            ->getForm();
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+
+        if($scenario->getIsDocumented()) {
+          $scenario->setIsDocumented(false);
+        } else {
+          $scenario->setIsDocumented(true);
+        }
+        $em->persist( $scenario );
+        $em->flush();
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                    array()
+                )
+        );
+      }
+
+    }
+    return $this->render('CKMAppBundle:Administration:default.html.twig', array(
+      'form' => $form->createView(),
+      'route'=>'CKMAppBundle_administration_datacard_swith_documentation',
+      'param'=>'scenario',
+      'value'=>$scenario->getId(),
+    ));
+  }
+
   public function deleteLatexAction($latex) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');

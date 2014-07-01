@@ -35,4 +35,10 @@ class AnalysisManager
     return $scenariosWithInput;
   }
 
+  public function getScenariosIsDocumented($isDocumented) {
+    return $this->em
+      ->getRepository('CKMAppBundle:Scenario')
+      ->findScenarioByDocumentation($isDocumented);
+  }
+
 }

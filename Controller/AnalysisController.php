@@ -30,7 +30,10 @@ class AnalysisController extends Controller
       $this->isGranted('ROLE_ANALYSIS');
 
       $analyse = new Analysis();
-      $form = $this->createForm(new AnalysisStep1Type,  $analyse);
+      $form = $this->createForm(new AnalysisStep1Type(
+                                $this->get('CKM.services.analysisManager')->getScenariosIsDocumented(true)
+                                ),
+                                $analyse);
 
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);

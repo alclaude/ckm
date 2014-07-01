@@ -427,7 +427,7 @@ class Analysis
 
         if( $element->getValue()== 0 and $element->getExpUncertity()==0 and $element->getThUncertity()==0) {
           #$datacard .= $element->getCurrentTag();
-          $datacard .= $element->getCurrentTag();
+          $datacard .= '"'.$element->getCurrentTag().'"';
         } else {
           $datacard .= $element->getValue();
           $datacard .= ',';
