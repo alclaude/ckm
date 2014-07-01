@@ -39,16 +39,16 @@ class ScenarioDocumentationRepository extends EntityRepository
            )
           ->getResult();
     }
-    
-	public function findByScenarioCSV($scenarioName='')
-    {
-			$documentations = $this->findDocByScenario($scenarioName);
 
-			$csv = array();
-			
-			foreach ($documentations as $documentation) {
-				$csv[]= $documentation->getInput().';'.$documentation->getExplanation();
-			}
-			return count($csv)>0 ? $csv : array('There is no documentation for this scenario');
+  public function findByScenarioCSV($scenarioName='')
+    {
+      $documentations = $this->findDocByScenario($scenarioName);
+
+      $csv = array();
+
+      foreach ($documentations as $documentation) {
+        $csv[]= $documentation->getInput().';'.$documentation->getExplanation();
+      }
+      return count($csv)>0 ? $csv : array('There is no documentation for the scenario '.$scenarioName);
     }
 }

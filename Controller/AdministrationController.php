@@ -240,11 +240,7 @@ class administrationController extends Controller
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
       if ($form->isValid()) {
-
-
-
         $tmp = $request->request->get($form->getName()) ;
-
 
         if( $form->get('display')->isClicked() ) {
             #$form['explain']->setData('totototototo');
@@ -400,7 +396,7 @@ class administrationController extends Controller
     }
 
     $request = $this->getRequest();
-          
+
     $latex = new Latex();
 
     $form = $this->createForm(new latexType, $latex);
@@ -458,7 +454,7 @@ class administrationController extends Controller
             'Impossible to delete '.$tmp.' cause it is still in use in one analysis : '.$e->getMessage()
         );
     }
-    
+
     return $this->redirect(
           $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
                               array('tab' => 'latex')
