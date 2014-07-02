@@ -1,0 +1,82 @@
+{# src/Blogger/BlogBundle/Resources/views/Administration/analysisDocumentation.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
+{% block titlePage %}
+Administration - <small>Analysis management</small>
+{% endblock %}
+
+{% block content %}
+
+{% for flashMessage in app.session.flashbag.get('information') %}
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="alert alert-success">
+              <p>{{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<div class="row">
+  <div class="col-sm-8 ">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Analysis from users</h3>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="header">Analysis</th>
+                <th class="header">Name</th>
+                <th class="header">Date</th>
+                <th class="header">Element target</th>
+                <th class="header">scan constraint</th>
+                <th class="header">status</th>
+                <th class="header">Scenario</th>
+                <th class="header">user</th>
+                <th class="header">Delete</th>
+              </tr>
+            </thead>
+            {% for analyse in analysis %}
+              <tr>
+                <td>{{ analyse.id }}</td>
+                <td>{{ analyse.name }}</td>
+                <td>{{ analyse.date|date("m/d/Y - H:i") }}</td>
+                <td>
+                {% for target in getIsTargets(analyse) %}
+                  {{ target.latex.latex }}<br />
+                {% endfor %}
+                &nbsp;
+                </td>
+                <td>{{ analyse.scanConstraint }}</td>
+                <td>{{ analyse.status }}</td>
+                <td>{{ analyse.scenario.name }} </td>
+                <td>{{ analyse.user.username }} </td>
+                <td>
+                  {% if analyse.status == -1 %}
+                    <a style="font-weight:bold" class="list-group-item" href="{{ path('CKMAppBundle_administration_analysis_delete', {'analyse': analyse.id}) }}">
+                      <span class="btn btn-danger btn-xs"><i class="fa fa-times-circle fa-lg"></i></span>
+                      Remove this Analysis
+                    </a>
+                  {% else %}
+                      --
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+  {% include 'CKMAppBundle::pagination.html.twig' %}
+  </div>
+</div>
+
+{% endblock %}
