@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AnalysisController extends Controller
 {
@@ -708,43 +709,22 @@ $em->persist($observableClone);
       $em = $this->getDoctrine()->getEntityManager();
       $tmp = $analyse->getId();
 
-      $targets = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:Input')
-        ->findTargetByAnalysis( $analyse->getId() );
-
-      foreach($targets as $target) {
-        if($analyse->isObservable($target) ) {
-          $parameters = $target->getParameters();
-          foreach($parameters as $parameter) {
-            $em->remove($parameter);
-          }
-        }
-      }
-
-      $observables = $this->getDoctrine()
-        ->getRepository('CKMAppBundle:Observable')
-        ->findByInputAnalysis( $analyse->getId() );
-
-      foreach($observables as $observable) {
-        $parameters = $observable->getParameters();
-        foreach($parameters as $parameter) {
-          $em->remove($parameter);
-        }
-      }
-
-      $em->remove($analyse);
-      $em->flush();
-
-      $this->get('session')->getFlashBag()->add(
-        'information',
-        'Analysis '.$tmp.' deleted with success'
+      try {
+        $this->get('CKM.services.analysisManager')->removeAnalysis($analyse);
+        $this->get('session')->getFlashBag()->add(
+          'information',
+          'Analysis '.$tmp.' deleted with success'
         );
 
-      return $this->redirect(
+        return $this->redirect(
               $this->generateUrl('CKMAppBundle_analyse_by_user',
                                   array('user_id' => $analyse->getUser()->getId() )
               )
-      );
+        );
+      } catch (\Exception $e) {
+          throw new \Exception('Analysis can not be deleted');
+      }
+
       #return new Response('analyse '.$tmp.' supprimée'); Request $request, $user_id=0
     }
 
@@ -1165,7 +1145,8 @@ $em->persist($observableClone);
         ->findOneById($id);
 
       if (!$analyse) {
-        throw $this->createNotFoundException('analyse not exist');
+        #throw $this->createNotFoundException('analyse not exist');
+        throw new HttpException(404, "analyse not exist");
       }
       return $analyse;
     }

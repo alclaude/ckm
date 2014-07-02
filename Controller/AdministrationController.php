@@ -220,7 +220,7 @@ class administrationController extends Controller
       'route_params' => array()
     );
 
-    return $this->render('CKMAppBundle:Administration:analysisDocumentation.html.twig',
+    return $this->render('CKMAppBundle:Administration:analysis.html.twig',
       array(
         'analysis' => $analyse,
         'count'     =>  $countAnalysis,
@@ -456,6 +456,46 @@ class administrationController extends Controller
     return $this->render('CKMAppBundle:Administration:editLatex.html.twig', array(
       'form' => $form->createView(),
     ));
+  }
+
+  public function deleteAnalysisAction($analyse) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    $analyse = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Analysis')
+      ->findOneById($analyse);
+
+    if (!$analyse) {
+      throw $this->createNotFoundException('analyse not exist');
+    }
+
+    $em = $this->getDoctrine()->getEntityManager();
+    $tmp = $analyse->getId();
+
+    try {
+      if($analyse->getStatus()==-1 ) {
+        $this->get('CKM.services.analysisManager')->removeAnalysis($analyse);
+        $this->get('session')->getFlashBag()->add(
+          'information',
+          'Analysis '.$tmp.' deleted with success'
+        );
+      } else {
+        $this->get('session')->getFlashBag()->add(
+          'information',
+          'Analysis '.$tmp.' can not be deleted cause of it status'
+        );
+      }
+
+      return $this->redirect(
+            $this->generateUrl('CKMAppBundle_administration_analyse',
+                                array('page' => 1 )
+            )
+      );
+    } catch (\Exception $e) {
+        throw new \Exception('Analysis can not be deleted');
+    }
+
   }
 
   public function switchIsDocumentedAction($scenario) {

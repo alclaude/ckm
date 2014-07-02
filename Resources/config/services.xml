@@ -27,6 +27,7 @@
 
         <service id="CKM.services.analysisManager" class="CKM\AppBundle\Entity\AnalysisManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="security.context"/>
         </service>
 
         <service id="dimension_rules_validator" class="CKM\AppBundle\Validator\DimensionRulesValidator">
