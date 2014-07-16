@@ -22,7 +22,32 @@ class CKMExtension extends \Twig_Extension
             'latex' => new \Twig_Function_Method($this, 'getLatexLike'),
             'latexTransform' => new \Twig_Function_Method($this, 'getLatexTransform'),
             'getIsTargets' => new \Twig_Function_Method($this, 'getIsTargets'),
+            'getStatusLibelle' => new \Twig_Function_Method($this, 'getStatusLibelle'),
         );
+    }
+
+    public function getStatusLibelle($status){
+      $libelle='';
+      switch($status)
+      {
+       case -1:
+       case 0:
+        $libelle='Invalid Status';
+        break;
+       case 1:
+        $libelle='Analysis under construction';
+        break;
+       case 2:
+        $libelle='Running analysis';
+        break;
+       case 3:
+        $libelle='Analysis completed';
+        break;
+       default :
+        echo 'Unknown Status' ;
+        break;
+      }
+      return $libelle;
     }
 
     public function getLatexTransform($name){
