@@ -94,9 +94,9 @@ class Analysis
      *
      * @ORM\Column(name="granularity", type="integer")
      * @Assert\Range(
-     *      min = 50,
+     *      min = 10,
      *      max = 1000,
-     *      minMessage = "Granularity must be greater than 50",
+     *      minMessage = "Granularity must be greater than 10",
      *      maxMessage = "Granularity must be lesser than 1000"
      * )
      */
@@ -121,6 +121,7 @@ class Analysis
 
         $this->date = new \DateTime();
     }
+
 
     public function isNumberOfTargetValid(ExecutionContextInterface $context)
     {

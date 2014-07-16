@@ -1025,6 +1025,18 @@ $em->persist($observableClone);
         if ($form->isValid()) {
           $em = $this->getDoctrine()->getManager();
           $data=$form->getData();
+
+#echo $data->getGranularity();
+#echo $data->getGranularity() % 2 == 0;
+#die('debbug');
+          if( $data->getGranularity() & 1 ) {
+            return $this->errorForm('notice',
+              'Granularity must be a even value',
+              'CKMAppBundle_analyse_create_analyse_properties',
+              array('analyse' => $analysis->getId() )
+              );
+          }
+
           $analysis->setGranularity( $data->getGranularity() );
           #$analysis->setScanMax( $data->getScanMax() );
           #$analysis->setScanMin( $data->getScanMin() );
