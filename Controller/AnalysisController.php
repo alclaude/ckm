@@ -1026,9 +1026,6 @@ $em->persist($observableClone);
           $em = $this->getDoctrine()->getManager();
           $data=$form->getData();
 
-#echo $data->getGranularity();
-#echo $data->getGranularity() % 2 == 0;
-#die('debbug');
           if( $data->getGranularity() & 1 ) {
             return $this->errorForm('notice',
               'Granularity must be a even value',
