@@ -10,10 +10,9 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContext;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-#use \ScenarioRepository;
 
 /**
- * Datacard
+ * Scenario
  *
  * @ORM\Table(name="ckm_scenario")
  * @ORM\Entity(repositoryClass="CKM\AppBundle\Entity\ScenarioRepository")
@@ -87,6 +86,12 @@ class Scenario
      * @ORM\Column(name="is_documented", type="boolean")
      */
     private $isDocumented=false;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\Model")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $model;
 
     public function __construct()
     {
@@ -368,5 +373,28 @@ class Scenario
     public function getIsDocumented()
     {
         return $this->isDocumented;
+    }
+
+    /**
+     * Set model
+     *
+     * @param \CKM\AppBundle\Entity\Model $model
+     * @return Scenario
+     */
+    public function setModel(\CKM\AppBundle\Entity\Model $model)
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * Get model
+     *
+     * @return \CKM\AppBundle\Entity\Model 
+     */
+    public function getModel()
+    {
+        return $this->model;
     }
 }

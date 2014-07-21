@@ -20,6 +20,14 @@ class ScenarioType extends AbstractType
             ->add('name', 'text', array(
               'attr' => array('class' => 'form-control'),
               ))
+            ->add('model', 'entity', array(
+             'class' => 'CKMAppBundle:Model',
+             #'mapped'    => true,
+             'multiple'  => false,
+             'property' => 'name',
+             'attr'      => array('class' => 'form-control'),
+             #'empty_value' => $empty_value,
+             ))
             ->add('file', 'file')
         ;
     }

@@ -43,16 +43,18 @@ class administrationController extends Controller
         if( $form->get('display')->isClicked() ) {
           echo '<pre>';
           #\Doctrine\Common\Util\Debug::dump($request->request->get($form->getName())) ;
-          print_r( $form->getData()->getName()->first() );
+          #print_r( $form->getData()->getName()->first() );
           #echo $form->getData()->getName()->first()->getWebPath();
+ #         \Doctrine\Common\Util\Debug::dump($form->getData()->getName()->first());
           echo '<br />';
-
+#die("debug");
 
           $tmp = $request->request->get($form->getName()) ;
 
           if( isset( $tmp['name'] ) ) {
             $text = file_get_contents( $form->getData()->getName()->first()->getWebPath() );
             $name = $form->getData()->getName()->first()->getName();
+            $nameModel = $form->getData()->getName()->first()->getModel()->getName();
           }
           else {
             $text = 'Please select a datacard';
@@ -61,6 +63,7 @@ class administrationController extends Controller
 
           $this->container->get('request')->getSession()->set( 'text', $text );
           $this->container->get('request')->getSession()->set( 'name', $name );
+          $this->container->get('request')->getSession()->set( 'model', $nameModel );
         }
 
         if( $form->get('delete')->isClicked() ) {
@@ -71,6 +74,7 @@ class administrationController extends Controller
 
           $this->container->get('request')->getSession()->remove( 'text' );
           $this->container->get('request')->getSession()->remove( 'name' );
+          $this->container->get('request')->getSession()->remove( 'model' );
 
           $this->get('session')->getFlashBag()->add(
               'suppress',

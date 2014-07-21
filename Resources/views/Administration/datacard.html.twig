@@ -4,7 +4,7 @@
 {% form_theme form  'CKMAppBundle::Form/errors.html.twig' %}
 
 {% block titlePage %}
-Administration - <small>Datacard management</small>
+Administration - <small>Scenario management</small>
 {% endblock %}
 {% block content %}
 
@@ -12,7 +12,7 @@ Administration - <small>Datacard management</small>
   <div class="col-lg-8 ">
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Select a datacard file</h3>
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Select a Scenario file</h3>
       </div>
       <div class="panel-body">
       {% for flashMessage in app.session.flashbag.get('suppress') %}
@@ -44,7 +44,7 @@ Administration - <small>Datacard management</small>
 {% if app.session.get('text') is not empty %}
 <div class="row">
   <div class="col-lg-8 ">
-    <p><span class="label label-primary">{{app.session.get('name')}}</span></p>
+    <p><span class="label label-primary">{{app.session.get('model')}}</span> > <span class="label label-primary">{{app.session.get('name')}}</span></p>
 <pre class="pre-scrollable">{{app.session.get('text')}}</pre>
   </div>
 </div>
