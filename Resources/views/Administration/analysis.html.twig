@@ -60,7 +60,7 @@ Administration - <small>Analysis management</small>
                 <td>{{ analyse.scenario.name }} </td>
                 <td>{{ analyse.user.username }} </td>
                 <td>
-                  {% if analyse.status == -1 %}
+                  {% if analyse.status < 2 %}
                     <a style="font-weight:bold" class="list-group-item" href="{{ path('CKMAppBundle_administration_analysis_delete', {'analyse': analyse.id}) }}">
                       <span class="btn btn-danger btn-xs"><i class="fa fa-times-circle fa-lg"></i></span>
                       Remove this Analysis

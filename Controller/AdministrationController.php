@@ -474,7 +474,7 @@ class administrationController extends Controller
     $tmp = $analyse->getId();
 
     try {
-      if($analyse->getStatus()==-1 ) {
+      if($analyse->getStatus()<2 ) {
         $this->get('CKM.services.analysisManager')->removeAnalysis($analyse);
         $this->get('session')->getFlashBag()->add(
           'information',
