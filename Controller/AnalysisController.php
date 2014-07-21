@@ -279,7 +279,7 @@ class AnalysisController extends Controller
       );
     }
 
-    public function createAnalyseStep3Action($analyse=0, $step=3 ) {
+    public function createAnalyseStep3Action($analyse=0, $step=3, $tab='') {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
 
@@ -306,6 +306,7 @@ class AnalysisController extends Controller
         if ($form->isValid()) {
           # re choose input
           if($step==0) {
+            $tab='input';
             $this->removeInput($analyse);
           }
 
@@ -412,7 +413,7 @@ class AnalysisController extends Controller
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                                      array('analyse' => $analyse->getId(), 'step' => 4 )
+                                      array('analyse' => $analyse->getId(), 'step' => 4, 'tab'=> $tab )
                   )
           );
         }
@@ -584,7 +585,7 @@ $em->persist($observableClone);
       return new Response('debbug');
     }
 
-    public function createAnalyseSourceAction($analyse=0, $step ) {
+    public function createAnalyseSourceAction($analyse=0, $step, $tab='') {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
       // FS#9
@@ -615,6 +616,7 @@ $em->persist($observableClone);
             'step' => $step,
             'targets' => $liste_targetElement,
             'target_and_observable' => $arMatchTargetObs,
+            'tab'=> $tab,
         ));
     }
 
@@ -767,7 +769,7 @@ $em->persist($observableClone);
       return true;
     }
 
-    public function editInputTagAction($input_id=0) {
+    public function editInputTagAction($input_id=0, $tab='') {
       $request = $this->getRequest();
 
       $input = $this->getDoctrine()
@@ -814,9 +816,12 @@ $em->persist($observableClone);
           $em->persist( $input );
           $em->flush();
 
+
+          if( ! $input->getIsTarget() ) { $tab='input';  }
+
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                                      array('analyse' => $input->getAnalyse()->getId() )
+                                      array('analyse' => $input->getAnalyse()->getId(), 'tab'=>$tab )
                   )
           );
         }
@@ -827,7 +832,7 @@ $em->persist($observableClone);
       ));
     }
 
-    public function editInputAction($input_id=0, $type='Observable') {
+    public function editInputAction($input_id=0, $type='Observable', $tab='') {
       $request = $this->getRequest();
 
       $observable = $this->getDoctrine()
@@ -887,12 +892,14 @@ $em->persist($observableClone);
           $observable->setExpUncertity( $tmp['expUncertity'] );
           $observable->setThUncertity( $tmp['thUncertity'] );
 
+          if( ! $observable->getIsTarget() ) { $tab='input'; }
+
           $em->persist( $observable );
           $em->flush();
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                      array('analyse' => $observable->getAnalyse()->getId() )
+                      array('analyse' => $observable->getAnalyse()->getId(), 'tab'=> $tab )
                   )
           );
         }
