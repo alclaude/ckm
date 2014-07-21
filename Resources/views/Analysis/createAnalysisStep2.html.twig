@@ -63,6 +63,11 @@ Analysis - <small> {{ message }} </small>
               {{ form_label(form.scanMax2) }}&nbsp;<span id="target21"></span>
               {{ form_widget(form.scanMax2) }}
 
+              <br />
+              {{ form_errors(form.isAbscissa) }}
+              {{ form_label(form.isAbscissa) }}
+              {{ form_widget(form.isAbscissa) }}
+
             {% endif %}
         </div>
  {{ form_rest(form) }}

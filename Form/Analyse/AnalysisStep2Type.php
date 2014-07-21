@@ -82,6 +82,17 @@ class AnalysisStep2Type extends AbstractType
             'invalid_message'  => 'the value must be a number',
             'label'            => 'Scan max of the second target',
           ))
+        ->add('isAbscissa', 'choice', array(
+             'choices'   => array('y' => 'yes', 'n' => 'no'),
+             'empty_value' => false,
+             'data'      => 'y',
+             'mapped'    => false,
+             'multiple'  => false,
+             'expanded'  => true,
+             #'attr'      => array('class' => 'form-control'),
+             'required'  => true,
+             'label'     => 'Second target as abscissa ?'
+             ))
        ;
       }
 

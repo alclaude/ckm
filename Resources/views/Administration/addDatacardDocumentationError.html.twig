@@ -25,9 +25,6 @@ Administration - <small>Documentation management</small>
     <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
       {{ form_widget(form1) }}
       <br />
-      <p>
-        <input type="submit" class="btn btn-primary" />
-      </p>
     </form>
   </div>
 {% endblock %}

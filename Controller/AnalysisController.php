@@ -113,6 +113,7 @@ class AnalysisController extends Controller
           }
           # validation des contraintes sur les scan et nb d elements target
           $count = count( $element_ar );
+
           if ( $analyse->getScanConstraint() ==1 && $count!==1) {
             return $this->errorForm('notice',
               'Please, in a 1D scan you must choose one element',
@@ -158,9 +159,11 @@ class AnalysisController extends Controller
             #$em->persist($targetPersist);
 
             if( $analyse->isObservable($target) ) {
+              # la target existe deja et est une observable
               if( array_key_exists($target, $all_ar_observables) ) {
                 $targetPersist=$all_ar_observables[$target];
                 $targetPersist->setIstarget(true);
+                $targetPersist->setIsAbscissa(false);
                 #$em->persist($targetPersist);
               }
               else {
@@ -198,9 +201,11 @@ class AnalysisController extends Controller
                 $em->persist($targetPersist);
                 $all_ar_parameters[$target] = $targetPersist;
               }
+              # la target existe deja et est un parametre
               else {
                 $targetPersist=$all_ar_parameters[$target];
                 $targetPersist->setIsTarget(true);
+                $targetPersist->setIsAbscissa(false);
                 #$targetPersist->setIsInput(false);
               }
             }
@@ -208,11 +213,19 @@ class AnalysisController extends Controller
             if($key==0) {
               $targetPersist->setScanMax($tmp["scanMax1"]);
               $targetPersist->setScanMin($tmp["scanMin1"]);
+
+              $targetPersist->setIsAbscissa(true);
             }
             elseif( isset($tmp["scanMax2"]) ) {
               $targetPersist->setScanMax($tmp["scanMax2"]);
               $targetPersist->setScanMin($tmp["scanMin2"]);
+
+              if( $tmp["isAbscissa"] == 'y') {
+                $targetPersist->setIsAbscissa(true);
+                $tmptargetOne->setIsAbscissa(false);
+              }
             }
+            $tmptargetOne=$targetPersist;
             $em->persist($targetPersist);
 
           }
@@ -339,9 +352,18 @@ class AnalysisController extends Controller
               # target = obs = input
               $inputPersist=$all_ar_observables[$input];
               $inputPersist->setIsInput(true);
+
+              if( ! $inputPersist->getIsTarget() ) {
+                $inputPersist->setIsAbscissa(false);
+              }
+
               $parameters=$inputPersist->getParameters();
               foreach ( $parameters as $parameter ) {
                 $parameter->setIsInput(true);
+
+                if( ! $parameter->getIsTarget() ) {
+                  $parameter->setIsAbscissa(false);
+                }
               }
 
               $em->persist($inputPersist);
@@ -583,7 +605,7 @@ $em->persist($observableClone);
 
 
       $arMatchTargetObs= $this->getDoctrine()
-          ->getRepository('CKMAppBundle:Observable')
+          ->getRepository('CKMAppBundle:Input')
           ->findByInputTargetAnalysis( $analyse->getId() );
 
 
@@ -613,6 +635,7 @@ $em->persist($observableClone);
 
       foreach($TargetAndInputs as $target) {
         $target->setIsTarget(false);
+        $target->setIsAbscissa(false);
         $em->persist($target);
       }
       $em->flush();
@@ -627,6 +650,7 @@ $em->persist($observableClone);
         ->findByInputAnalysis( $analyse->getId() );
 
       foreach($targets as $target) {
+
         if( $target instanceof Observable) {
           $parameters = $target->getParameters();
           foreach($parameters as $parameter) {

@@ -106,6 +106,13 @@ class Input
     private $scanMax=0;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_abscissa ", type="boolean")
+     */
+    private $isAbscissa=false;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="scan_min", type="float")
@@ -545,5 +552,28 @@ class Input
     public function getCurrentTag()
     {
         return $this->currentTag;
+    }
+
+    /**
+     * Set isAbscissa
+     *
+     * @param boolean $isAbscissa
+     * @return Input
+     */
+    public function setIsAbscissa($isAbscissa)
+    {
+        $this->isAbscissa = $isAbscissa;
+
+        return $this;
+    }
+
+    /**
+     * Get isAbscissa
+     *
+     * @return boolean 
+     */
+    public function getIsAbscissa()
+    {
+        return $this->isAbscissa;
     }
 }
