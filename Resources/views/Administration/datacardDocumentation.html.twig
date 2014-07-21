@@ -57,6 +57,7 @@ Administration - <small>Documentation management</small>
                         <tr>
                           <th class="header">Scenario name </th>
                           <th class="header">is documented ? </th>
+                          <th class="header">Model </th>
                           <th class="header">Link </th>
                           <th class="header">Switch isDocumented </th>
                         </tr>
@@ -65,6 +66,7 @@ Administration - <small>Documentation management</small>
                         <tr>
                           <td> {{scenario.name}}</td>
                           <td> {{scenario.isDocumented  ? 'true' : 'false' }} </td>
+                          <td> {{scenario.model.name}}</td>
                           <td> <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.name, 'input': 0 }) }}">Scenario explanation link</a></td>
                           <td>
                             {{ render(controller('CKMAppBundle:Administration:switchIsDocumented', {'scenario': scenario} )) }}

@@ -41,28 +41,15 @@ Administration - <small>Scenario management</small>
 
 
 {% if app.session.get('text') is defined %}
-{% if app.session.get('text') is not empty %}
-<div class="row">
-  <div class="col-lg-8 ">
-    <p><span class="label label-primary">{{app.session.get('model')}}</span> > <span class="label label-primary">{{app.session.get('name')}}</span></p>
-<pre class="pre-scrollable">{{app.session.get('text')}}</pre>
-  </div>
-</div>
-{% endif %}
+  {% if app.session.get('text') is not empty %}
+    <div class="row">
+      <div class="col-lg-8 ">
+        <p><span class="label label-primary">{{app.session.get('model')}}</span> > <span class="label label-primary">{{app.session.get('name')}}</span></p>
+    <pre class="pre-scrollable">{{app.session.get('text')}}</pre>
+      </div>
+    </div>
+  {% endif %}
 {% endif %}
 
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ["\\(","\\)"] ],
-      displayMath: [ ["\\[","\\]"] ],
-      processEscapes: true
-    },
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
-</script>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 {% endblock %}

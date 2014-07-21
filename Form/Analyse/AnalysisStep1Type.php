@@ -28,6 +28,14 @@ class AnalysisStep1Type extends AbstractType
         ->add('name', 'text', array(
               'attr' => array('class' => 'form-control'),
               ))
+        ->add('model', 'entity', array(
+             'class' => 'CKMAppBundle:Model',
+             'mapped'    => false,
+             'multiple'  => false,
+             'property' => 'name',
+             'label'  => 'Model',
+             'attr'      => array('class' => 'form-control'),
+             ))
         ->add('scenario', 'entity', array(
              'class' => 'CKMAppBundle:Scenario',
              'choices' => $this->scenario,
