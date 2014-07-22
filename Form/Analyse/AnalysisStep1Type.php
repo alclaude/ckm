@@ -9,6 +9,11 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use CKM\AppBundle\Entity\Observable;
 use CKM\AppBundle\Entity\Parameter;
 
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use CKM\AppBundle\Form\EventListener\AddScenarioFieldSubscriber;
+use CKM\AppBundle\Form\EventListener\AddModelFieldSubscriber;
+
 
 class AnalysisStep1Type extends AbstractType
 {
@@ -16,11 +21,31 @@ class AnalysisStep1Type extends AbstractType
       $this->scenario = $scenarios;
     }
 
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+      count($this->scenario)>0 ? $empty_value=false : $empty_value='Sorry no scenario available. Please cancel your analysis and contact your administrator';
+
+      $builder
+        ->add('name', 'text', array(
+              'attr' => array('class' => 'form-control'),
+              ));
+
+      $builder->addEventSubscriber(new AddModelFieldSubscriber() ) ;
+
+      $builder->addEventSubscriber(new AddScenarioFieldSubscriber() ) ;
+
+
+        $builder->add('scanConstraint', 'choice', array(
+             'choices' => array('1' => '1D', '2' => '2D'),
+             'attr'    => array('class' => 'form-control'),
+             ));
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildFormBAK(FormBuilderInterface $builder, array $options)
     {
       count($this->scenario)>0 ? $empty_value=false : $empty_value='Sorry no scenario available. Please cancel your analysis and contact your administrator';
 

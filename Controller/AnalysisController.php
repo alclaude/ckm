@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 class AnalysisController extends Controller
 {
     public function createAnalyseStep1Action(Request $request) {
@@ -1215,4 +1217,26 @@ $em->persist($observableClone);
       return $target;
     }
 
+
+    public function scenariosAction(Request $request)
+    {
+        $model_id = $request->request->get('model_id');
+
+        $em = $this->getDoctrine()->getManager();
+        $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel(1);
+        #$scenarios = array('e'=>'azerty','t'=>'tazerty','etl'=>'etazerty');
+
+        $scenario= $scenarios[0];
+
+        $array = array(
+          array($scenario->getId() => $scenario->getName() )
+        );
+
+        #\Doctrine\Common\Util\Debug::dump($array);
+        #\Doctrine\Common\Util\Debug::dump($request);
+        #echo " - ".$model_id." -";
+        #die('debbugAjax');
+
+        return new JsonResponse( $array );
+    }
 }
