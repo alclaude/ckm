@@ -25,7 +25,7 @@ class AddScenarioFieldSubscriber implements EventSubscriberInterface
             'class'         => 'CKMAppBundle:Scenario',
             'empty_value'   => 'Scenario',
             'label'         => 'Scenario',
-            'mapped'        => false,
+            #'mapped'        => false,
             'property' => 'name',
             'attr'          => array(
                 'class' => 'form-control',

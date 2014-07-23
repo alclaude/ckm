@@ -26,6 +26,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 class AnalysisController extends Controller
 {
@@ -43,6 +46,17 @@ class AnalysisController extends Controller
         if ($form->isValid()) {
           $em = $this->getDoctrine()->getManager();
           $analyse->setUser( $this->get('security.context')->getToken()->getUser() );
+
+          $tmp = $request->request->get($form->getName()) ;
+          echo $tmp['scenario'];
+          $scenario = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Scenario')
+            ->findOneById($tmp['scenario']);
+
+          #die('debbug');
+
+          $analyse->setScenario($scenario);
+
 
           $em->persist( $analyse );
           $em->flush();
@@ -1218,25 +1232,59 @@ $em->persist($observableClone);
     }
 
 
-    public function scenariosAction(Request $request)
+    public function scenariosAction(Request $request, $model=0)
     {
         $model_id = $request->request->get('model_id');
+        #\Doctrine\Common\Util\Debug::dump($request);
+
+          #$tmp = $request->request->get($form->getName()) ;
+          #echo $tmp['model_id'];
+
+  $request1 = $this->container->get('request');
+  $data1 = $request1->query->get('model_id');
+
+#        echo 'modelID: '.$model_id.' - ';
+#        echo 'modelID: '.$model.' - ';
+#        echo 'modelID: '.$data1.' - ';
+
+        $all = $request->request->all();
+#        echo '<pre>';
+        #print_r($request);
+#        echo '</pre>';
+
+
 
         $em = $this->getDoctrine()->getManager();
-        $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel(1);
+        $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel($model_id);
+        #$scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel(1);
         #$scenarios = array('e'=>'azerty','t'=>'tazerty','etl'=>'etazerty');
 
         $scenario= $scenarios[0];
 
-        $array = array(
-          array($scenario->getId() => $scenario->getName() )
-        );
+
+#\Doctrine\Common\Util\Debug::dump($scenario);
+#die('debbug');
+
+        /*$array = array(
+          array( 0 => $scenario )
+        );*/
+
+        #$serializedEntity = $this->container->get('serializer')->serialize($scenarios, 'json');
+
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($scenarios, 'json');
+
 
         #\Doctrine\Common\Util\Debug::dump($array);
         #\Doctrine\Common\Util\Debug::dump($request);
         #echo " - ".$model_id." -";
         #die('debbugAjax');
-
-        return new JsonResponse( $array );
+        $response = new Response(json_encode(array( $jsonContent )));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+        #return new JsonResponse( $jsonContent );
     }
 }

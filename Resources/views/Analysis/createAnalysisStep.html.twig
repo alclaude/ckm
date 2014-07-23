@@ -108,18 +108,60 @@ function dump(arr,level) {
 
       $.ajax({
           type: 'post',
-          url: '{{ path("select_scenario") }}',
+          url: '{{ path("select_scenario", {'model_id': 'data'}) }}',
           data: data,
           success: function(data) {
               var $city_selector = $('#ckm_appbundle_analysis_step1_scenario');
 
-              $city_selector.html('<option>Ciudad</option>');
+              $city_selector.html('<option>Scenario</option>');
+              //alert(typeof data);
+            for(var key1 in data) {
 
-              for (var i=0, total = data.length; i < total; i++) {
-                alert(dump(data[i]));
-                  $city_selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+              //array=JSON.parse(data[key1]);
+              array=data[key1];
+              alert(array);
+              for(var key in array) {
+                //alert(key);
+                //alert(data[key]);
+                var a = array[key];
+                alert(a);
+
+                   //aa=JSON.parse(a);
+                //alert(aa);
+                   //alert(typeof aa);
+                   //alert(aa.id);
+$city_selector.append('<option value="' + aa.id + '">' + aa.name + '</option>');
               }
+            }
+
           }
       });
   });
+
+/*
+// version ok pour 1 elt
+      $.ajax({
+          type: 'post',
+          url: '{{ path("select_scenario", {'model_id': 'data'}) }}',
+          data: data,
+          success: function(data) {
+              var $city_selector = $('#ckm_appbundle_analysis_step1_scenario');
+
+              $city_selector.html('<option>Scenario</option>');
+              //alert(typeof data);
+             for(var key in data) {
+                //alert(key);
+                //alert(data[key]);
+                var a = data[key];
+                //alert(a);
+
+                   aa=JSON.parse(a);
+                   //alert(typeof aa);
+                   //alert(aa.id);
+$city_selector.append('<option value="' + aa.id + '">' + aa.name + '</option>');
+              }
+
+          }
+      });
+*/
 {% endblock %}
