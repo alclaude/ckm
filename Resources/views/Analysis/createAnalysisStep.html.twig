@@ -87,15 +87,11 @@ Analysis - <small> {{ message }} </small>
           data: data,
           success: function(data) {
             var $city_selector = $('#ckm_appbundle_analysis_step1_scenario');
+            jsonArray=JSON.parse(data[0]);
 
-
-            
- alert(data);alert(typeof data.length);alert(data.length);alert(typeof data);
-            if (data[0].length === 0) {
-              alert('NULL');
-              $city_selector.html('<option>No Scenario</option>');
+            if (jsonArray.length === 0) {
+              $city_selector.html('<option>Sorry no Scenario available. Please contact your administrator</option>');
             } else {
-              alert('ok');
               $city_selector.html('<option>Scenario</option>');
               for(var key1 in data) {
                 array=JSON.parse(data[key1]);
