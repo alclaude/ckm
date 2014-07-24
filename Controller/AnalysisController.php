@@ -37,7 +37,7 @@ class AnalysisController extends Controller
 
       $analyse = new Analysis();
       $form = $this->createForm(new AnalysisStep1Type(
-                                $this->get('CKM.services.analysisManager')->getScenariosIsDocumented(true)
+                                $this->get('CKM.services.analysisManager')->getModelEnabled(true)
                                 ),
                                 $analyse);
 
@@ -1232,59 +1232,30 @@ $em->persist($observableClone);
     }
 
 
-    public function scenariosAction(Request $request, $model=0)
+    public function scenariosAction(Request $request)
     {
         $model_id = $request->request->get('model_id');
-        #\Doctrine\Common\Util\Debug::dump($request);
-
-          #$tmp = $request->request->get($form->getName()) ;
-          #echo $tmp['model_id'];
-
-  $request1 = $this->container->get('request');
-  $data1 = $request1->query->get('model_id');
-
-#        echo 'modelID: '.$model_id.' - ';
-#        echo 'modelID: '.$model.' - ';
-#        echo 'modelID: '.$data1.' - ';
-
-        $all = $request->request->all();
-#        echo '<pre>';
-        #print_r($request);
-#        echo '</pre>';
-
-
 
         $em = $this->getDoctrine()->getManager();
         $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel($model_id);
-        #$scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel(1);
-        #$scenarios = array('e'=>'azerty','t'=>'tazerty','etl'=>'etazerty');
 
-        $scenario= $scenarios[0];
+        $scenariosArray=array();
 
-
-#\Doctrine\Common\Util\Debug::dump($scenario);
-#die('debbug');
-
-        /*$array = array(
-          array( 0 => $scenario )
-        );*/
-
-        #$serializedEntity = $this->container->get('serializer')->serialize($scenarios, 'json');
+        foreach($scenarios as $scenario) {
+          $scenariosArray[]=array(
+                                     'id' => $scenario->getId(),
+                                     'name' => $scenario->getName(),
+                                  );
+        }
 
         $encoders = array(new JsonEncoder());
         $normalizers = array(new GetSetMethodNormalizer());
 
         $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($scenarios, 'json');
+        $jsonContent = $serializer->serialize($scenariosArray, 'json');
 
-
-        #\Doctrine\Common\Util\Debug::dump($array);
-        #\Doctrine\Common\Util\Debug::dump($request);
-        #echo " - ".$model_id." -";
-        #die('debbugAjax');
         $response = new Response(json_encode(array( $jsonContent )));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
-        #return new JsonResponse( $jsonContent );
     }
 }

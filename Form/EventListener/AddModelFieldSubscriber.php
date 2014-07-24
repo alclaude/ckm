@@ -11,6 +11,11 @@ use Doctrine\ORM\EntityRepository;
 
 class AddModelFieldSubscriber implements EventSubscriberInterface
 {
+
+    public function __construct($models) {
+      $this->models = $models;
+    }
+    
     public static function getSubscribedEvents()
     {
         return array(
@@ -21,15 +26,19 @@ class AddModelFieldSubscriber implements EventSubscriberInterface
 
     private function addModelForm($form, $model=null)
     {
+        count($this->models)>0 ? $empty_value='Model' : $empty_value='Sorry no Model available. Please cancel your analysis and contact your administrator';
+
         $formOptions = array(
             'class'         => 'CKMAppBundle:Model',
             'empty_value'   => 'Model',
+            'choices' => $this->models,
             'mapped'        => false,
             'label'         => 'Model',
             'property' => 'name',
             'attr'          => array(
                 'class' => 'form-control',
             ),
+            'empty_value' => $empty_value,
         );
 
         if ($model) {

@@ -44,6 +44,12 @@ class AnalysisManager
       ->findScenarioByDocumentation($isDocumented);
   }
 
+  public function getModelEnabled($isEnabled) {
+    return $this->em
+      ->getRepository('CKMAppBundle:Model')
+      ->findByIsEnable($isEnabled);
+  }
+
   public function removeAnalysis(Analysis $analyse ) {
     if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
         // Sinon on déclenche une exception « Accès interdit »

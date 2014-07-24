@@ -40,6 +40,7 @@ Administration - <small>Analysis management</small>
                 <th class="header">scan constraint</th>
                 <th class="header">status</th>
                 <th class="header">Scenario</th>
+                <th class="header">Model</th>
                 <th class="header">user</th>
                 <th class="header">Delete</th>
               </tr>
@@ -58,6 +59,7 @@ Administration - <small>Analysis management</small>
                 <td>{{ analyse.scanConstraint }}</td>
                 <td>{{ getStatusLibelle(analyse.status) }}</td>
                 <td>{{ analyse.scenario.name }} </td>
+                <td>{{ analyse.scenario.model.name }} </td>
                 <td>{{ analyse.user.username }} </td>
                 <td>
                   {% if analyse.status < 2 %}

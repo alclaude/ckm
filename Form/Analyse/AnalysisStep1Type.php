@@ -17,20 +17,20 @@ use CKM\AppBundle\Form\EventListener\AddModelFieldSubscriber;
 
 class AnalysisStep1Type extends AbstractType
 {
-    public function __construct($scenarios) {
-      $this->scenario = $scenarios;
+    public function __construct($models) {
+      $this->models = $models;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-      count($this->scenario)>0 ? $empty_value=false : $empty_value='Sorry no scenario available. Please cancel your analysis and contact your administrator';
+      
 
       $builder
         ->add('name', 'text', array(
               'attr' => array('class' => 'form-control'),
               ));
 
-      $builder->addEventSubscriber(new AddModelFieldSubscriber() ) ;
+      $builder->addEventSubscriber(new AddModelFieldSubscriber($this->models) ) ;
 
       $builder->addEventSubscriber(new AddScenarioFieldSubscriber() ) ;
 

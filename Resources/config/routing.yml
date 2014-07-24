@@ -74,7 +74,7 @@ CKMAppBundle_analyse_create_analyse_copy:
     pattern:  /analysis/copy/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:copy}
 select_scenario:
-    pattern:  /scenarios/{model_id}
+    pattern:  /scenarios
     defaults: { _controller: CKMAppBundle:Analysis:scenarios}
 ## pages administration
 CKMAppBundle_administration_datacard_add:

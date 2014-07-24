@@ -76,31 +76,6 @@ Analysis - <small> {{ message }} </small>
 {% endblock %}
 
 {% block document_ready %}
-function dump(arr,level) {
-  var dumped_text = "";
-  if(!level) level = 0;
-
-  //The padding given at the beginning of the line.
-  var level_padding = "";
-  for(var j=0;j<level+1;j++) level_padding += "    ";
-
-  if(typeof(arr) == 'object') { //Array/Hashes/Objects
-    for(var item in arr) {
-      var value = arr[item];
-
-      if(typeof(value) == 'object') { //If it is an array,
-        dumped_text += level_padding + "'" + item + "' ...\n";
-        dumped_text += dump(value,level+1);
-      } else {
-        dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-      }
-    }
-  } else { //Stings/Chars/Numbers etc.
-    dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
-  }
-  return dumped_text;
-}
-
   $("#ckm_appbundle_analysis_step1_model").change(function(){
       var data = {
           model_id: $(this).val()
@@ -111,57 +86,26 @@ function dump(arr,level) {
           url: '{{ path("select_scenario", {'model_id': 'data'}) }}',
           data: data,
           success: function(data) {
-              var $city_selector = $('#ckm_appbundle_analysis_step1_scenario');
+            var $city_selector = $('#ckm_appbundle_analysis_step1_scenario');
 
+
+            
+ alert(data);alert(typeof data.length);alert(data.length);alert(typeof data);
+            if (data[0].length === 0) {
+              alert('NULL');
+              $city_selector.html('<option>No Scenario</option>');
+            } else {
+              alert('ok');
               $city_selector.html('<option>Scenario</option>');
-              //alert(typeof data);
-            for(var key1 in data) {
-
-              //array=JSON.parse(data[key1]);
-              array=data[key1];
-              alert(array);
-              for(var key in array) {
-                //alert(key);
-                //alert(data[key]);
-                var a = array[key];
-                alert(a);
-
-                   //aa=JSON.parse(a);
-                //alert(aa);
-                   //alert(typeof aa);
-                   //alert(aa.id);
-$city_selector.append('<option value="' + aa.id + '">' + aa.name + '</option>');
+              for(var key1 in data) {
+                array=JSON.parse(data[key1]);
+                for(var key in array) {
+                  var a = array[key];
+                  $city_selector.append('<option value="' + a.id + '">' + a.name + '</option>');
+                }
               }
             }
-
           }
       });
   });
-
-/*
-// version ok pour 1 elt
-      $.ajax({
-          type: 'post',
-          url: '{{ path("select_scenario", {'model_id': 'data'}) }}',
-          data: data,
-          success: function(data) {
-              var $city_selector = $('#ckm_appbundle_analysis_step1_scenario');
-
-              $city_selector.html('<option>Scenario</option>');
-              //alert(typeof data);
-             for(var key in data) {
-                //alert(key);
-                //alert(data[key]);
-                var a = data[key];
-                //alert(a);
-
-                   aa=JSON.parse(a);
-                   //alert(typeof aa);
-                   //alert(aa.id);
-$city_selector.append('<option value="' + aa.id + '">' + aa.name + '</option>');
-              }
-
-          }
-      });
-*/
 {% endblock %}
