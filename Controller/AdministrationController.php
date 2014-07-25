@@ -259,9 +259,11 @@ class administrationController extends Controller
     }
 
     $datacardDocumentation = new ScenarioDocumentation();
+    $defaultModel='';$defaultScenario='';
 
     $em = $this->getDoctrine()->getManager();
 
+    /*
     if($this->container->get('request')->getSession()->get( 'scenarioName') ) {
       $scenarioSelect = $this->getDoctrine()
               ->getRepository('CKMAppBundle:Scenario')
@@ -274,11 +276,12 @@ class administrationController extends Controller
               ->findOneByName($this->container->get('request')->getSession()->get( 'modelName'));
       $defaultModel=$modelSelect;
     }
+    */
 
     $form = $this->createForm(
-                  new DocumentationType($this->get('CKM.services.analysisManager')->getModelEnabled(true),
-                  $defaultModel,
-                  $defaultScenario
+                  new DocumentationType($this->get('CKM.services.analysisManager')->getModelEnabled(true)
+                  //,$defaultModel,
+                  //$defaultScenario
                 ),
                 $datacardDocumentation
             );
@@ -286,6 +289,7 @@ class administrationController extends Controller
 
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
+
       if ($form->isValid()) {
         $tmp = $request->request->get($form->getName()) ;
 
@@ -299,16 +303,12 @@ class administrationController extends Controller
         if( !$scenario ) {
           return $this->errorForm('notice',
             'There is no scenario for this Model, please contact your administrator',
-            'CKMAppBundle_administration_datacard_documentation_add',
+            'CKMAppBundle_administration_datacard_documentation',
             array()
             );
         }
 
         if( $form->get('display')->isClicked() ) {
-            #$form['explain']->setData('totototototo');
-            #print_r($doc);die('display');
-
-
             $doc = $this->getDoctrine()
               ->getRepository('CKMAppBundle:ScenarioDocumentation')
               ->findByScenarioCSV($scenario->getId(), $scenario->getName());
@@ -405,6 +405,13 @@ class administrationController extends Controller
                   )
           );
         }
+      }
+      else {
+                return $this->errorForm('notice',
+            'There is no scenario for this Model, please contact your administrator',
+            'CKMAppBundle_administration_datacard_documentation',
+            array()
+            );
       }
 
     }
