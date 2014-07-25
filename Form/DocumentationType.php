@@ -8,13 +8,20 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use CKM\AppBundle\Form\EventListener\AddScenarioFieldSubscriber;
+use CKM\AppBundle\Form\EventListener\AddModelFieldSubscriber;
+
 class DocumentationType extends AbstractType
 {
     protected $em;
 
-    public function __construct($choices)
+    public function __construct($models, $defaultModel='', $defaultScenario='')
     {
-        $this->choices = $choices;
+        $this->models = $models;
+        $this->defaultModel = $defaultModel;
+        $this->defaultScenario = $defaultScenario;
     }
 
     /**
@@ -22,6 +29,34 @@ class DocumentationType extends AbstractType
     * @param array $options
     */
     public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+
+      $builder->addEventSubscriber(new AddModelFieldSubscriber($this->models, $this->defaultModel) ) ;
+
+      $builder->addEventSubscriber(new AddScenarioFieldSubscriber($this->defaultScenario) ) ;
+
+      $builder->add('display', 'submit', array(
+              'attr'      => array('class' => 'btn btn-primary btn-lg btn-block', 'style' => 'margin:4px 0;'),
+              'label'     => 'Display selected Scenario'
+              ) )
+              ->add('explain', 'textarea', array(
+                    'attr'    => array('class' => 'form-control', 'rows' => '10'),
+                    'mapped'  => false,
+                    'label' => 'Explanations',
+                    'required' => false,
+              ))
+              ->add('document', 'submit', array(
+              'attr'      => array('class' => 'btn btn-primary btn-lg btn-block'),
+              'label'     => 'Document this scenario'
+              ) )
+        ;
+    }
+
+    /**
+    * @param FormBuilderInterface $builder
+    * @param array $options
+    */
+    public function buildForm0(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name', 'choice', array(

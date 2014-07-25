@@ -25,9 +25,8 @@ class ScenarioDocumentation
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="scenario", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\Scenario")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $scenario;
 

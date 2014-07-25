@@ -12,10 +12,11 @@ use Doctrine\ORM\EntityRepository;
 class AddModelFieldSubscriber implements EventSubscriberInterface
 {
 
-    public function __construct($models) {
+    public function __construct($models, $defaultModel='') {
       $this->models = $models;
+      $this->defaultModel = $defaultModel;
     }
-    
+
     public static function getSubscribedEvents()
     {
         return array(
@@ -38,6 +39,7 @@ class AddModelFieldSubscriber implements EventSubscriberInterface
             'attr'          => array(
                 'class' => 'form-control',
             ),
+            'data'       => $this->defaultModel,
             'empty_value' => $empty_value,
         );
 
@@ -46,6 +48,9 @@ class AddModelFieldSubscriber implements EventSubscriberInterface
         }
 
         $form->add('model', 'entity', $formOptions);
+
+        #echo $this->defaultModel;
+        #die('debbug');
     }
 
     public function preSetData(FormEvent $event)

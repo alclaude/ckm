@@ -11,6 +11,10 @@ use Doctrine\ORM\EntityRepository;
 
 class AddScenarioFieldSubscriber implements EventSubscriberInterface
 {
+    public function __construct($defaultScenario='') {
+      $this->defaultScenario = $defaultScenario;
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
@@ -26,10 +30,11 @@ class AddScenarioFieldSubscriber implements EventSubscriberInterface
             'empty_value'   => 'Scenario',
             'label'         => 'Scenario',
             #'mapped'        => false,
-            'property' => 'name',
+            'property'       => 'name',
             'attr'          => array(
                 'class' => 'form-control',
             ),
+            'data'       => $this->defaultScenario,
             'query_builder' => function (EntityRepository $repository) use ($model_id) {
                 $qb = $repository->createQueryBuilder('scenario')
                     ->innerJoin('scenario.model', 'model')

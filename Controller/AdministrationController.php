@@ -245,14 +245,9 @@ class administrationController extends Controller
       ->getRepository('CKMAppBundle:Scenario')
       ->findScenarioByDocumentation();
 
-    $scenarioNotDocumented = $this->getDoctrine()
-      ->getRepository('CKMAppBundle:Scenario')
-      ->findScenarioByDocumentation(false);
-
     return $this->render('CKMAppBundle:Administration:datacardDocumentation.html.twig',
       array(
         'scenarioDocumented' => $scenarioDocumented,
-        'scenarioNotDocumented' => $scenarioNotDocumented,
         'tab' => $tab,
       )
     );
@@ -264,17 +259,29 @@ class administrationController extends Controller
     }
 
     $datacardDocumentation = new ScenarioDocumentation();
-    $em = $this->getDoctrine()->getManager();
-    $scenarioNotDocumented = $this->getDoctrine()
-      ->getRepository('CKMAppBundle:Scenario')
-      ->findScenarioByDocumentation(false);
 
-    $listScenarioName = array();
-    foreach( $scenarioNotDocumented as $scenario ) {
-      $listScenarioName[$scenario->getName()]=$scenario->getName();
+    $em = $this->getDoctrine()->getManager();
+
+    if($this->container->get('request')->getSession()->get( 'scenarioName') ) {
+      $scenarioSelect = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:Scenario')
+              ->findOneByName($this->container->get('request')->getSession()->get( 'scenarioName'));
+      $defaultScenario=$scenarioSelect;
+    }
+    if($this->container->get('request')->getSession()->get( 'modelName') ) {
+      $modelSelect = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:Model')
+              ->findOneByName($this->container->get('request')->getSession()->get( 'modelName'));
+      $defaultModel=$modelSelect;
     }
 
-    $form = $this->createForm(new DocumentationType($listScenarioName), $datacardDocumentation);
+    $form = $this->createForm(
+                  new DocumentationType($this->get('CKM.services.analysisManager')->getModelEnabled(true),
+                  $defaultModel,
+                  $defaultScenario
+                ),
+                $datacardDocumentation
+            );
     $explainText='';
 
     if ($request->getMethod() == 'POST') {
@@ -282,18 +289,37 @@ class administrationController extends Controller
       if ($form->isValid()) {
         $tmp = $request->request->get($form->getName()) ;
 
+        $this->container->get('request')->getSession()->remove( 'scenarioName' );
+        $this->container->get('request')->getSession()->remove( 'modelName' );
+
+        $scenario = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:Scenario')
+              ->findOneById($tmp['scenario']);
+
+        if( !$scenario ) {
+          return $this->errorForm('notice',
+            'There is no scenario for this Model, please contact your administrator',
+            'CKMAppBundle_administration_datacard_documentation_add',
+            array()
+            );
+        }
+
         if( $form->get('display')->isClicked() ) {
             #$form['explain']->setData('totototototo');
+            #print_r($doc);die('display');
+
+
             $doc = $this->getDoctrine()
               ->getRepository('CKMAppBundle:ScenarioDocumentation')
-              ->findByScenarioCSV($tmp['name']);
-
-            #print_r($doc);die('display');
+              ->findByScenarioCSV($scenario->getId(), $scenario->getName());
 
             $this->get('session')->getFlashBag()->add(
             'explainText',
             $doc
             );
+
+          $this->container->get('request')->getSession()->set( 'scenarioName', $scenario->getName() );
+          $this->container->get('request')->getSession()->set( 'modelName', $scenario->getModel()->getName() );
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
@@ -303,10 +329,6 @@ class administrationController extends Controller
         }
 
         if( $form->get('document')->isClicked() ) {
-          $scenario = $this->getDoctrine()
-            ->getRepository('CKMAppBundle:Scenario')
-            ->findOneByName($tmp['name']);
-
           #list($observables, $parameters) = $scenario->getInput();
           #$inputs=array_merge($observables, $parameters);
           $inputs = $scenario->getInput();
@@ -356,7 +378,7 @@ class administrationController extends Controller
           foreach($inputs as $input) {
             $docsInput = $this->getDoctrine()
               ->getRepository('CKMAppBundle:ScenarioDocumentation')
-              ->findDocByInputAndScenario($tmp['name'], $input);
+              ->findDocByInputAndScenario($tmp['scenario'], $input);
 
             foreach ($docsInput as $docInput) {
                 $em->remove($docInput);
@@ -368,7 +390,7 @@ class administrationController extends Controller
 
             $datacardDocumentation->setExplanation($inputFromUser);
             $datacardDocumentation->setInput($key);
-            $datacardDocumentation->setScenario($scenario->getName() );
+            $datacardDocumentation->setScenario($scenario );
 
             $datacardDocumentation_ar[]= clone $datacardDocumentation;
             $em->persist(end($datacardDocumentation_ar));

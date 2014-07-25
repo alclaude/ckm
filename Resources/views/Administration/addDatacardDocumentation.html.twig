@@ -2,6 +2,8 @@
 {% form_theme form1 'CKMAppBundle::Form/errors.html.twig' %}
 
 {% set explainText='' %}
+{% set scenario='' %}
+{% set model='' %}
 {% for flashMessage in app.session.flashbag.get('explainText') %}
   {% for doc in flashMessage %}
     {% set explainText=explainText~doc %}
@@ -26,13 +28,23 @@
       <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Document a Scenario</h3></p>
 
       <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
-        {{ form_errors(form1.name) }}
-        {{ form_label(form1.name) }}
-        {{ form_widget(form1.name) }}
+        {{ form_errors(form1.model) }}
+        {{ form_label(form1.model) }}
+        {{ form_widget(form1.model) }}
+
+        {{ form_errors(form1.scenario) }}
+        {{ form_label(form1.scenario) }}
+        {{ form_widget(form1.scenario) }}
 
         {# form_errors(form1.display) #}
         {# form_label(form1.display) #}
         {{ form_widget(form1.display) }}
+
+        {% if app.session.get('modelName') is defined %}
+          {% if app.session.get('modelName') is not empty %}
+            <p><span class="label label-primary">{{app.session.get('modelName')}}</span> > <span class="label label-primary">{{app.session.get('scenarioName')}}</span></p>
+          {% endif %}
+        {% endif %}
 
         {{ form_errors(form1.explain) }}
         {{ form_label(form1.explain) }}
@@ -49,3 +61,4 @@
 </div>
 
 {% endblock %}
+

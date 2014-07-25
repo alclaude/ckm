@@ -93,3 +93,33 @@ Administration - <small>Documentation management</small>
   </div> <!-- div class="col-lg-8 " -->
 </div> <!-- row -->
 {% endblock %}
+{% block document_ready %}
+  $("#ckm_appbundle_documentation_model").change(function(){
+      var data = {
+          model_id: $(this).val()
+      };
+
+      $.ajax({
+          type: 'post',
+          url: '{{ path("select_scenario", {'model_id': 'data'}) }}',
+          data: data,
+          success: function(data) {
+            var $city_selector = $('#ckm_appbundle_documentation_scenario');
+            jsonArray=JSON.parse(data[0]);
+
+            if (jsonArray.length === 0) {
+              $city_selector.html('<option>Sorry no Scenario available. Please contact your administrator</option>');
+            } else {
+              $city_selector.html('<option>Scenario</option>');
+              for(var key1 in data) {
+                array=JSON.parse(data[key1]);
+                for(var key in array) {
+                  var a = array[key];
+                  $city_selector.append('<option value="' + a.id + '">' + a.name + '</option>');
+                }
+              }
+            }
+          }
+      });
+  });
+{% endblock %}
