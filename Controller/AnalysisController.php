@@ -413,7 +413,7 @@ class AnalysisController extends Controller
             }
           }
 
-          $analyse->setDatacard( $observablesInputForPrintDatacard, $all_ar_parameters );
+          $analyse->setDatacard( $observablesInputForPrintDatacard, $all_ar_parameters, $targets );
 
           #$analyse = print_r($analyse,true);
           #die('debbug <pre>'.$analyse .'</pre>');
@@ -446,6 +446,10 @@ class AnalysisController extends Controller
     private function setDatacard($analyse=0) {
       $analyse = $this->getAnalysis($analyse);
 
+      $targets= $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Input')
+          ->findTargetByAnalysis( $analyse->getId() );
+
       $observables= $this->getDoctrine()
           ->getRepository('CKMAppBundle:Observable')
           ->findByObservableAnalysis( $analyse->getId() );
@@ -454,9 +458,10 @@ class AnalysisController extends Controller
           ->getRepository('CKMAppBundle:Parameter')
           ->findByParameterAnalysis( $analyse->getId() );
 
+
       $em = $this->getDoctrine()
                  ->getManager();
-      $analyse->setDatacard($observables, $parameters);
+      $analyse->setDatacard($observables, $parameters, $targets);
       $em->persist($analyse);
       $em->flush();
     }
@@ -625,8 +630,13 @@ $em->persist($observableClone);
           ->getRepository('CKMAppBundle:Input')
           ->findByInputTargetAnalysis( $analyse->getId() );
 
+      foreach($arMatchTargetObs as $key => $target) {
+        if($target->getCurrentTag()=="none" ) {
+          unset($arMatchTargetObs[$key]);
+        }
+      }
 
-       return $this->render('CKMAppBundle:Analysis:source.html.twig', array(
+      return $this->render('CKMAppBundle:Analysis:source.html.twig', array(
             'observables' => $liste_observable,
             'analyse'  => $analyse,
             'step' => $step,

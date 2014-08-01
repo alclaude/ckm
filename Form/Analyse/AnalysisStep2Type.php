@@ -83,15 +83,15 @@ class AnalysisStep2Type extends AbstractType
             'label'            => 'Scan max of the second target',
           ))
         ->add('isAbscissa', 'choice', array(
-             'choices'   => array('y' => 'yes', 'n' => 'no'),
+             'choices'   => array('y' => 'Second', 'n' => 'First'),
              'empty_value' => false,
-             'data'      => 'y',
+             'data'      => 'n',
              'mapped'    => false,
              'multiple'  => false,
              'expanded'  => true,
              #'attr'      => array('class' => 'form-control'),
              'required'  => true,
-             'label'     => 'Second target as abscissa ?'
+             'label'     => 'Which target as abscissa ?'
              ))
        ;
       }

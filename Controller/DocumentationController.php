@@ -20,6 +20,14 @@ class DocumentationController extends Controller
       $em = $this->getDoctrine()
                  ->getManager();
 
+      $scenario = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Scenario')
+        ->findOneById($scenario);
+
+      if (!$scenario) {
+        throw $this->createNotFoundException('scenario not exist');
+      }
+
       if($input==0) {
         $docs = $this->getDoctrine()
           ->getRepository('CKMAppBundle:ScenarioDocumentation')
@@ -36,13 +44,14 @@ class DocumentationController extends Controller
 
         $docs = $this->getDoctrine()
           ->getRepository('CKMAppBundle:ScenarioDocumentation')
-          ->findDocByInputAndScenario($scenario, $input->getName() );
+          ->findDocByInputAndScenario($scenario->getId(), $input->getName() );
       }
 
-
+#\Doctrine\Common\Util\Debug::dump($scenario);die('debbug');
 
       return $this->render('CKMAppBundle:Documentation:index.html.twig', array(
-        'scenario' => $scenario,
+        'model'    => $scenario->getModel()->getName(),
+        'scenario' => $scenario->getName(),
         'docs'     => $docs,
       ));
     }

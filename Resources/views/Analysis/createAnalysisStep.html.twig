@@ -55,7 +55,7 @@ Analysis - <small> {{ message }} </small>
         <div class="list-group">
           {% for target in getIsTargets(analyse) %}
             <a class="list-group-item" href="#">
-              <i class="fa fa-check"></i> \({{target.name}}\)
+              <i class="fa fa-check"></i> {{target.latex.latex}}
               <span style="float:right;">
               \([\)
               \({{target.scanMin}}\)

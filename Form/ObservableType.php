@@ -35,7 +35,8 @@ class ObservableType extends AbstractType
               ),
             ))
           ->add('value', 'text', array(
-              'attr' => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlValue),
+              'label' => 'Central value',
+              'attr'  => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlValue),
             ))
           ->add('expUncertity', 'number', array(
               'attr' => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlExpUncertity),

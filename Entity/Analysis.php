@@ -301,15 +301,15 @@ class Analysis
      * @param string $datacard
      * @return Analysis
      */
-    public function setDatacard($observables, $parameters)
+    public function setDatacard($observables, $parameters, $targets)
     {
         #$this->datacard = $datacard;
-        $this->datacard = $this->initDatacard($observables, $parameters);
+        $this->datacard = $this->initDatacard($observables, $parameters, $targets);
 
         return $this;
     }
 
-    private function initDatacard($observables, $parameters)
+    private function initDatacard($observables, $parameters, $targets)
     {
       #$this->datacard = $datacard;
 
@@ -387,6 +387,10 @@ class Analysis
       }
 
       $datacard .= $rl;
+
+      $datacard .= $this->writeTargets($targets,$rl);
+
+      $datacard .= $rl;
       $datacard .= '}';
 
       #print '<pre>';
@@ -394,6 +398,42 @@ class Analysis
       #print '</pre>';
       #die('debbug');
 
+      return $datacard;
+    }
+
+    private function writeTargets($targets,$rl) {
+      $target1=$targets[0];
+
+      if(isset($targets[1]) ) {
+        $target2=$targets[1];
+        if($target2->getIsAbscissa() ) {
+          $target2=$targets[0];
+          $target1=$targets[1];
+        }
+      }
+
+      $datacard  = '{';
+      $datacard .= '"'.$target1->getName().'"';
+      if(isset($targets[1]) ) {
+        $datacard .= ', "'.$target2->getName().'"';
+      }
+      $datacard  .= '}';
+
+      $datacard  .= ' {';
+      $datacard .= '"'.$target1->getScanMin().'"';
+      if(isset($targets[1]) ) {
+        $datacard .= ', "'.$target2->getScanMin().'"';
+      }
+      $datacard  .= '}';
+
+      $datacard  .= ' {';
+      $datacard .= '"'.$target1->getScanMax().'"';
+      if(isset($targets[1]) ) {
+        $datacard .= ', "'.$target2->getScanMax().'"';
+      }
+      $datacard  .= '}';
+
+      $datacard .= $rl.$rl;
       return $datacard;
     }
 

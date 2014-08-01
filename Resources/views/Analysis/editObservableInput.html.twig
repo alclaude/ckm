@@ -29,7 +29,7 @@ Analysis - <small>{{ type }} definition</small>
     <div class="alert alert-dismissable alert-info">
     <p>In this interface, you can change the properties of your input.
       <ul>You have two systems :
-      <li>a system tag where you can use either the default value of the datacard <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.name, 'input': observable.id }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or none values</li>
+      <li>a system tag where you can use either the default value of the datacard <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.name, 'input': observable.id }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or a value from a different scenario</li>
       <li>a specific system where you can put your own specific data (value, theoretical and experimentale uncertainty)</li>
       </ul>
       Choose either one or the other.
@@ -52,7 +52,7 @@ Analysis - <small>{{ type }} definition</small>
   <div class="col-sm-6">
     <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> ... or change Specific values (range value [{{observable.allowedRangeMin}}, {{observable.allowedRangeMax}}])</h3>
+            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> ... or change Specific values (Range for central value [{{observable.allowedRangeMin}}, {{observable.allowedRangeMax}}])</h3>
           </div>
           <div class="panel-body">
             <p>Notice : you must change the three values at once</p>
