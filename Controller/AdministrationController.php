@@ -41,14 +41,6 @@ class administrationController extends Controller
       if ($form->isValid()) {
 
         if( $form->get('display')->isClicked() ) {
-          echo '<pre>';
-          #\Doctrine\Common\Util\Debug::dump($request->request->get($form->getName())) ;
-          #print_r( $form->getData()->getName()->first() );
-          #echo $form->getData()->getName()->first()->getWebPath();
- #         \Doctrine\Common\Util\Debug::dump($form->getData()->getName()->first());
-          echo '<br />';
-#die("debug");
-
           $tmp = $request->request->get($form->getName()) ;
 
           if( isset( $tmp['name'] ) ) {
@@ -318,6 +310,15 @@ class administrationController extends Controller
             $doc
             );
 
+          $errors = $this->missingInputDocumentation( $scenario->getInput(), $this->csvToArrayDocUser($doc) );
+
+          if (count($errors)>0) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Note that input <strong>'.rtrim(join(", ",$errors), ', ').'</strong> inside '.$scenario->getName().' ('.$scenario->getModel()->getName().') are missing'
+            );
+          }
+
           $this->container->get('request')->getSession()->set( 'scenarioName', $scenario->getName() );
           $this->container->get('request')->getSession()->set( 'modelName', $scenario->getModel()->getName() );
 
@@ -329,49 +330,17 @@ class administrationController extends Controller
         }
 
         if( $form->get('document')->isClicked() ) {
-          #list($observables, $parameters) = $scenario->getInput();
-          #$inputs=array_merge($observables, $parameters);
           $inputs = $scenario->getInput();
 
-          $lines = explode("\n", $tmp['explain']);
-          $new_line = "^\n$" ;
-          $errors = array();
-          $inputsFromUser_ar= array();
+          $inputsFromUser_ar=$this->csvToArrayDocUser($tmp['explain']);
 
-          $trouve=0;
-
-          foreach($lines as $line) {
-            if( ! preg_match("/$new_line/", $line) ) {
-              $tmp_ar= array();
-              $tmp_ar = explode(';',$line);
-              $inputsFromUser_ar[$tmp_ar['0']]=$tmp_ar['1'];
-            }
-          }
-
-          foreach($inputs as $input) {
-            $trouve=0;
-            $input = trim($input, ' ');
-            if(!empty($input)) {
-              foreach($inputsFromUser_ar as $key => $inputFromUser) {
-                if($input==$key) {
-                  $trouve=1;
-                  break;
-                }
-              }
-              if($trouve==0) {
-                $errors[]=$input;
-              }
-            }
-          }
+          $errors = $this->missingInputDocumentation( $inputs, $inputsFromUser_ar );
 
           if (count($errors)>0) {
             $this->get('session')->getFlashBag()->add(
                 'error',
-                'Please the input '.rtrim(join(", ",$errors), ', ').' inside file are missing'
+                'Note that input <strong>'.rtrim(join(", ",$errors), ', ').'</strong> inside '.$scenario->getName().' ('.$scenario->getModel()->getName().') are missing'
             );
-            return $this->render('CKMAppBundle:Administration:addDatacardDocumentationError.html.twig', array(
-              'form1' => $form->createView(),
-            ));
           }
 
           # suppression des anciennes docs
@@ -407,10 +376,10 @@ class administrationController extends Controller
         }
       }
       else {
-                return $this->errorForm('notice',
-            'There is no scenario for this Model, please contact your administrator',
-            'CKMAppBundle_administration_datacard_documentation',
-            array()
+            return $this->errorForm('notice',
+              'There is no scenario',
+              'CKMAppBundle_administration_datacard_documentation',
+              array()
             );
       }
 
@@ -420,6 +389,66 @@ class administrationController extends Controller
       'explainText' => $explainText,
     ));
 
+  }
+
+  private function csvToArrayDocUser($lines) {
+    if(! is_array($lines) ) $lines = explode("\n", $lines);
+
+    $new_line = "^\n$" ;
+
+    $inputsFromUser_ar= array();
+    $CSVerror= array();
+
+    foreach($lines as $key => $line) {
+
+      if( ! preg_match("/$new_line/", $line) ) {
+        $tmp_ar= array();
+        $tmp_ar = explode(';',$line);
+        try {
+          if(isset($tmp_ar['1']) && isset($tmp_ar['0']) ) {
+            $inputsFromUser_ar[$tmp_ar['0']]=$tmp_ar['1'];
+          }
+          elseif($key>0) {
+            $CSVerror[]=$key;
+            #return array();
+          }
+        } catch (\Exception $e) {
+          throw new \Exception('Something wrong with the CSV Format');
+        }
+      }
+    }
+
+    if(count($CSVerror)>0) {
+      $this->get('session')->getFlashBag()->add(
+      'notice',
+      'Something wrong with the CSV Format at Carriage Return '.join(", ",$CSVerror)
+      );
+    }
+
+    return $inputsFromUser_ar;
+  }
+
+  private function missingInputDocumentation($inputs, $inputsFromUser_ar) {
+    $trouve=0;
+    $errors = array();
+
+    foreach($inputs as $input) {
+      $trouve=0;
+      $input = trim($input, ' ');
+      if(!empty($input)) {
+        foreach($inputsFromUser_ar as $key => $inputFromUser) {
+          if($input==$key) {
+            $trouve=1;
+            break;
+          }
+        }
+        if($trouve==0) {
+          $errors[]=$input;
+        }
+      }
+    }
+
+    return $errors;
   }
 
   public function editLatexAction($latex) {

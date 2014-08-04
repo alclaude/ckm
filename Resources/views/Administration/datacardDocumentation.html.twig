@@ -24,7 +24,6 @@ Administration - <small>Documentation management</small>
   {% set tabLatexIn  = '' %}
 {% endif %}
 
-
 {% for flashMessage in app.session.flashbag.get('notice') %}
   <div class="row">
     <div class="col-lg-6">
@@ -35,6 +34,7 @@ Administration - <small>Documentation management</small>
     </div>
   </div>
 {% endfor %}
+
 <div class="row">
   <div class="col-sm-12 ">
     <div class="tabs">

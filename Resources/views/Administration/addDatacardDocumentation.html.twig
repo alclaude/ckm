@@ -27,6 +27,16 @@
     <blockquote>
       <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Document a Scenario</h3></p>
 
+        {% for flashMessage in app.session.flashbag.get('error') %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="alert alert-warning">
+                   {{ flashMessage|raw}}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
       <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
         {{ form_errors(form1.model) }}
         {{ form_label(form1.model) }}
