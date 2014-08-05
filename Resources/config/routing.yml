@@ -81,8 +81,8 @@ CKMAppBundle_administration_datacard_add:
     pattern:  /administration/datacard/add
     defaults: { _controller: CKMAppBundle:Administration:addDatacard}
 CKMAppBundle_administration_datacard:
-    pattern:  /administration/datacard/
-    defaults: { _controller: CKMAppBundle:Administration:datacard}
+    pattern:  /administration/datacard/{tab}
+    defaults: { _controller: CKMAppBundle:Administration:datacard, tab: ''}
 CKMAppBundle_administration_datacard_documentation:
     pattern:  /administration/datacard/documentation/{tab}
     defaults: { _controller: CKMAppBundle:Administration:datacardDocumentation, tab: ''}
@@ -110,6 +110,15 @@ CKMAppBundle_administration_analysis_delete:
 CKMAppBundle_administration_analyse:
     pattern:  /administration/analysis/{page}
     defaults: { _controller: CKMAppBundle:Administration:analyses, page: 1}
+CKMAppBundle_administration_model:
+    pattern:  /administration/model
+    defaults: { _controller: CKMAppBundle:Administration:model}
+CKMAppBundle_administration_model_edit:
+    pattern:  /administration/model/edit/{model}
+    defaults: { _controller: CKMAppBundle:Administration:editModel}
+CKMAppBundle_administration_model_delete:
+    pattern:  /administration/model/delete/{model}
+    defaults: { _controller: CKMAppBundle:Administration:deleteModel}
 ## test
 CKMAppBundle_test_datacard:
     pattern:  /administration/datacard/test/{analyse}

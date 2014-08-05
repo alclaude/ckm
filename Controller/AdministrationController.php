@@ -11,6 +11,7 @@ use CKM\AppBundle\Entity\ParameterInput;
 use CKM\AppBundle\Entity\ElementTarget;
 use CKM\AppBundle\Entity\Scenario;
 use CKM\AppBundle\Entity\Latex as Latex;
+use CKM\AppBundle\Entity\Model;
 use CKM\AppBundle\Entity\ScenarioDocumentation;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -23,13 +24,14 @@ use CKM\AppBundle\Form\ScenarioType;
 use CKM\AppBundle\Form\ScenarioListType;
 use CKM\AppBundle\Form\DocumentationType;
 use CKM\AppBundle\Form\Admin\latexType;
+use CKM\AppBundle\Form\Admin\modelType;
 
 use \Doctrine\ORM\NoResultException;
 
 class administrationController extends Controller
 {
 
-  public function datacardAction(Request $request, $error=false) {
+  public function datacardAction(Request $request, $error=false, $tab='a') {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
@@ -85,6 +87,8 @@ class administrationController extends Controller
     }
     return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
       'form' => $form->createView(),
+      'tab'=>$tab,
+      'error'=>$error,
     ));
   }
 
@@ -656,6 +660,100 @@ class administrationController extends Controller
     return $this->redirect(
           $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
                               array('tab' => 'latex')
+          )
+    );
+  }
+
+  public function modelAction(Request $request) {
+    $models = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Model')
+          ->findAll();
+
+    return $this->render('CKMAppBundle:Administration:model.html.twig',
+      array(
+        'models'  => $models,
+      )
+    );
+  }
+
+  public function editModelAction($model=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $request = $this->getRequest();
+
+    if ($model==0) {
+      $model = new Model();
+    }
+    else {
+      $model = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Model')
+            ->findOneById($model);
+    }
+    if (!$model) {
+      throw $this->createNotFoundException('model not exist');
+    }
+
+    $form = $this->createForm(new modelType, $model);
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist( $model );
+        $em->flush();
+
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard',
+                    array('tab'=>'model')
+                )
+        );
+      }
+    }
+
+    return $this->render('CKMAppBundle:Administration:editModel.html.twig', array(
+      'form' => $form->createView(),
+    ));
+
+  }
+
+  public function deleteModelAction($model=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    $request = $this->getRequest();
+
+    $model = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Model')
+          ->findOneById($model);
+
+    if (!$model) {
+      throw $this->createNotFoundException('model not exist');
+    }
+
+    $tmp=$model->getName();
+    $em = $this->getDoctrine()->getEntityManager();
+
+    try {
+        $em->remove($model);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add(
+        'success',
+        'model '.$tmp.' deleted with success'
+        );
+    } catch (\Exception $e) {
+    #} catch (\Doctrine\ORM\ORMException $e) {
+        $this->get('session')->getFlashBag()->add(
+            'danger',
+            'Impossible to delete '.$tmp.' cause it is still in use in one analysis : '.$e->getMessage()
+        );
+    }
+
+    return $this->redirect(
+          $this->generateUrl('CKMAppBundle_administration_datacard',
+                              array('tab' => 'model')
           )
     );
   }

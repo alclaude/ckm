@@ -4,52 +4,87 @@
 {% form_theme form  'CKMAppBundle::Form/errors.html.twig' %}
 
 {% block titlePage %}
-Administration - <small>Scenario management</small>
+Administration - <small>Scenario & Model management</small>
 {% endblock %}
+
 {% block content %}
 
-<div class="row">
-  <div class="col-lg-8 ">
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Select a Scenario file</h3>
-      </div>
-      <div class="panel-body">
-      {% for flashMessage in app.session.flashbag.get('suppress') %}
-            <div class="alert alert-success">
-                    <p><span class="label label-primary"> Success </span></p>
-                    <p>{{ flashMessage }}</p>
-            </div>
-      {% endfor %}
-
-        <form role="form" action="{{ path('CKMAppBundle_administration_datacard') }}" method="post" {{ form_enctype(form) }}>
-          {{ form_widget(form) }}
-
-          <br />
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-lg-4">
-    {{ render(controller('CKMAppBundle:Administration:addDatacard', {
-            'error': 0
-        })) }}
-  </div>
-
-</div>
-
-
-{% if app.session.get('text') is defined %}
-  {% if app.session.get('text') is not empty %}
-    <div class="row">
-      <div class="col-lg-8 ">
-        <p><span class="label label-primary">{{app.session.get('model')}}</span> > <span class="label label-primary">{{app.session.get('name')}}</span></p>
-    <pre class="pre-scrollable">{{app.session.get('text')}}</pre>
-      </div>
-    </div>
-  {% endif %}
+{% if tab is defined and tab == 'model' %}
+  {% set tabLatex = 'active' %}
+  {% set tabData  = '' %}
+  {% set tabDataIn  = '' %}
+  {% set tabLatexIn  = 'in' %}
+{% else %}
+  {% set tabLatex = '' %}
+  {% set tabData  = 'active' %}
+  {% set tabDataIn  = 'in' %}
+  {% set tabLatexIn  = '' %}
 {% endif %}
 
+
+<div class="row">
+  <div class="col-sm-12 ">
+    <div class="tabs">
+      <ul style="margin-bottom: 15px;" class="nav nav-tabs">
+        <li class="{{ tabData|raw }}" ><a data-toggle="tab" href="#scenario">Scenario</a></li>
+        <li class="{{ tabLatex|raw }}" ><a data-toggle="tab" href="#model"> Model</a></li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+
+        <div id="scenario" class="tab-pane fade {{ tabData|raw }} {{ tabDataIn|raw }}" class="col-sm-8 ">
+
+          <div class="row">
+            <div class="col-lg-8 ">
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Select a Scenario file</h3>
+                </div>
+                <div class="panel-body">
+                {% for flashMessage in app.session.flashbag.get('suppress') %}
+                      <div class="alert alert-success">
+                              <p><span class="label label-primary"> Success </span></p>
+                              <p>{{ flashMessage }}</p>
+                      </div>
+                {% endfor %}
+
+                  <form role="form" action="{{ path('CKMAppBundle_administration_datacard') }}" method="post" {{ form_enctype(form) }}>
+                    {{ form_widget(form) }}
+
+                    <br />
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              {{ render(controller('CKMAppBundle:Administration:addDatacard', {
+                      'error': 0
+                  })) }}
+            </div>
+
+          </div>
+
+
+          {% if app.session.get('text') is defined %}
+            {% if app.session.get('text') is not empty %}
+              <div class="row">
+                <div class="col-lg-8 ">
+                  <p><span class="label label-primary">{{app.session.get('model')}}</span> > <span class="label label-primary">{{app.session.get('name')}}</span></p>
+              <pre class="pre-scrollable">{{app.session.get('text')}}</pre>
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+
+        </div> <!-- end datacard -->
+
+        <div id="model" class="tab-pane {{ tabLatex|raw }} {{ tabLatexIn|raw }} fade" class="col-sm-8 ">
+          {{ render(controller('CKMAppBundle:Administration:model')) }}
+        </div> <!-- end div latex-->
+      </div> <!-- end div tab-content -->
+    </div> <!-- end div tabs-->
+  </div> <!-- div class="col-lg-8 " -->
+</div> <!-- row -->
 
 {% endblock %}
