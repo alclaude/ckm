@@ -1,4 +1,6 @@
-{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{# src/Blogger/BlogBundle/Resources/views/Administration/addDatacardDocumentation.html.twig #}
+{% form_theme form1 'CKMAppBundle::Form/errors.html.twig' %}
+
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
 {% block stylesheets %}
@@ -9,6 +11,15 @@
 {% block titlePage %}
 Administration - <small>Documentation management</small>
 {% endblock %}
+
+{% set explainText='' %}
+{% set scenario='' %}
+{% set model='' %}
+{% for flashMessage in app.session.flashbag.get('explainText') %}
+  {% for doc in flashMessage %}
+    {% set explainText=explainText~doc %}
+  {% endfor %}
+{% endfor %}
 
 {% block content %}
 
@@ -28,7 +39,6 @@ Administration - <small>Documentation management</small>
   <div class="row">
     <div class="col-lg-6">
       <div class="alert alert-danger">
-              <h4>Warning!</h4>
               <p>{{ flashMessage }}</p>
       </div>
     </div>
@@ -46,43 +56,58 @@ Administration - <small>Documentation management</small>
       <div class="tab-content" id="myTabContent">
 
         <div id="datacard" class="tab-pane fade {{ tabData|raw }} {{ tabDataIn|raw }}" class="col-sm-8 ">
-
-        <div class="row">
-          <div class="col-sm-8 ">
-            <blockquote>
-                <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Documented Scenarii </h3></p>
-                {% if scenarioDocumented is defined %}
-                    <table class="table table-condensed table-hover">
-                      <thead>
-                        <tr>
-                          <th class="header">Scenario name </th>
-                          <th class="header">is documented ? </th>
-                          <th class="header">Model </th>
-                          <th class="header">Link </th>
-                          <th class="header">Switch isDocumented </th>
-                        </tr>
-                      </thead>
-                      {% for scenario in scenarioDocumented %}
-                        <tr>
-                          <td> {{scenario.name}}</td>
-                          <td> {{scenario.isDocumented  ? 'true' : 'false' }} </td>
-                          <td> {{scenario.model.name}}</td>
-                          <td> <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.id, 'input': 0 }) }}">Scenario explanation link</a></td>
-                          <td>
-                            {{ render(controller('CKMAppBundle:Administration:switchIsDocumented', {'scenario': scenario} )) }}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                      </table>
-              {% endif %}
-            </blockquote>
-          </div>
-        </div>
-
           {{ render(controller('CKMAppBundle:Administration:addDatacardDocumentation', {
-                  'error': 0
-              })) }}
+                'error': 0
+          })) }}
 
+
+          <div class="row">
+            <div class="col-sm-8 ">
+              <blockquote>
+                <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Document a Scenario</h3></p>
+
+                  {% for flashMessage in app.session.flashbag.get('error') %}
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="alert alert-warning">
+                             {{ flashMessage|raw}}
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+
+                <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
+                  {{ form_errors(form1.model) }}
+                  {{ form_label(form1.model) }}
+                  {{ form_widget(form1.model) }}
+
+                  {{ form_errors(form1.scenario) }}
+                  {{ form_label(form1.scenario) }}
+                  {{ form_widget(form1.scenario) }}
+
+                  {# form_errors(form1.display) #}
+                  {# form_label(form1.display) #}
+                  {{ form_widget(form1.display) }}
+
+                  {% if app.session.get('modelName') is defined %}
+                    {% if app.session.get('modelName') is not empty %}
+                      <p><span class="label label-info">Last choice</span>&nbsp;<span class="label label-default">{{app.session.get('modelName')}}</span> > <span class="label label-default">{{app.session.get('scenarioName')}}</span></p>
+                    {% endif %}
+                  {% endif %}
+
+                  {{ form_errors(form1.explain) }}
+                  {{ form_label(form1.explain) }}
+                  {{ form_widget(form1.explain, { 'value' : explainText }) }}
+
+                  {# form_errors(form1.document) #}
+                  {# form_label(form1.document) #}
+                  {{ form_widget(form1.document) }}
+
+                  {{ form_rest(form1) }}
+                </form>
+              </blockquote>
+            </div>
+          </div>
         </div> <!-- end datacard -->
 
         <div id="latex" class="tab-pane {{ tabLatex|raw }} {{ tabLatexIn|raw }} fade" class="col-sm-8 ">
@@ -93,6 +118,7 @@ Administration - <small>Documentation management</small>
   </div> <!-- div class="col-lg-8 " -->
 </div> <!-- row -->
 {% endblock %}
+
 {% block document_ready %}
   $("#ckm_appbundle_documentation_model").change(function(){
       var data = {

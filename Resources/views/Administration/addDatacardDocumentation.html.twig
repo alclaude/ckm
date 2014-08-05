@@ -1,74 +1,53 @@
-{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
-{% form_theme form1 'CKMAppBundle::Form/errors.html.twig' %}
-
-{% set explainText='' %}
-{% set scenario='' %}
-{% set model='' %}
-{% for flashMessage in app.session.flashbag.get('explainText') %}
-  {% for doc in flashMessage %}
-    {% set explainText=explainText~doc %}
-  {% endfor %}
-{% endfor %}
+{# src/Blogger/BlogBundle/Resources/views/Administration/datacardDocumentation.html.twig #}
 
 {% block content %}
+
 {% for flashMessage in app.session.flashbag.get('notice') %}
   <div class="row">
     <div class="col-lg-6">
-      <div class="alert alert-success">
-              <h4>Success!</h4>
+      <div class="alert alert-danger">
+              <h4>Warning!</h4>
               <p>{{ flashMessage }}</p>
       </div>
     </div>
   </div>
 {% endfor %}
 
-<div class="row">
-  <div class="col-sm-8 ">
-    <blockquote>
-      <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Document a Scenario</h3></p>
-
-        {% for flashMessage in app.session.flashbag.get('error') %}
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="alert alert-warning">
-                   {{ flashMessage|raw}}
-              </div>
-            </div>
+        <div class="row">
+          <div class="col-sm-8 ">
+            <blockquote>
+                <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Documented Scenarii </h3></p>
+                {% if scenarioDocumented is defined %}
+                    <table class="table table-condensed table-hover">
+                      <thead>
+                        <tr>
+                          <th class="header">Scenario name </th>
+                          <th class="header">is documented ? </th>
+                          <th class="header">Model </th>
+                          <th class="header">Link </th>
+                          <th class="header">Switch isDocumented </th>
+                        </tr>
+                      </thead>
+                      {% for scenario in scenarioDocumented %}
+                        <tr>
+                          <td> {{scenario.name}}</td>
+                          <td> {{scenario.isDocumented  ? 'true' : 'false' }} </td>
+                          <td> {{scenario.model.name}}</td>
+                          <td> <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.id, 'input': 0 }) }}">Scenario explanation link</a></td>
+                          <td>
+                            {{ render(controller('CKMAppBundle:Administration:switchIsDocumented', {'scenario': scenario} )) }}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      </table>
+              {% endif %}
+            </blockquote>
           </div>
-        {% endfor %}
+        </div>
 
-      <form role="form" action="{{ path('CKMAppBundle_administration_datacard_documentation_add', {'display': 'no' }) }}" method="post" {{ form_enctype(form1) }}>
-        {{ form_errors(form1.model) }}
-        {{ form_label(form1.model) }}
-        {{ form_widget(form1.model) }}
 
-        {{ form_errors(form1.scenario) }}
-        {{ form_label(form1.scenario) }}
-        {{ form_widget(form1.scenario) }}
 
-        {# form_errors(form1.display) #}
-        {# form_label(form1.display) #}
-        {{ form_widget(form1.display) }}
 
-        {% if app.session.get('modelName') is defined %}
-          {% if app.session.get('modelName') is not empty %}
-            <p><span class="label label-info">Last choice</span>&nbsp;<span class="label label-default">{{app.session.get('modelName')}}</span> > <span class="label label-default">{{app.session.get('scenarioName')}}</span></p>
-          {% endif %}
-        {% endif %}
 
-        {{ form_errors(form1.explain) }}
-        {{ form_label(form1.explain) }}
-        {{ form_widget(form1.explain, { 'value' : explainText }) }}
-
-        {# form_errors(form1.document) #}
-        {# form_label(form1.document) #}
-        {{ form_widget(form1.document) }}
-
-        {{ form_rest(form1) }}
-      </form>
-    </blockquote>
-  </div>
-</div>
 
 {% endblock %}
-

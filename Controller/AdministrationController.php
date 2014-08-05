@@ -226,7 +226,7 @@ class administrationController extends Controller
     );
   }
 
-  public function datacardDocumentationAction($tab='') {
+  public function addDatacardDocumentationAction($tab='') {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
@@ -237,7 +237,7 @@ class administrationController extends Controller
       ->getRepository('CKMAppBundle:Scenario')
       ->findScenarioByDocumentation();
 
-    return $this->render('CKMAppBundle:Administration:datacardDocumentation.html.twig',
+    return $this->render('CKMAppBundle:Administration:addDatacardDocumentation.html.twig',
       array(
         'scenarioDocumented' => $scenarioDocumented,
         'tab' => $tab,
@@ -245,7 +245,7 @@ class administrationController extends Controller
     );
   }
 
-  public function addDatacardDocumentationAction(Request $request, $display='') {
+  public function datacardDocumentationAction(Request $request, $display='', $tab='') {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
@@ -322,11 +322,14 @@ class administrationController extends Controller
           $this->container->get('request')->getSession()->set( 'scenarioName', $scenario->getName() );
           $this->container->get('request')->getSession()->set( 'modelName', $scenario->getModel()->getName() );
 
-          return $this->redirect(
+          /*return $this->redirect(
                   $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
                                       array()
                   )
-          );
+          );*/
+              return $this->render('CKMAppBundle:Administration:datacardDocumentation.html.twig', array(
+              'form1' => $form->createView(),
+            ));
         }
 
         if( $form->get('document')->isClicked() ) {
@@ -368,11 +371,14 @@ class administrationController extends Controller
 
           $em->flush();
 
-          return $this->redirect(
+          /*return $this->redirect(
                   $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
                                       array()
                   )
-          );
+          );*/
+            return $this->render('CKMAppBundle:Administration:datacardDocumentation.html.twig', array(
+              'form1' => $form->createView(),
+            ));
         }
       }
       else {
@@ -384,9 +390,10 @@ class administrationController extends Controller
       }
 
     }
-    return $this->render('CKMAppBundle:Administration:addDatacardDocumentation.html.twig', array(
+    return $this->render('CKMAppBundle:Administration:datacardDocumentation.html.twig', array(
       'form1' => $form->createView(),
       'explainText' => $explainText,
+      'tab' => $tab,
     ));
 
   }
@@ -477,7 +484,7 @@ class administrationController extends Controller
 
         return $this->redirect(
                 $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
-                    array()
+                    array('tab'=>'latex')
                 )
         );
       }
@@ -509,7 +516,7 @@ class administrationController extends Controller
 
         return $this->redirect(
                 $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
-                    array()
+                    array('tab'=>'latex')
                 )
         );
       }
