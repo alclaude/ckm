@@ -59,12 +59,14 @@ class AnalysisStep2Type extends AbstractType
             'mapped'           => false,
             'invalid_message'  => 'the value must be a number',
             'label'            => 'Scan min of the first target ',
+            'required'  => false,
           ))
         ->add('scanMax1', 'number',  array(
             'attr'             => array('class' => 'form-control'),
             'mapped'           => false,
             'invalid_message'  => 'the value must be a number',
             'label'            => 'Scan max of the first target',
+            'required'  => false,
           ))
        ;
 
@@ -75,12 +77,14 @@ class AnalysisStep2Type extends AbstractType
             'mapped'           => false,
             'invalid_message'  => 'the value must be a number',
             'label'            => 'Scan min of the second target',
+            'required'  => false,
           ))
         ->add('scanMax2', 'number',  array(
             'attr'             => array('class' => 'form-control'),
             'mapped'           => false,
             'invalid_message'  => 'the value must be a number',
             'label'            => 'Scan max of the second target',
+            'required'  => false,
           ))
         ->add('isAbscissa', 'choice', array(
              'choices'   => array('y' => 'Second', 'n' => 'First'),

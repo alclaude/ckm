@@ -144,7 +144,10 @@ class AnalysisController extends Controller
                 array('analyse' => $analyse->getId(), 'step' => $step )
                 );
           }
-          if( $tmp["scanMax1"] < $tmp["scanMin1"] or (isset($tmp["scanMax2"]) and $tmp["scanMax2"] < $tmp["scanMin2"] ) ) {
+          if( $tmp["scanMax1"] <= $tmp["scanMin1"] or
+              (!isset($tmp["scanMax1"]) and !isset($tmp["scanMin1"]) ) or
+              (isset($tmp["scanMax2"]) and $tmp["scanMax2"] <= $tmp["scanMin2"] )
+          ) {
             return $this->errorForm('notice',
               'scanMax must be greater than scanMin',
               'CKMAppBundle_analyse_create_step_2',
