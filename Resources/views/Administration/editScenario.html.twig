@@ -1,0 +1,43 @@
+{# src/Blogger/BlogBundle/Resources/views/Administration/editScenario.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
+{% block titlePage %}
+Administration - <small>Scenario</small>
+{% endblock %}
+
+{% block content %}
+<h3>Edit a Scenario</h3>
+
+<div class="row">
+  <div class="col-lg-6">
+    <form role="form" method="post" {{ form_enctype(form) }}>
+        <div class="form-group">
+          {{ form_errors(form.name) }}
+          {{ form_label(form.name) }}
+          {{ form_widget(form.name, { 'attr': { 'readonly': 'true' } }) }}
+        </div>
+        <div class="form-group">
+          {{ form_errors(form.model) }}
+          {{ form_label(form.model) }}
+          {{ form_widget(form.model) }}
+        </div>
+        <div class="form-group">
+          {{ form_errors(form.documentation) }}
+          {{ form_label(form.documentation) }} (posible HTML)
+          {{ form_widget(form.documentation) }}
+        </div>
+      <br />
+      {{ form_rest(form) }}
+      <p>
+        <input type="submit" class="btn btn-primary" />
+      </p>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -43,11 +43,17 @@ class Model
      */
     private $isEnable=true;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="documentation", type="text")
+     */
+    private $documentation='';
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -70,7 +76,7 @@ class Model
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -93,10 +99,33 @@ class Model
     /**
      * Get isEnable
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsEnable()
     {
         return $this->isEnable;
+    }
+
+    /**
+     * Set documentation
+     *
+     * @param string $documentation
+     * @return Model
+     */
+    public function setDocumentation($documentation)
+    {
+        $this->documentation = $documentation;
+
+        return $this;
+    }
+
+    /**
+     * Get documentation
+     *
+     * @return string 
+     */
+    public function getDocumentation()
+    {
+        return $this->documentation;
     }
 }

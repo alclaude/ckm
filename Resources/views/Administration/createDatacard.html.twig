@@ -3,16 +3,6 @@
 
 
 {% block content %}
-{% for flashMessage in app.session.flashbag.get('notice') %}
-  <div class="row">
-    <div class="col-lg-6">
-      <div class="alert alert-success">
-              <h4>Success!</h4>
-              <p>{{ flashMessage }}</p>
-      </div>
-    </div>
-  </div>
-{% endfor %}
 
 <div class="panel panel-primary">
   <div class="panel-heading">

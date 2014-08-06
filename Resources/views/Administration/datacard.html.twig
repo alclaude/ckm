@@ -1,8 +1,6 @@
 {# src/Blogger/BlogBundle/Resources/views/Administration/datacard.html.twig #}
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
-{% form_theme form  'CKMAppBundle::Form/errors.html.twig' %}
-
 {% block titlePage %}
 Administration - <small>Scenario & Model management</small>
 {% endblock %}
@@ -24,6 +22,15 @@ Administration - <small>Scenario & Model management</small>
 
 <div class="row">
   <div class="col-sm-12 ">
+
+    {% for type, flashMessages in app.session.flashbag.all() %}
+      {% for flashMessage in flashMessages %}
+          <div class="alert alert-{{ type }}">
+              <span class="label label-{{ type }}">{{ type }}</span> &nbsp;{{ flashMessage }}
+          </div>
+      {% endfor %}
+    {% endfor %}
+
     <div class="tabs">
       <ul style="margin-bottom: 15px;" class="nav nav-tabs">
         <li class="{{ tabData|raw }}" ><a data-toggle="tab" href="#scenario">Scenario</a></li>
@@ -38,21 +45,45 @@ Administration - <small>Scenario & Model management</small>
             <div class="col-lg-8 ">
               <div class="panel panel-primary">
                 <div class="panel-heading">
-                  <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Select a Scenario file</h3>
+                  <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Scenarios List</h3>
                 </div>
                 <div class="panel-body">
-                {% for flashMessage in app.session.flashbag.get('suppress') %}
-                      <div class="alert alert-success">
-                              <p><span class="label label-primary"> Success </span></p>
-                              <p>{{ flashMessage }}</p>
-                      </div>
-                {% endfor %}
 
-                  <form role="form" action="{{ path('CKMAppBundle_administration_datacard') }}" method="post" {{ form_enctype(form) }}>
-                    {{ form_widget(form) }}
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th class="header">Scenario </th>
+                          <th class="header">Name </th>
+                          <th class="header">Model </th>
+                          <th class="header">Date </th>
+                          <th class="header">All inputs documented </th>
+                          <th class="header">Actions </th>
+                        </tr>
+                      </thead>
+                      {% for scenario in scenarios %}
+                        <tr>
+                          <td>  {{ scenario.id }}</td>
+                          <td>  {{ scenario.name }}</td>
+                          <td>  {{ scenario.model.name }}</td>
+                          <td>  {{ scenario.dateCreate|date("m/d/Y - H:i") }}</td>
+                          <td>  {{ scenario.isDocumented ? 'true' : 'false'}}</td>
+                          <td>
+                            <a style="margin-left:5px;" class="right btn btn-danger btn-xs" data-original-title="Suppress scenario" title="Suppress scenario" href="{{ path('CKMAppBundle_administration_scenario_delete', {'scenario': scenario.id}) }}">
+                              <i class="fa fa-times-circle fa-lg"></i>
+                            </a>
+                            <a style="margin-left:5px;" class="right btn btn-success btn-xs" href="{{ path('CKMAppBundle_administration_scenario_edit', {'scenario': scenario.id}) }}">
+                              <i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit scenario" title="Edit scenario"></i>
+                            </a> &nbsp;&nbsp;
+                            <a style="margin-left:5px;" class="right btn btn-success btn-xs" href="{{ path('CKMAppBundle_administration_scenario_show', {'scenario': scenario.id}) }}">
+                              <i class="glyphicon glyphicon-eye-open tooltips" data-original-title="Show scenario" title="Show scenario"></i>
+                            </a> &nbsp;&nbsp;
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
 
-                    <br />
-                  </form>
                 </div>
               </div>
             </div>
@@ -64,18 +95,6 @@ Administration - <small>Scenario & Model management</small>
             </div>
 
           </div>
-
-
-          {% if app.session.get('text') is defined %}
-            {% if app.session.get('text') is not empty %}
-              <div class="row">
-                <div class="col-lg-8 ">
-                  <p><span class="label label-primary">{{app.session.get('model')}}</span> > <span class="label label-primary">{{app.session.get('name')}}</span></p>
-              <pre class="pre-scrollable">{{app.session.get('text')}}</pre>
-                </div>
-              </div>
-            {% endif %}
-          {% endif %}
 
         </div> <!-- end datacard -->
 

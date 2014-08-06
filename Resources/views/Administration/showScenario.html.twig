@@ -1,0 +1,63 @@
+{# src/Blogger/BlogBundle/Resources/views/Administration/showScenario.html.twig #}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
+{% block titlePage %}
+Administration - <small>Scenario</small>
+{% endblock %}
+
+{% block content %}
+<h3>Show Scenario {{ scenario.Name }}</h3>
+
+<div class="row">
+  <div class="right col-xs-12 col-sm-6 col-md-4 col-lg-2">
+    <a class="list-group-item" href="{{ path('CKMAppBundle_administration_datacard') }}">
+      <span class="btn btn-info btn-xs"><i class="fa fa-reply fa-lg" data-original-title="" title=""></i></span>
+      &nbsp;Return to Scenario list
+    </a>
+  </div>
+</div>
+
+<br /><br />
+<div class="row">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover">
+          <tr>
+            <td>Scenario</td>
+            <td>{{ scenario.id }}</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>{{ scenario.name }}</td>
+          </tr>
+          <tr>
+            <td>Model</td>
+            <td>{{ scenario.model.name }}</td>
+          </tr>
+          <tr>
+            <td>Date</td>
+            <td>{{ scenario.dateCreate|date("m/d/Y - H:i") }}</td>
+          </tr>
+          <tr>
+            <td>All inputs documented </td>
+            <td>{{ scenario.isDocumented ? 'true' : 'false' }}</td>
+          </tr>
+          <tr>
+            <td>Explanation</td>
+            <td>{{ scenario.documentation|raw }}</td>
+          </tr>
+          <tr>
+            <td>Scenario Inputs</td>
+            <td><pre class="pre-scrollable">{{ text }}</pre></td>
+          </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

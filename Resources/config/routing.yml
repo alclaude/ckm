@@ -83,6 +83,15 @@ CKMAppBundle_administration_datacard_add:
 CKMAppBundle_administration_datacard:
     pattern:  /administration/datacard/data/{tab}
     defaults: { _controller: CKMAppBundle:Administration:datacard, tab: ''}
+CKMAppBundle_administration_scenario_edit:
+    pattern:  /administration/scenario/edit/{scenario}
+    defaults: { _controller: CKMAppBundle:Administration:editScenario}
+CKMAppBundle_administration_scenario_show:
+    pattern:  /administration/scenario/show/{scenario}
+    defaults: { _controller: CKMAppBundle:Administration:showScenario}
+CKMAppBundle_administration_scenario_delete:
+    pattern:  /administration/scenario/delete/{scenario}
+    defaults: { _controller: CKMAppBundle:Administration:deleteScenario}
 CKMAppBundle_administration_datacard_documentation:
     pattern:  /administration/datacard/documentation/{tab}
     defaults: { _controller: CKMAppBundle:Administration:datacardDocumentation, tab: ''}
@@ -92,6 +101,9 @@ CKMAppBundle_administration_datacard_documentation_add:
 CKMAppBundle_administration_latex_documentation:
     pattern:  /administration/latex/documentation/
     defaults: { _controller: CKMAppBundle:Administration:latexDocumentation}
+CKMAppBundle_administration_model_documentation:
+    pattern:  /administration/model/documentation/
+    defaults: { _controller: CKMAppBundle:Administration:modelDocumentation}
 CKMAppBundle_administration_latex_documentation_add:
     pattern:  /administration/latex/documentation/add
     defaults: { _controller: CKMAppBundle:Administration:addLatex}
@@ -116,6 +128,9 @@ CKMAppBundle_administration_model:
 CKMAppBundle_administration_model_edit:
     pattern:  /administration/model/edit/{model}
     defaults: { _controller: CKMAppBundle:Administration:editModel}
+CKMAppBundle_administration_model_show:
+    pattern:  /administration/model/show/{model}
+    defaults: { _controller: CKMAppBundle:Administration:showModel}
 CKMAppBundle_administration_model_delete:
     pattern:  /administration/model/delete/{model}
     defaults: { _controller: CKMAppBundle:Administration:deleteModel}

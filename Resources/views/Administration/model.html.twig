@@ -36,7 +36,7 @@
                 <th class="header">Model</th>
                 <th class="header">Name</th>
                 <th class="header">isEnabled</th>
-                <th class="header">Edit</th>
+                <th class="header">Actions</th>
               </tr>
             </thead>
             {% for model in models %}
@@ -45,11 +45,14 @@
                 <td>  {{ model.name }}</td>
                 <td>  {{ model.isEnable  ? 'true' : 'false' }} </td>
                 <td>
-                  <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_administration_model_edit', {'model': model.id}) }}">
+                  <a style="margin-left:5px;" class="right btn btn-danger btn-xs" data-original-title="Suppress latex" title="Suppress Model" href="{{ path('CKMAppBundle_administration_model_delete', {'model': model.id}) }}">
+                    <i class="fa fa-times-circle fa-lg"></i>
+                  </a>
+                  <a style="margin-left:5px;" class="right btn btn-success btn-xs" href="{{ path('CKMAppBundle_administration_model_edit', {'model': model.id}) }}">
                     <i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit latex" title="Edit Model"></i>
                   </a>
-                  <a class="right btn btn-danger btn-xs" data-original-title="Suppress latex" title="Suppress Model" href="{{ path('CKMAppBundle_administration_model_delete', {'model': model.id}) }}">
-                    <i class="fa fa-times-circle fa-lg"></i>
+                  <a style="margin-left:5px;" class="right btn btn-success btn-xs" href="{{ path('CKMAppBundle_administration_model_show', {'model': model.id}) }}">
+                    <i class="glyphicon glyphicon-eye-open tooltips" data-original-title="Show latex" title="Show Model"></i>
                   </a>
                 </td>
               </tr>

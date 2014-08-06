@@ -25,74 +25,150 @@ use CKM\AppBundle\Form\ScenarioListType;
 use CKM\AppBundle\Form\DocumentationType;
 use CKM\AppBundle\Form\Admin\latexType;
 use CKM\AppBundle\Form\Admin\modelType;
+use CKM\AppBundle\Form\Admin\ScenarioExplainationType;
 
 use \Doctrine\ORM\NoResultException;
 
 class administrationController extends Controller
 {
 
-  public function datacardAction(Request $request, $error=false, $tab='a') {
+  public function datacardAction(Request $request, $error=false, $tab='') {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-    $datacard = new Scenario();
-    $form = $this->createForm(new ScenarioListType, $datacard);
+
+    $scenarios = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Scenario')
+          ->findAll();
+
+
+    return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
+      'tab'=>$tab,
+      'error'=>$error,
+      'scenarios'=>$scenarios,
+    ));
+  }
+
+  public function showScenarioAction($scenario=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $scenario = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Scenario')
+            ->findOneById($scenario);
+
+    if (!$scenario) {
+      throw $this->createNotFoundException('scenario not exist');
+    }
+
+    $text = file_get_contents( $scenario->getWebPath() );
+
+    return $this->render('CKMAppBundle:Administration:showScenario.html.twig', array(
+      'scenario' => $scenario,
+      'text' => $text,
+    ));
+  }
+
+  public function showModelAction($model=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $model = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Model')
+            ->findOneById($model);
+
+    if (!$model) {
+      throw $this->createNotFoundException('model not exist');
+    }
+
+    return $this->render('CKMAppBundle:Administration:showModel.html.twig', array(
+      'model' => $model,
+    ));
+  }
+
+  public function editScenarioAction($scenario=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $request = $this->getRequest();
+
+    $scenario = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Scenario')
+            ->findOneById($scenario);
+
+    if (!$scenario) {
+      throw $this->createNotFoundException('scenario not exist');
+    }
+
+    $form = $this->createForm(new ScenarioExplainationType, $scenario);
 
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
       if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist( $scenario );
+        $em->flush();
 
-        if( $form->get('display')->isClicked() ) {
-          $tmp = $request->request->get($form->getName()) ;
-
-          if( isset( $tmp['name'] ) ) {
-            $text = file_get_contents( $form->getData()->getName()->first()->getWebPath() );
-            $name = $form->getData()->getName()->first()->getName();
-            $nameModel = $form->getData()->getName()->first()->getModel()->getName();
-          }
-          else {
-            $text = 'Please select a datacard';
-            $name = 'Error';
-          }
-
-          $this->container->get('request')->getSession()->set( 'text', $text );
-          $this->container->get('request')->getSession()->set( 'name', $name );
-          $this->container->get('request')->getSession()->set( 'model', $nameModel );
-        }
-
-        if( $form->get('delete')->isClicked() ) {
-          $em = $this->getDoctrine()->getEntityManager();
-          #print_r( $form->getData()->getName()->first() );
-          $em->remove($form->getData()->getName()->first());
-          $em->flush();
-
-          $this->container->get('request')->getSession()->remove( 'text' );
-          $this->container->get('request')->getSession()->remove( 'name' );
-          $this->container->get('request')->getSession()->remove( 'model' );
-
-          $this->get('session')->getFlashBag()->add(
-              'suppress',
-              'datacard File removed
-              '
-          );
-          #return new Response("btn delete cliqué" );
-        }
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Scenario '.$scenario->getName().' edited'
+        );
 
         return $this->redirect(
-            $this->generateUrl('CKMAppBundle_administration_datacard',
-                array()
-            )
+                $this->generateUrl('CKMAppBundle_administration_datacard',
+                    array('tab'=>'')
+                )
         );
       }
     }
-    return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
+
+    return $this->render('CKMAppBundle:Administration:editScenario.html.twig', array(
       'form' => $form->createView(),
-      'tab'=>$tab,
-      'error'=>$error,
     ));
   }
 
+  public function deleteScenarioAction($scenario=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    $request = $this->getRequest();
 
+    $scenario = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Scenario')
+          ->findOneById($scenario);
+
+    if (!$scenario) {
+      throw $this->createNotFoundException('scenario not exist');
+    }
+
+    $tmp=$scenario->getName();
+    $em = $this->getDoctrine()->getEntityManager();
+
+    try {
+        $em->remove($scenario);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add(
+        'success',
+        'scenario '.$tmp.' deleted with success'
+        );
+    } catch (\Exception $e) {
+    #} catch (\Doctrine\ORM\ORMException $e) {
+        $this->get('session')->getFlashBag()->add(
+            'danger',
+            'Impossible to delete '.$tmp.' cause it is still in use in one analysis : '.$e->getMessage()
+        );
+    }
+
+    return $this->redirect(
+          $this->generateUrl('CKMAppBundle_administration_datacard',
+                              array('tab' => '')
+          )
+    );
+  }
 
   public function addDatacardAction(Request $request) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -125,7 +201,7 @@ class administrationController extends Controller
         $em->flush();
 
         $this->get('session')->getFlashBag()->add(
-          'notice',
+          'success',
           'File upload '
         );
 
@@ -152,6 +228,18 @@ class administrationController extends Controller
 
     #return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
     #));
+  }
+
+  public function modelDocumentationAction(Request $request) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    return $this->render('CKMAppBundle:Administration:modelDocumentation.html.twig',
+      array(
+      )
+    );
+
   }
 
   public function latexDocumentationAction(Request $request) {
@@ -498,6 +586,8 @@ class administrationController extends Controller
       'form' => $form->createView(),
     ));
   }
+
+
 
   public function addLatexAction() {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {

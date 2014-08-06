@@ -22,6 +22,12 @@ class modelType extends AbstractType
               'required'  => false,
               'attr' => array('class' => 'form-control'),
           ))
+          ->add('documentation', 'textarea', array(
+                    'attr'    => array('class' => 'form-control', 'rows' => '10'),
+                    #'mapped'  => false,
+                    'label' => 'Explanations (possible HTML)',
+                    'required' => false,
+              ))
           //->add('associatedElement')
         ;
     }

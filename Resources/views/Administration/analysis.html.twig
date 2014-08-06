@@ -14,7 +14,7 @@ Administration - <small>Analysis management</small>
 
 {% for flashMessage in app.session.flashbag.get('information') %}
   <div class="row">
-    <div class="col-lg-8">
+    <div class="col-sm-12 col-md-12 col-lg-10">
       <div class="alert alert-success">
               <p>{{ flashMessage }}</p>
       </div>
@@ -23,7 +23,7 @@ Administration - <small>Analysis management</small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-sm-8 ">
+  <div class="col-sm-12 col-md-12 col-lg-10">
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Analysis from users</h3>

@@ -93,6 +93,13 @@ class Scenario
      */
     private $model;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="documentation", type="text")
+     */
+    private $documentation='';
+
     public function __construct()
     {
         $this->path = "/home/alclaude/Documents/DEV_PHP/ckm-web2/src/CKM/globalCKMfit_scenario.txt";
@@ -391,10 +398,33 @@ class Scenario
     /**
      * Get model
      *
-     * @return \CKM\AppBundle\Entity\Model 
+     * @return \CKM\AppBundle\Entity\Model
      */
     public function getModel()
     {
         return $this->model;
+    }
+
+    /**
+     * Set documentation
+     *
+     * @param string $documentation
+     * @return Scenario
+     */
+    public function setDocumentation($documentation)
+    {
+        $this->documentation = $documentation;
+
+        return $this;
+    }
+
+    /**
+     * Get documentation
+     *
+     * @return string 
+     */
+    public function getDocumentation()
+    {
+        return $this->documentation;
     }
 }
