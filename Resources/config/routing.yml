@@ -81,7 +81,7 @@ CKMAppBundle_administration_datacard_add:
     pattern:  /administration/datacard/add
     defaults: { _controller: CKMAppBundle:Administration:addDatacard}
 CKMAppBundle_administration_datacard:
-    pattern:  /administration/datacard/{tab}
+    pattern:  /administration/datacard/data/{tab}
     defaults: { _controller: CKMAppBundle:Administration:datacard, tab: ''}
 CKMAppBundle_administration_datacard_documentation:
     pattern:  /administration/datacard/documentation/{tab}
