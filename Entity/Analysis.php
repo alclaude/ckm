@@ -653,10 +653,10 @@ class Analysis
       }
     }
 
-    public function isParamOfObservableTarget($paramName, $targets) {
-      foreach($targets as $target) {
-        if($this->isObservable($target->getName() )) {
-          foreach( ($target->getParameters()) as $parameter) {
+    public function isParamOfObservableTarget($paramName, $observables) {
+      foreach($observables as $observable) {
+        if($this->isObservable($observable->getName() )) {
+          foreach( ($observable->getParameters()) as $parameter) {
             if( $parameter->getName()=== $paramName) {
               return true;
             }

@@ -56,10 +56,8 @@ Analysis - <small>Personalize your analysis </small>
   </div>
 {% endfor %}
 
-
 <h4 style="text-transform: uppercase;margin-bottom:15px;">
-<i class="fa fa-asterisk "></i>
-{{analyse.name}}
+<i class="fa fa-asterisk "></i>  {{analyse.name}}
 </h4>
 
 {% if observables is defined %}
@@ -115,7 +113,11 @@ Analysis - <small>Personalize your analysis </small>
                           {{ parameter.latex.latex}}
                         {% endif %} </td>
                         {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': parameter} only %}
-                        <td> <div class="text-right" id="{{parameter.name}}"><a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': parameter.id, 'type':'Parameter'})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a></div></td>
+                        <td>
+                          <div class="text-right" id="{{parameter.name}}">
+                            <a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': parameter.id, 'type':'Parameter'})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a>
+                          </div>
+                        </td>
                       </tr>
                 {% endfor %}
                     </table>
@@ -143,7 +145,7 @@ Analysis - <small>Personalize your analysis </small>
                       <th style="border-bottom:2px solid black;" class="header">Property </th>
                       <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
                       <th class="header">Explanations </th>
-                      <th class="header">Edit </th>
+                      <th class="header">Actions </th>
                     </tr>
                   </thead>
 
@@ -156,6 +158,9 @@ Analysis - <small>Personalize your analysis </small>
                         <div class="text-right">
                           <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': observable.id, 'type':'Observable'}) }}">
                             <i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit observable" title="Edit observable"></i>
+                          </a>
+                          <a class="btn btn-danger btn-xs" href="{{ path('CKMAppBundle_analyse_input_delete', {'input': observable.id}) }}">
+                            <i class="fa fa-times-circle fa-lg" data-original-title="Delete observable" title="Delete observable"></i>
                           </a>
                         </div>
                       </td>

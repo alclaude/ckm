@@ -38,7 +38,7 @@ Documentation - <small>{{ scenario.name }}</small>
 
 <div class="row">
     <div class="col-sm-12 ">
-      <h3>Documentation relative to the datacard {{scenario.name }} of the model {{model.name }}</h3>
+      <h3><i class="fa fa-info-circle "></i> {{model.name }} <i class="fa fa-chevron-right"></i> {{scenario.name }}</h3>
 
       <div class="tabs">
             <ul style="margin-bottom: 15px;" class="nav nav-tabs">
@@ -53,7 +53,7 @@ Documentation - <small>{{ scenario.name }}</small>
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-                    <p>{{model.name }}</p>
+                    <p><i class="fa fa-chevron-right "></i><strong> {{model.name }}</strong></p>
                     {% if model.documentation != '' %}
                       <p>{{model.documentation|raw }}</p>
                     {% else %}
@@ -67,7 +67,7 @@ Documentation - <small>{{ scenario.name }}</small>
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-                    <p>{{scenario.name }}</p>
+                    <p><i class="fa fa-chevron-right "></i><strong> {{scenario.name }}</strong></p>
                     {% if scenario.documentation != '' %}
                       <p>{{scenario.documentation|raw }}</p>
                     {% else %}
@@ -81,14 +81,16 @@ Documentation - <small>{{ scenario.name }}</small>
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-                    {% if docs|length > 1 %}
+                    {% if docs|length > 0 %}
                       {% for doc in docs %}
-                        <p><strong>{{ doc.input}}</strong></p>
-                        {% if doc.explanation != '' %}
-                          <p>{{doc.explanation|raw }}</p>
-                        {% else %}
-                          <p>No documentation for scenario {{doc.input }}</p>
-                        {% endif %}
+                        <p><i class="fa fa-chevron-right "></i><strong> {{ doc.input}}</strong></p>
+                          {% if doc.explanation != '' %}
+                            <p><span style="float:left;margin-right:10px" class="btn btn-success btn-xs" ><i class="fa fa-check"></i></span>
+                            {{doc.explanation|raw }}</p><br>
+                          {% else %}
+                            <p>No documentation for scenario {{doc.input }}</p>
+                          {% endif %}
+
                       {% endfor %}
                     {% else %}
                       <p>No Input documented</p>

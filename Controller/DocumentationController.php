@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DocumentationController extends Controller
 {
-    public function seeDatacardInputDocumentationAction(Request $request, $scenario=0, $input=0) {
+    public function seeDatacardInputDocumentationAction(Request $request, $scenario=0, $input=0, $tab='') {
       $em = $this->getDoctrine()
                  ->getManager();
 
@@ -53,6 +53,7 @@ class DocumentationController extends Controller
         'model'    => $scenario->getModel(),
         'scenario' => $scenario,
         'docs'     => $docs,
+        'tab'      => $tab,
       ));
     }
 }

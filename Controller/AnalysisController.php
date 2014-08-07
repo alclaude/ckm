@@ -705,6 +705,93 @@ $em->persist($observableClone);
 
     }
 
+    // not work
+    public function removeOneInputAction($input ) {
+      $this->isGranted('ROLE_ANALYSIS');
+      $observableDeleted = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Observable')
+          ->findOneById( $input );
+
+      $analyse = $observableDeleted->getAnalyse();
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+      }
+
+      # verifier que observableDeleted n est pas aussi une target
+      $observablesTargetInput = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Input')
+          ->findByInputTargetAnalysis( $analyse->getId() );
+
+      foreach($observablesTargetInput as $observable) {
+        if($observable->getId() == $observableDeleted->getId() ) {
+          $this->get('session')->getFlashBag()->add(
+            'danger',
+            'observable '.$observableDeleted->getName().' can not be deleted because it is already a target'
+          );
+          return $this->redirect(
+            $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                                array('analyse' => $analyse->getId(), 'step' => 4, 'tab'=> 'input' )
+            )
+          );
+        }
+      }
+
+      # verifier que les parametres de observableDeleted n apparaissent pas dans les autres observables (inputs ou targets)
+      $em = $this->getDoctrine()->getEntityManager();
+      $targets = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Input')
+        ->findTargetByAnalysis( $analyse->getId() );
+
+      $observables = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Observable')
+        ->findByInputAnalysis( $analyse->getId() );
+
+      $trouveTarget=false;
+      $trouveObservable=false;
+
+      $parametersDeleted = $observableDeleted->getParameters();
+      foreach($parametersDeleted as $parameterDeleted) {
+        $trouveTarget=false;
+        $trouveObservable=false;
+        if( ! $parameterDeleted->getIsTarget() ) {
+          if( $analyse->isParamOfObservableTarget($parameterDeleted->getName(), $targets )  ) {
+            $trouveTarget=true;
+          }
+          if(!$trouveTarget) {
+            foreach($observables as $observable) {
+              $trouveObservable=false;
+              if($observable->getId() != $observableDeleted->getId()) {
+                foreach( ($observable->getParameters()) as $parameter) {
+                  if( $parameter->getName()=== $parameterDeleted->getName()) {
+                    $trouveObservable=true;
+                  }
+                }
+              }
+            }
+          }
+          if( $trouveTarget==false and $trouveObservable==false) {
+             $em->remove($parameterDeleted);
+          }
+        }
+      }
+
+      die('debbug');
+
+      $tmp=$observableDeleted->getName();
+      $em->remove($observableDeleted);
+      $this->get('session')->getFlashBag()->add(
+        'success',
+        'observable '.$tmp.' deleted with success'
+      );
+
+      return $this->redirect(
+              $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                                  array('analyse' => $analyse->getId(), 'step' => 4, 'tab'=> 'input' )
+              )
+      );
+    }
+
     private function removeInput($analyse ) {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
