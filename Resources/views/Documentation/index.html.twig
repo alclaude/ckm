@@ -8,15 +8,97 @@
 {% endblock %}
 
 {% block titlePage %}
-Documentation - <small>{{ scenario }}</small>
+Documentation - <small>{{ scenario.name }}</small>
 {% endblock %}
 
 {% block content %}
-<h3>Documentation relative to the datacard {{scenario }} of the model {{model }}</h3>
 
-{% for doc in docs %}
-<p><strong>{{ doc.input}}</strong></p>
-<p>{{ doc.explanation }}</p>
-{% endfor %}
+{% if tab is defined and tab == 'scenario' %}
+  {% set tabScena = 'active' %}
+  {% set tabScenaIn  = 'in' %}
+  {% set tabModel  = '' %}
+  {% set tabModelIn  = '' %}
+  {% set tabInput  = '' %}
+  {% set tabInputIn  = '' %}
+{% elseif tab is defined and tab == 'input' %}
+  {% set tabScena = '' %}
+  {% set tabScenaIn  = '' %}
+  {% set tabModel  = '' %}
+  {% set tabModelIn  = '' %}
+  {% set tabInput  = 'active' %}
+  {% set tabInputIn  = 'in' %}
+{% else %}
+  {% set tabScena = '' %}
+  {% set tabScenaIn  = '' %}
+  {% set tabModel  = 'active' %}
+  {% set tabModelIn  = 'in' %}
+  {% set tabInput  = '' %}
+  {% set tabInputIn  = '' %}
+{% endif %}
 
+<div class="row">
+    <div class="col-sm-12 ">
+      <h3>Documentation relative to the datacard {{scenario.name }} of the model {{model.name }}</h3>
+
+      <div class="tabs">
+            <ul style="margin-bottom: 15px;" class="nav nav-tabs">
+              <li class="{{ tabModel|raw }}" ><a data-toggle="tab" href="#model"> Model</a></li>
+              <li class="{{ tabScena|raw }}" ><a data-toggle="tab" href="#scenario">Scenario</a></li>
+              <li class="{{ tabInput|raw }}" ><a data-toggle="tab" href="#input"> Input</a></li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+
+              <div id="model" class="tab-pane fade {{ tabModel|raw }} {{ tabModelIn|raw }}">
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                    <p>{{model.name }}</p>
+                    {% if model.documentation != '' %}
+                      <p>{{model.documentation|raw }}</p>
+                    {% else %}
+                      <p>No documentation for Model {{model.name }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div> <!-- end div model -->
+
+              <div id="scenario" class="tab-pane fade {{ tabScena|raw }} {{ tabScenaIn|raw }}">
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                    <p>{{scenario.name }}</p>
+                    {% if scenario.documentation != '' %}
+                      <p>{{scenario.documentation|raw }}</p>
+                    {% else %}
+                      <p>No documentation for scenario {{scenario.name }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div> <!-- end div scenario -->
+
+              <div id="input" class="tab-pane fade {{ tabInput|raw }} {{ tabInputIn|raw }}" >
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                    {% if docs|length > 1 %}
+                      {% for doc in docs %}
+                        <p><strong>{{ doc.input}}</strong></p>
+                        {% if doc.explanation != '' %}
+                          <p>{{doc.explanation|raw }}</p>
+                        {% else %}
+                          <p>No documentation for scenario {{doc.input }}</p>
+                        {% endif %}
+                      {% endfor %}
+                    {% else %}
+                      <p>No Input documented</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div> <!-- end div scenario -->
+
+      </div> <!-- end div tab-content -->
+    </div> <!-- end div tabs-->
+  </div> <!-- end first col12 -->
+</div> <!-- end first row -->
 {% endblock %}

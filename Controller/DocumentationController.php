@@ -50,8 +50,8 @@ class DocumentationController extends Controller
 #\Doctrine\Common\Util\Debug::dump($scenario);die('debbug');
 
       return $this->render('CKMAppBundle:Documentation:index.html.twig', array(
-        'model'    => $scenario->getModel()->getName(),
-        'scenario' => $scenario->getName(),
+        'model'    => $scenario->getModel(),
+        'scenario' => $scenario,
         'docs'     => $docs,
       ));
     }
