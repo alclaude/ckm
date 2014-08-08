@@ -39,6 +39,9 @@ Analysis - <small> Define {{ message }} </small>
           </div>
       {{ form_widget(form) }}
 {% endif %}
+{% if type == 'name' %}
+      {{ form_widget(form) }}
+{% endif %}
       <br />
       <p>
         <input type="submit" class="btn btn-primary" />

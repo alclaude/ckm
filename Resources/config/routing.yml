@@ -41,6 +41,9 @@ CKMAppBundle_analyse_create_analyse_source_parameter:
 CKMAppBundle_analyse_create_analyse_properties:
     pattern:  /analysis/createAnalyseProperties/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:editAnalysisProperties}
+CKMAppBundle_analyse_analyse_name_edit:
+    pattern:  /analysis/name/edit/{analyse}
+    defaults: { _controller: CKMAppBundle:Analysis:editNameAnalyse}
 CKMAppBundle_analyse_create_analyse_scan:
     pattern:  /analysis/createAnalyseScan/{target_id}
     defaults: { _controller: CKMAppBundle:Analysis:editAnalysisScan}

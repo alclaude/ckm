@@ -50,7 +50,8 @@ class Analysis
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="text")
+     * @ORM\Column(name="name", type="text", nullable=false)
+     * @Assert\NotBlank
      */
     private $name;
 

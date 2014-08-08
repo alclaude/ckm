@@ -12,6 +12,7 @@ use CKM\AppBundle\Form\ObservableType;
 use CKM\AppBundle\Form\ObservableTagType;
 use CKM\AppBundle\Form\ParameterType;
 use CKM\AppBundle\Form\AnalysisPropertiesType;
+use CKM\AppBundle\Form\AnalysisNameType;
 
 use CKM\AppBundle\Form\Analyse\AnalysisStep1Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep2Type;
@@ -705,7 +706,54 @@ $em->persist($observableClone);
 
     }
 
-    // not work
+    public function editNameAnalyseAction($analyse ) {
+      $this->isGranted('ROLE_ANALYSIS');
+      $analyse = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Analysis')
+          ->findOneById( $analyse );
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+      }
+
+      if( $this->isForbiddenStep($analyse) ){
+        return $this->errorForm(
+          'danger',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $analyse->getId(), 'tab'=> 'input' )
+        );
+      }
+
+      $form = $this->createForm(new AnalysisNameType, $analyse);
+
+      $request = $this->getRequest();
+      if ($request->getMethod() == 'POST') {
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+          $em = $this->getDoctrine()->getManager();
+          $data=$form->getData();
+
+          $analyse->setName( $data->getname() );
+
+          $em->persist( $analyse );
+          $em->flush();
+
+          return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                                      array('analyse' => $analyse->getId(), 'step' => 2 )
+                  )
+          );
+        }
+      }
+      return $this->render('CKMAppBundle:Analysis:editAnalysisProperties.html.twig', array(
+        'form' => $form->createView(),
+        'message' => 'Analysis name',
+        'type'    => 'name',
+      ));
+    }
+
+    /** Remove one input observable in a analyse */
     public function removeOneInputAction($input ) {
       $this->isGranted('ROLE_ANALYSIS');
       $observableDeleted = $this->getDoctrine()
@@ -716,6 +764,15 @@ $em->persist($observableClone);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+      }
+
+      if( $this->isForbiddenStep($analyse) ){
+        return $this->errorForm(
+          'danger',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $analyse->getId(), 'tab'=> 'input' )
+        );
       }
 
       # verifier que observableDeleted n est pas aussi une target
@@ -751,40 +808,82 @@ $em->persist($observableClone);
       $trouveObservable=false;
 
       $parametersDeleted = $observableDeleted->getParameters();
+
+      $conservedParameters=array();
+
       foreach($parametersDeleted as $parameterDeleted) {
+        #echo $parameterDeleted->getName().' parameterDeleted<br/>';
         $trouveTarget=false;
         $trouveObservable=false;
         if( ! $parameterDeleted->getIsTarget() ) {
           if( $analyse->isParamOfObservableTarget($parameterDeleted->getName(), $targets )  ) {
             $trouveTarget=true;
+            $conservedParameters[]=$parameterDeleted->getName();
           }
           if(!$trouveTarget) {
+            $trouveObservable=false;
             foreach($observables as $observable) {
-              $trouveObservable=false;
+              #echo $observable->getName().' observable <br/>';
               if($observable->getId() != $observableDeleted->getId()) {
+                #echo $observable->getName().' observable non demande<br/>';
                 foreach( ($observable->getParameters()) as $parameter) {
+                  #echo $parameter->getName().'<br/>';
                   if( $parameter->getName()=== $parameterDeleted->getName()) {
                     $trouveObservable=true;
+                    #$nameparametersFound[]=$parameter->getName();
+                    break;
                   }
+                  #$nameparametersAll[]=$parameter->getName();
                 }
+                if($trouveObservable==true) {$conservedParameters[]=$parameterDeleted->getName();break;}
               }
             }
           }
           if( $trouveTarget==false and $trouveObservable==false) {
+             #echo $parameterDeleted->getName().' parameterDeleted effectif<br/>';
              $em->remove($parameterDeleted);
           }
+        } else {
+          $conservedParameters[]=$parameterDeleted->getName().' (is a target)';
         }
+      }
+/*
+echo '<pre>';
+print_r($nameparametersAll);print_r($nameparametersFound);
+echo '</pre>';
+die('die');
+*/
+
+      $tmp=$observableDeleted->getLatex()->getLatex();
+      $em->remove($observableDeleted);
+      $em->flush();
+
+      if( count($conservedParameters)>0) {
+        $conservedParameters = 'Note that parameter '.rtrim(join(", ", $conservedParameters),', ').' aren\'t';
+
+      } else { $conservedParameters='';}
+
+      $this->get('session')->getFlashBag()->add(
+        'success',
+        'observable '.$tmp.' deleted with success. '.$conservedParameters
+      );
+
+/*
+      if($trouveTarget) {
+        echo 'trouveTarget: vrai | ';
+      }
+      else {
+        echo 'trouveTarget: faux | ';
+      }
+      if($trouveObservable) {
+        echo 'trouveObservable: vrai | ';
+      }
+      else {
+        echo 'trouveObservable: faux | ';
       }
 
       die('debbug');
-
-      $tmp=$observableDeleted->getName();
-      $em->remove($observableDeleted);
-      $this->get('session')->getFlashBag()->add(
-        'success',
-        'observable '.$tmp.' deleted with success'
-      );
-
+*/
       return $this->redirect(
               $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
                                   array('analyse' => $analyse->getId(), 'step' => 4, 'tab'=> 'input' )

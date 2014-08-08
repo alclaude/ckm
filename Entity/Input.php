@@ -102,13 +102,15 @@ class Input
      *
      * @ORM\Column(name="scan_max", type="float")
      * @Assert\Type(type="float")
+     * @Assert\NotBlank
+     * @Assert\NotNull()
      */
     private $scanMax=0;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_abscissa ", type="boolean")
+     * @ORM\Column(name="is_abscissa", type="boolean")
      */
     private $isAbscissa=false;
 
@@ -116,6 +118,8 @@ class Input
      * @var float
      *
      * @ORM\Column(name="scan_min", type="float")
+     * @Assert\NotBlank
+     * @Assert\NotNull()
      */
     private $scanMin=0;
 
@@ -570,7 +574,7 @@ class Input
     /**
      * Get isAbscissa
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsAbscissa()
     {
