@@ -549,7 +549,7 @@ class AnalysisController extends Controller
           $em->persist( $all_ar_parameters[$parameterNameClone] );
           $em->persist($observableClone);
         }
-$em->persist($observableClone);
+        $em->persist($observableClone);
 
         $all_ar_observables[]=$observableClone;
       }
@@ -561,7 +561,7 @@ $em->persist($observableClone);
       #die('debbug');
 
       $this->get('session')->getFlashBag()->add(
-            'notice',
+            'success',
             'Your analysis ['.  $analyse->getId() .'] have been copy in analysis ['.$analyseClone->getId().']'
       );
 
@@ -587,7 +587,7 @@ $em->persist($observableClone);
       $em->flush();
 
       $this->get('session')->getFlashBag()->add(
-            'notice',
+            'success',
             'Your analysis ['.  $analyse->getId() .'] have been run'
       );
 

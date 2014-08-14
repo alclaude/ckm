@@ -23,6 +23,7 @@ class CKMExtension extends \Twig_Extension
             'latexTransform' => new \Twig_Function_Method($this, 'getLatexTransform'),
             'getIsTargets' => new \Twig_Function_Method($this, 'getIsTargets'),
             'getStatusLibelle' => new \Twig_Function_Method($this, 'getStatusLibelle'),
+            'getLatex' => new \Twig_Function_Method($this, 'getLatex'),
         );
     }
 
@@ -56,6 +57,12 @@ class CKMExtension extends \Twig_Extension
 
     public function getLatexLike($name){
       return '\('.$name.'\)';
+    }
+
+    public function getLatex($name){
+      $latex = $this->em->getRepository('CKMAppBundle:Latex')
+                    ->findOneByName($name);
+      return $latex->getLatex();
     }
 
     public function getTargetsElement($analyse)

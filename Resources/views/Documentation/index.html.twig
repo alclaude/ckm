@@ -83,7 +83,7 @@ Documentation - <small>{{ scenario.name }}</small>
                   <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
                     {% if docs|length > 0 %}
                       {% for doc in docs %}
-                        <p><i class="fa fa-chevron-right "></i><strong> {{ doc.input}}</strong></p>
+                        <p><i class="fa fa-chevron-right "></i><strong> {{ getLatex(doc.input) }}</strong></p>
                           {% if doc.explanation != '' %}
                             <p><span style="float:left;margin-right:10px" class="btn btn-success btn-xs" ><i class="fa fa-check"></i></span>
                             {{doc.explanation|raw }}</p><br>
