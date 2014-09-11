@@ -3,6 +3,8 @@
 // src/Acme/DemoBundle/Twig/AcmeExtension.php
 namespace CKM\AppBundle\Twig;
 
+use CKM\AppBundle\Entity\Latex as Latex; 
+
 class CKMExtension extends \Twig_Extension
 {
     private $em;
@@ -62,7 +64,16 @@ class CKMExtension extends \Twig_Extension
     public function getLatex($name){
       $latex = $this->em->getRepository('CKMAppBundle:Latex')
                     ->findOneByName($name);
-      return $latex->getLatex();
+                    
+      try {
+        if($latex instanceof Latex) {
+        return $latex->getLatex();
+      } else {
+        return $name;
+      }
+      } catch (\Exception $e) {
+        return $name;
+      }
     }
 
     public function getTargetsElement($analyse)

@@ -14,7 +14,6 @@ class ScenarioDocumentationRepository extends EntityRepository
 {
     public function findDocByInputAndScenario($scenarioName='', $inputName='')
     {
-      $target=true;
       return $this->getEntityManager()
           ->createQuery(
               'SELECT o FROM CKM\AppBundle\Entity\ScenarioDocumentation o WHERE o.scenario =:scenario and o.input=:input'
@@ -25,6 +24,21 @@ class ScenarioDocumentationRepository extends EntityRepository
                 )
            )
           ->getResult();
+    }
+    
+    public function removeDocumentationByScenario($scenario='')
+    {
+      return $this->getEntityManager()
+          ->createQuery(
+              'DELETE FROM CKM\AppBundle\Entity\ScenarioDocumentation o WHERE o.scenario =:scenario'
+          )
+          #DELETE FROM `ckm_scenario_documentation` WHERE `scenario_id`=16;
+          ->setParameters(array(
+                'scenario'   => $scenario,
+                )
+           )
+          #->getResult();
+          ->execute();
     }
 
     public function findDocByScenario($scenarioName='')

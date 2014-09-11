@@ -438,7 +438,7 @@ class administrationController extends Controller
             );
           }
 
-          # suppression des anciennes docs
+          ## suppression des anciennes docs
           foreach($inputs as $input) {
             $docsInput = $this->getDoctrine()
               ->getRepository('CKMAppBundle:ScenarioDocumentation')
@@ -448,6 +448,11 @@ class administrationController extends Controller
                 $em->remove($docInput);
             }
           }
+          # effacer les quantite absentes du scenario
+          $docsInput = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:ScenarioDocumentation')
+              ->removeDocumentationByScenario($tmp['scenario']);
+          ##
 
           $datacardDocumentation_ar = array();
           foreach($inputsFromUser_ar as $key => $inputFromUser) {
