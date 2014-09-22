@@ -391,6 +391,59 @@ class administrationController extends Controller
             array()
             );
         }
+        
+        if( $form->get('remove')->isClicked() ) {
+          $inputs = $scenario->getInput();
+          ## suppression des anciennes docs
+          foreach($inputs as $input) {
+            $docsInput = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:ScenarioDocumentation')
+              ->findDocByInputAndScenario($tmp['scenario'], $input);
+
+            foreach ($docsInput as $docInput) {
+                $em->remove($docInput);
+            }
+          }
+          # effacer les quantite absentes du scenario
+          $docsInput = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:ScenarioDocumentation')
+              ->removeDocumentationByScenario($tmp['scenario']);
+          ##
+          return $this->render('CKMAppBundle:Administration:datacardDocumentation.html.twig', array(
+            'form1' => $form->createView(),
+          ));
+        }
+        
+        if( $form->get('export')->isClicked() ) {
+
+          $answers = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:ScenarioDocumentation')
+              ->findByScenarioCSV($tmp['scenario']);
+              
+          $handle = fopen('php://memory', 'r+');
+          $header = array();
+
+          #foreach ($answers as $answer) {
+          #    fputcsv($handle, array($answer->getInput() , $answer->getExplanation(), ";" ) );
+          #}
+          
+          foreach ($answers as $answer) {
+            fwrite($handle, $answer);
+          }
+          
+          rewind($handle);
+          $content = stream_get_contents($handle);
+          fclose($handle);
+          
+          $fileName = date("Y/m/d").'_'.$scenario->getName().'_'.$scenario->getModel()->getName().'.txt';
+          
+          return new Response($content, 200, array(
+              'Content-Type' => 'application/force-download',
+              'Content-Disposition' => 'attachment; filename="'.$fileName.'"'
+          ));
+          return new Response('export datacardDocumentationAction');
+        }
+        
 
         if( $form->get('display')->isClicked() ) {
             $doc = $this->getDoctrine()
@@ -426,6 +479,14 @@ class administrationController extends Controller
 
         if( $form->get('document')->isClicked() ) {
           $inputs = $scenario->getInput();
+
+          if ($tmp['explain']=='') {
+            return $this->errorForm('notice',
+              'The explanation can not be empty' ,
+              'CKMAppBundle_administration_datacard_documentation',
+              array()
+            );
+          }
 
           $inputsFromUser_ar=$this->csvToArrayDocUser($tmp['explain']);
 
@@ -480,7 +541,7 @@ class administrationController extends Controller
       }
       else {
             return $this->errorForm('notice',
-              'There is no scenario',
+              'There is no scenario ' , /* $form-> getErrorsAsString() - getErrors()*/
               'CKMAppBundle_administration_datacard_documentation',
               array()
             );

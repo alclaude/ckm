@@ -32,7 +32,7 @@ class ScenarioExplainationType extends AbstractType
               'attr'    => array('class' => 'form-control', 'rows' => '10'),
               #'mapped'  => false,
               'label' => 'Explanations',
-              'required' => false,
+              'required' => true,
             ))
         ;
     }

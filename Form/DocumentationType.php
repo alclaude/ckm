@@ -47,7 +47,15 @@ class DocumentationType extends AbstractType
               ))
               ->add('document', 'submit', array(
               'attr'      => array('class' => 'btn btn-primary btn-lg btn-block'),
-              'label'     => 'Document this scenario'
+              'label'     => 'Document scenario'
+              ) )
+              ->add('export', 'submit', array(
+              'attr'      => array('class' => 'btn btn-info btn-lg btn-block'),
+              'label'     => 'Export...'
+              ) )
+              ->add('remove', 'submit', array(
+              'attr'      => array('class' => 'btn btn-danger btn-lg btn-block'),
+              'label'     => 'Remove'
               ) )
         ;
     }

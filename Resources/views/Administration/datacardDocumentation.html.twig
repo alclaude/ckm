@@ -97,10 +97,19 @@ Administration - <small>Documentation management</small>
                   {{ form_errors(form1.explain) }}
                   {{ form_label(form1.explain) }}
                   {{ form_widget(form1.explain, { 'value' : explainText }) }}
+                  <br />
 
-                  {# form_errors(form1.document) #}
-                  {# form_label(form1.document) #}
-                  {{ form_widget(form1.document) }}
+                  <div class="row">
+                    <div class="col-lg-4">
+                      {{ form_widget(form1.document) }}
+                    </div>
+                    <div class="col-lg-4">
+                      {{ form_widget(form1.export) }}
+                    </div>
+                    <div class="col-lg-4">
+                      {{ form_widget(form1.remove) }}
+                    </div>
+                  </div>                 
 
                   {{ form_rest(form1) }}
                 </form>
