@@ -13,19 +13,19 @@
   </div>
 {% endfor %}
 
-        <div class="row">
-          <div class="col-sm-8 ">
+
+          <div class="col-sm-4 ">
             <blockquote>
                 <p><h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Documented Scenarii </h3></p>
                 {% if scenarioDocumented is defined %}
                     <table class="table table-condensed table-hover">
                       <thead>
                         <tr>
-                          <th class="header">Scenario name </th>
-                          <th class="header">is documented ? </th>
+                          <th class="header">name </th>
+                          <th class="header">documented</th>
                           <th class="header">Model </th>
                           <th class="header">Link </th>
-                          <th class="header">Switch isDocumented </th>
+                          <th class="header">Switch</th>
                         </tr>
                       </thead>
                       {% for scenario in scenarioDocumented %}
@@ -33,7 +33,7 @@
                           <td> {{scenario.name}}</td>
                           <td> {{scenario.isDocumented  ? 'true' : 'false' }} </td>
                           <td> {{scenario.model.name}}</td>
-                          <td> <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.id, 'input': 0 }) }}">Scenario explanation link</a></td>
+                          <td> <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.id, 'input': 0 }) }}">Scenario explanation</a></td>
                           <td>
                             {{ render(controller('CKMAppBundle:Administration:switchIsDocumented', {'scenario': scenario} )) }}
                           </td>
@@ -43,7 +43,7 @@
               {% endif %}
             </blockquote>
           </div>
-        </div>
+
 
 
 

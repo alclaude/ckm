@@ -56,9 +56,6 @@ Administration - <small>Documentation management</small>
       <div class="tab-content" id="myTabContent">
 
         <div id="datacard" class="tab-pane fade {{ tabData|raw }} {{ tabDataIn|raw }}" class="col-sm-8 ">
-          {{ render(controller('CKMAppBundle:Administration:addDatacardDocumentation', {
-                'error': 0
-          })) }}
 
           <div class="row">
             <div class="col-sm-8 ">
@@ -115,6 +112,12 @@ Administration - <small>Documentation management</small>
                 </form>
               </blockquote>
             </div>
+            
+                      {{ render(controller('CKMAppBundle:Administration:addDatacardDocumentation', {
+                'error': 0
+          })) }}
+            
+            
           </div>
         </div> <!-- end datacard -->
 
