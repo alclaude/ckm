@@ -1091,10 +1091,10 @@ die('die');
             );
           }
 
-          if( $tmp['value']==0 or $tmp['expUncertity']==0 or $tmp['thUncertity']==0 ) {
+          if( $tmp['expUncertity']==0 and $tmp['thUncertity']==0 ) {
             $this->get('session')->getFlashBag()->add(
                 'notice',
-                'Please, you must change the three values at once'
+                'Please, the two Uncertity can not be null at once'
             );
             return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_input',
@@ -1102,6 +1102,7 @@ die('die');
                   )
             );
           }
+    
 
           $observable->setValue( $tmp['value'] );
           $observable->setExpUncertity( $tmp['expUncertity'] );

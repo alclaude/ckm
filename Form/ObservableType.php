@@ -37,14 +37,17 @@ class ObservableType extends AbstractType
           ->add('value', 'text', array(
               'label' => 'Central value',
               'attr'  => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlValue),
+              'required' => false
             ))
           ->add('expUncertity', 'number', array(
               'attr' => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlExpUncertity),
               'label' => 'Experimental uncertainty',
+              'required' => false
             ))
           ->add('thUncertity', 'number', array(
               'attr' => array('class' => 'form-control', 'placeholder' => $placeholder, 'value'=>$htmlThUncertity),
               'label' => 'Theoretical uncertainty',
+              'required' => false
             ))
           //->add('associatedElement')
         ;
