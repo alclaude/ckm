@@ -91,6 +91,6 @@ class Latex
      */
     public function getLatex()
     {
-        return $this->latex;
+      return $this->latex;
     }
 }

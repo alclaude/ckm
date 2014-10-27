@@ -1437,7 +1437,9 @@ die('die');
         $model_id = $request->request->get('model_id');
 
         $em = $this->getDoctrine()->getManager();
-        $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel($model_id);
+        #$scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel($model_id);
+        $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findScenarioByModelAndActivated($model_id);
+        
 
         $scenariosArray=array();
 

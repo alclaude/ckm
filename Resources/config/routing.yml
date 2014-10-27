@@ -98,6 +98,9 @@ CKMAppBundle_administration_scenario_show:
 CKMAppBundle_administration_scenario_delete:
     pattern:  /administration/scenario/delete/{scenario}
     defaults: { _controller: CKMAppBundle:Administration:deleteScenario}
+CKMAppBundle_administration_scenario_add_quantity:
+    pattern:  /administration/scenario/add/quantity/{scenario}
+    defaults: { _controller: CKMAppBundle:Administration:addQuantity}
 CKMAppBundle_administration_datacard_documentation:
     pattern:  /administration/datacard/documentation/{tab}
     defaults: { _controller: CKMAppBundle:Administration:datacardDocumentation, tab: ''}

@@ -245,6 +245,64 @@ class Scenario
       return $input_ar;
 
     }
+   
+    public function cleanFile($observables, $parameters)
+    {
+      #list($observables, $parameters) = $this->getInputLineInFile();
+      $handle = fopen($this->getWebPath(), 'w');
+      
+      $answers = array_merge(
+        array('# observable;default input;min allowed value;max allowed value;associated parameters'),
+        $observables,
+        array('# parameter;default input;min allowed value;max allowed value'),
+        $parameters
+      );
+
+      $data='';
+      foreach ($answers as $answer) {
+        if( !preg_match("/^\s*$/",$answer) ) {
+          $answer=preg_replace("/\s*$/","",$answer);
+          $data.=$answer."\n";
+          #fwrite($handle, $answer."\n");
+        }
+      }
+      $data=rtrim($data);
+      fwrite($handle, $data);
+      fclose($handle);
+    }
+    
+    public function getInputLineInFile()
+    {
+      $data = file_get_contents( $this->getWebPath() ) or die("fichier non trouv&eacute;");
+      $lines = explode(PHP_EOL, $data);
+
+      $type='';
+      $new_line = "^\n$" ;
+      $observables = array();
+      $parameters  = array();
+
+      foreach($lines as $line) {
+        if( ! preg_match("/$new_line/", $line) ) {
+          
+          if( preg_match('/observable/', $line) ) {
+            $type='observable';
+          }
+          elseif( preg_match('/parameter/', $line) ) {
+            $type='parameter';
+          }
+          else {
+            if( $type==='observable' ) {
+              $observables[] = $line;
+            }
+            if( $type==='parameter' ) {
+              $parameters[] = $line;
+            }
+          }
+        }
+      }
+      
+      return array($observables, $parameters);
+    }
 
     public function getAbsolutePath()
     {
@@ -322,6 +380,9 @@ class Scenario
         // proprement l'entité d'être persistée dans la base de données si
         // erreur il y a
         $this->file->move($this->getUploadRootDir(), $this->path);
+        
+        list($observables, $parameters) = $this->getInputLineInFile();     
+        $this->cleanFile($observables, $parameters);
 
         unset($this->file);
     }

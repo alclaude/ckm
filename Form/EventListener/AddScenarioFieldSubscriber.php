@@ -35,15 +35,14 @@ class AddScenarioFieldSubscriber implements EventSubscriberInterface
                 'class' => 'form-control',
             ),
             'data'       => $this->defaultScenario,
-            'query_builder' => function (EntityRepository $repository) use ($model_id) {
+            /*'query_builder' => function (EntityRepository $repository) use ($model_id) {
                 $qb = $repository->createQueryBuilder('scenario')
-                    ->innerJoin('scenario.model', 'model')
-                    ->where('model.id = :model')
-                    ->setParameter('model', $model_id)
+                ->innerJoin('scenario.model', 'model')
+                ->where('model.id = :model')
+                ->setParameter('model', $model_id)
                 ;
-
                 return $qb;
-            }
+            }*/
         );
 
         $form->add('scenario', 'entity', $formOptions);

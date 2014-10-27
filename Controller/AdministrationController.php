@@ -26,6 +26,7 @@ use CKM\AppBundle\Form\DocumentationType;
 use CKM\AppBundle\Form\Admin\latexType;
 use CKM\AppBundle\Form\Admin\modelType;
 use CKM\AppBundle\Form\Admin\ScenarioExplainationType;
+use CKM\AppBundle\Form\Admin\addDatacardQuantityType;
 
 use \Doctrine\ORM\NoResultException;
 
@@ -47,6 +48,84 @@ class administrationController extends Controller
       'error'=>$error,
       'scenarios'=>$scenarios,
     ));
+  }
+  
+  
+  public function addQuantityAction($scenario=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    
+    $scenario = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Scenario')
+            ->findOneById($scenario);
+
+    if (!$scenario) {
+      throw $this->createNotFoundException('scenario not exist');
+    }
+    $request = $this->getRequest();
+    $form = $this->createForm(new addDatacardQuantityType, $scenario);
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $tmp = $request->request->get($form->getName()) ;
+        
+        list($observables, $error_obs)  = $this->cleanCSV($tmp['observables'], 5);
+        list($parameters, $error_param) = $this->cleanCSV($tmp['parameters'], 4);
+        
+        $missObs   = $this->get('CKM.services.analysisManager')->isInputsInScenario( $observables, $scenario );
+        $missParam = $this->get('CKM.services.analysisManager')->isInputsInScenario( $parameters, $scenario );
+        
+        if (count($error_obs)>0 or count($error_param)>0) {
+            $this->get('session')->getFlashBag()->add(
+                'danger',
+                'Invalid CSV Format : an Observable line has 5 elements and a parameter 4'
+            );
+        }
+        elseif ( $missObs or $missParam ) {
+            $this->get('session')->getFlashBag()->add(
+                'danger',
+                'Observable or Parameter already exist in the scenario list'
+            );
+        }
+        else {
+          $em = $this->getDoctrine()->getManager();
+          
+          list($observablesInFile, $parametersInFile) = $scenario->getInputLineInFile();
+          $scenario->cleanFile(          
+                        array_merge(
+                                    $observablesInFile, 
+                                    $observables
+                                    ),
+                         array_merge(  
+                                    $parametersInFile, 
+                                    $parameters
+                                    )
+          );
+          
+          $em->persist( $scenario );
+          $em->flush();
+
+          $this->get('session')->getFlashBag()->add(
+              'success',
+              'Scenario '.$scenario->getName().' edited'
+          );
+
+          return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_administration_datacard',
+                      array('tab'=>'')
+                  )
+          );
+        }
+      }
+    }
+
+    return $this->render('CKMAppBundle:Administration:addQuantityScenario.html.twig', array(
+      'form' => $form->createView(),
+    ));
+    
+    return new Response('ok');
   }
 
   public function showScenarioAction($scenario=0) {
@@ -196,6 +275,8 @@ class administrationController extends Controller
             'form1' => $form->createView(),
           ));
         }
+ 
+            
         $datacard->setTag($tag);
         $em->persist($datacard);
         $em->flush();
@@ -554,6 +635,34 @@ class administrationController extends Controller
       'tab' => $tab,
     ));
 
+  }
+
+  private function cleanCSV($lines, $arg) {
+    if(! is_array($lines) ) $lines = explode(PHP_EOL, $lines);
+    $new_line = "^\n$" ;
+    $quantities = array();
+    $CSVerror= array();
+    
+    foreach($lines as $key => $line) {
+
+      if( ! preg_match("/$new_line/", $line) ) {
+        $tmp_ar = array();
+        $tmp_ar = explode(';',$line);
+        try {
+          if( count($tmp_ar) != $arg ) {
+            $CSVerror[]=$line;
+            #return array();
+          }
+          else {
+            $line=preg_replace("/\s*$/","",$line);
+            $quantities[]=$line;
+          }
+        } catch (\Exception $e) {
+          throw new \Exception('Something wrong with the CSV Format');
+        }
+      }
+    }
+    return array($quantities, $CSVerror);
   }
 
   private function csvToArrayDocUser($lines) {
@@ -933,6 +1042,7 @@ class administrationController extends Controller
 
     return $tag;
   }
+  
   private function errorForm($typeSession, $errorMsg, $template, $param ) {
       $this->get('session')->getFlashBag()->add(
           $typeSession,

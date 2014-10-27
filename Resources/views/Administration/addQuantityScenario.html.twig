@@ -11,7 +11,16 @@ Administration - <small>Scenario</small>
 {% endblock %}
 
 {% block content %}
-<h3>Edit a Scenario</h3>
+
+<h3>Add quantities in Scenario</h3>
+
+{% for type, flashMessages in app.session.flashbag.all() %}
+  {% for flashMessage in flashMessages %}
+      <div class="alert alert-{{ type }}">
+          <span class="label label-{{ type }}">{{ type }}</span> &nbsp;{{ flashMessage }}
+      </div>
+  {% endfor %}
+{% endfor %}
 
 <div class="row">
   <div class="col-lg-6">
@@ -19,7 +28,7 @@ Administration - <small>Scenario</small>
         <div class="form-group">
           {{ form_errors(form.name) }}
           {{ form_label(form.name) }}
-          {{ form_widget(form.name, { 'attr': { 'readonly': 'true' } }) }}
+          {{ form_widget(form.name) }}
         </div>
         <div class="form-group">
           {{ form_errors(form.model) }}
@@ -27,9 +36,14 @@ Administration - <small>Scenario</small>
           {{ form_widget(form.model) }}
         </div>
         <div class="form-group">
-          {{ form_errors(form.documentation) }}
-          {{ form_label(form.documentation) }}
-          {{ form_widget(form.documentation) }}
+          {{ form_errors(form.observables) }}
+          {{ form_label(form.observables) }}
+          {{ form_widget(form.observables) }}
+        </div>
+        <div class="form-group">
+          {{ form_errors(form.parameters) }}
+          {{ form_label(form.parameters) }}
+          {{ form_widget(form.parameters) }}
         </div>
       <br />
       {{ form_rest(form) }}

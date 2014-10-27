@@ -69,6 +69,10 @@ Administration - <small>Scenario & Model management</small>
                           <td>  {{ scenario.dateCreate|date("m/d/Y - H:i") }}</td>
                           <td>  {{ scenario.isDocumented ? 'true' : 'false'}}</td>
                           <td>
+                            <a style="margin-left:5px;" class="right btn btn-success btn-xs" data-original-title="Add quantity in Scenario" title="Add quantity in Scenario" href="{{ path('CKMAppBundle_administration_scenario_add_quantity', {'scenario': scenario.id}) }}">
+                              <i class="glyphicon glyphicon-plus"></i>
+                            </a>
+                            
                             <a style="margin-left:5px;" class="right btn btn-danger btn-xs" data-original-title="Suppress scenario" title="Suppress scenario" href="{{ path('CKMAppBundle_administration_scenario_delete', {'scenario': scenario.id}) }}">
                               <i class="fa fa-times-circle fa-lg"></i>
                             </a>

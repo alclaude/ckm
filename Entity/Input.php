@@ -52,7 +52,7 @@ class Input
      *
      * @ORM\Column(name="value", type="float", nullable=false)
      */
-    private $value;
+    private $value=0;
 
     /**
      * @var float
@@ -73,7 +73,7 @@ class Input
      *
      * @ORM\Column(name="exp_uncertity", type="float", nullable=false)
      */
-    private $expUncertity;
+    private $expUncertity=0;
 
 
     /**
@@ -81,7 +81,7 @@ class Input
      *
      * @ORM\Column(name="th_uncertity", type="float", nullable=false)
      */
-    private $thUncertity;
+    private $thUncertity=0;
 
     /**
      * @var boolean
@@ -509,7 +509,10 @@ class Input
      */
     public function getLatex()
     {
-        return $this->latex;
+      if (null === $this->latex) {
+          return $this->name;
+      }
+       return $this->latex;
     }
 
     /**

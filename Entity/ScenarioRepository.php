@@ -30,4 +30,21 @@ class ScenarioRepository extends EntityRepository
       return $scenarios;
       #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
     }
+    
+    public function findScenarioByModelAndActivated($model)
+    {
+      $scenarios=$this->getEntityManager()
+          ->createQuery(
+              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.model = :model and s.isDocumented=:isDocumented'
+          )
+          ->setParameters(array(
+                          'isDocumented'   => 1,
+                          'model'          => $model,
+                          )
+                        )
+          ->getResult();
+    
+      return $scenarios;
+      #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
+    }
 }

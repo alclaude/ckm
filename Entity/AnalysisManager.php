@@ -37,6 +37,28 @@ class AnalysisManager
 
     return $scenariosWithInput;
   }
+  
+  public function isInputsInScenario($inputsName, $scenario) {
+    foreach($inputsName as $inputName) {
+      $tmp_ar = explode(';',$inputName);
+      if( $this->isInputInScenario($tmp_ar['0'], $scenario) ) {
+        echo $tmp_ar['0']; exit('debbug');
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public function isInputInScenario($inputName, $scenario) {
+    $scenarioInputs=$scenario->getInput();
+    
+    foreach($scenarioInputs as $scenarioInput) {
+      if( $scenarioInput==$inputName ) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   public function getScenariosIsDocumented($isDocumented) {
     return $this->em
