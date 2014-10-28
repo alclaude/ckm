@@ -26,7 +26,7 @@ Administration - <small>Scenario & Model management</small>
     {% for type, flashMessages in app.session.flashbag.all() %}
       {% for flashMessage in flashMessages %}
           <div class="alert alert-{{ type }}">
-              <span class="label label-{{ type }}">{{ type }}</span> &nbsp;{{ flashMessage }}
+              <span class="label label-{{ type }}">{{ type }}</span> &nbsp;{{ flashMessage|raw }}
           </div>
       {% endfor %}
     {% endfor %}
@@ -57,7 +57,8 @@ Administration - <small>Scenario & Model management</small>
                           <th class="header">Name </th>
                           <th class="header">Model </th>
                           <th class="header">Date </th>
-                          <th class="header">All inputs documented </th>
+                          <th class="header">Enabled ? </th>
+                          <th class="header">Switch </th>
                           <th class="header">Actions </th>
                         </tr>
                       </thead>
@@ -67,7 +68,8 @@ Administration - <small>Scenario & Model management</small>
                           <td>  {{ scenario.name }}</td>
                           <td>  {{ scenario.model.name }}</td>
                           <td>  {{ scenario.dateCreate|date("m/d/Y - H:i") }}</td>
-                          <td>  {{ scenario.isDocumented ? 'true' : 'false'}}</td>
+                          <td>  {{ scenario.isDocumented ? 'true' : 'false'}} </td>
+                          <td>      {{ render(controller('CKMAppBundle:Administration:switchIsDocumented', {'scenario': scenario} )) }} </td>
                           <td>
                             <a style="margin-left:5px;" class="right btn btn-success btn-xs" data-original-title="Add quantity in Scenario" title="Add quantity in Scenario" href="{{ path('CKMAppBundle_administration_scenario_add_quantity', {'scenario': scenario.id}) }}">
                               <i class="glyphicon glyphicon-plus"></i>

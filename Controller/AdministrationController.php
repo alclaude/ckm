@@ -71,19 +71,24 @@ class administrationController extends Controller
       if ($form->isValid()) {
         $tmp = $request->request->get($form->getName()) ;
         
-        list($observables, $error_obs)  = $this->cleanCSV($tmp['observables'], 5);
-        list($parameters, $error_param) = $this->cleanCSV($tmp['parameters'], 4);
-        
-        $missObs   = $this->get('CKM.services.analysisManager')->isInputsInScenario( $observables, $scenario );
-        $missParam = $this->get('CKM.services.analysisManager')->isInputsInScenario( $parameters, $scenario );
-        
-        if (count($error_obs)>0 or count($error_param)>0) {
+        $parameters=array();
+        $observables=array();
+        if(isset($tmp['observables']) and !empty($tmp['observables'])) {
+          list($observables, $error_obs)  = $this->cleanCSV($tmp['observables'], 5);
+          $missObs   = $this->get('CKM.services.analysisManager')->isInputsInScenario( $observables, $scenario );
+        }
+        if(isset($tmp['parameters']) and !empty($tmp['parameters'])) {
+          list($parameters, $error_param) = $this->cleanCSV($tmp['parameters'], 4);
+          $missParam = $this->get('CKM.services.analysisManager')->isInputsInScenario( $parameters, $scenario );
+        }
+
+        if ( (isset($error_obs) && count($error_obs)>0) or (isset($error_param) && count($error_param)>0) ) {
             $this->get('session')->getFlashBag()->add(
                 'danger',
                 'Invalid CSV Format : an Observable line has 5 elements and a parameter 4'
             );
         }
-        elseif ( $missObs or $missParam ) {
+        elseif ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
             $this->get('session')->getFlashBag()->add(
                 'danger',
                 'Observable or Parameter already exist in the scenario list'
@@ -103,6 +108,31 @@ class administrationController extends Controller
                                     $parameters
                                     )
           );
+          
+          $inputs = $scenario->getInput();
+        
+          $toEnabled=true;
+          $inputWithoutLatex=array();
+          $inputs=array_merge( $observables, $parameters);
+          foreach($inputs as $input){
+            $tmp_ar = explode(';',$input);
+            $latex = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:Latex')
+              ->findOneByName($tmp_ar['0']);
+            if($latex==null) {
+              $toEnabled=false; 
+              $inputWithoutLatex[]=$tmp_ar['0'];
+              $scenario->setIsDocumented(false);
+            }
+          }
+          if(!$toEnabled) {
+            $this->get('session')->getFlashBag()->add(
+              'warning',
+              'The scenario '.$scenario->getName().' is now disable because the input '.rtrim(join(", ",$inputWithoutLatex), ', ').' that have no Latex definition'.
+              '<br><br>Please go to <a href="'.$this->container->get('router')->generate('CKMAppBundle_administration_datacard_documentation', array('tab' => 'latex') ).'">Latex definition</a> to 
+              add one for these inputs'
+            );
+          }
           
           $em->persist( $scenario );
           $em->flush();
@@ -648,7 +678,7 @@ class administrationController extends Controller
       if( ! preg_match("/$new_line/", $line) ) {
         $tmp_ar = array();
         $tmp_ar = explode(';',$line);
-        try {
+        #try {
           if( count($tmp_ar) != $arg ) {
             $CSVerror[]=$line;
             #return array();
@@ -657,9 +687,9 @@ class administrationController extends Controller
             $line=preg_replace("/\s*$/","",$line);
             $quantities[]=$line;
           }
-        } catch (\Exception $e) {
-          throw new \Exception('Something wrong with the CSV Format');
-        }
+        #} catch (\Exception $e) {
+        #  throw new \Exception('Something wrong with the CSV Format');
+        #}
       }
     }
     return array($quantities, $CSVerror);
@@ -866,15 +896,44 @@ class administrationController extends Controller
       if ($form->isValid()) {
         $em = $this->getDoctrine()->getManager();
 
-        if($scenario->getIsDocumented()) {
-          $scenario->setIsDocumented(false);
-        } else {
-          $scenario->setIsDocumented(true);
+        // TODO
+        // look if all input have a Latex definition before enable the scenario
+        $inputs = $scenario->getInput();
+
+        
+        $toEnabled=true;
+        $inputWithoutLatex=array();
+        foreach($inputs as $input){
+          $latex = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Latex')
+            ->findOneByName($input);
+          if($latex==null) {
+            $toEnabled=false; 
+            $inputWithoutLatex[]=$input;
+            $scenario->setIsDocumented(false);
+          }
+        }
+
+        if($toEnabled) {
+          if($scenario->getIsDocumented()) {
+            $scenario->setIsDocumented(false);
+          } else {
+            $scenario->setIsDocumented(true);
+          }
+        }
+        else { 
+          $this->get('session')->getFlashBag()->add(
+          'warning',
+          'The scenario '.$scenario->getName().' can not be enable because the input '.rtrim(join(", ",$inputWithoutLatex), ', ').' that have no Latex definition'.
+          '<br><br>Please go to <a href="'.$this->container->get('router')->generate('CKMAppBundle_administration_datacard_documentation', array('tab' => 'latex') ).'">Latex definition</a> to 
+          add one for these inputs'
+          );
         }
         $em->persist( $scenario );
         $em->flush();
+        
         return $this->redirect(
-                $this->generateUrl('CKMAppBundle_administration_datacard_documentation',
+                $this->generateUrl('CKMAppBundle_administration_datacard', #'CKMAppBundle_administration_datacard_documentation',
                     array()
                 )
         );

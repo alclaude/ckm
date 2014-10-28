@@ -42,7 +42,6 @@ class AnalysisManager
     foreach($inputsName as $inputName) {
       $tmp_ar = explode(';',$inputName);
       if( $this->isInputInScenario($tmp_ar['0'], $scenario) ) {
-        echo $tmp_ar['0']; exit('debbug');
         return true;
       }
     }
