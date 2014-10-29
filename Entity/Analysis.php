@@ -322,6 +322,12 @@ class Analysis
 
       $datacard  = '';
       $datacard .= '{';
+      $datacard .= $rl;
+      $datacard .= '"'.$this->name.'"';
+      $datacard .= $rl.$rl;
+      #$datacard .= '"'.$this->getScenario()->getName().'"';
+      #$datacard .= $rl.$rl;
+      $datacard .= '"'.$this->getScenario()->getModel()->getName().'"';
       $datacard .= $rl.$rl;
 
       # gestion des observables
@@ -387,10 +393,11 @@ class Analysis
         $datacard .= $this->writeElement($parameter,$rl);
       }
 
-      $datacard .= $rl;
+      #$datacard .= $rl;
 
       $datacard .= $this->writeTargets($targets,$rl);
 
+      $datacard .= $this->getGranularity();
       $datacard .= $rl;
       $datacard .= '}';
 
@@ -421,16 +428,16 @@ class Analysis
       $datacard  .= '}';
 
       $datacard  .= ' {';
-      $datacard .= '"'.$target1->getScanMin().'"';
+      $datacard .= $target1->getScanMin();
       if(isset($targets[1]) ) {
-        $datacard .= ', "'.$target2->getScanMin().'"';
+        $datacard .= ', '.$target2->getScanMin();
       }
       $datacard  .= '}';
 
       $datacard  .= ' {';
-      $datacard .= '"'.$target1->getScanMax().'"';
+      $datacard .= $target1->getScanMax();
       if(isset($targets[1]) ) {
-        $datacard .= ', "'.$target2->getScanMax().'"';
+        $datacard .= ', '.$target2->getScanMax();
       }
       $datacard  .= '}';
 
