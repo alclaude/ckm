@@ -134,12 +134,13 @@ Administration - <small>Documentation management</small>
 {% block document_ready %}
   $("#ckm_appbundle_documentation_model").change(function(){
       var data = {
-          model_id: $(this).val()
+          model_id: $(this).val(),
+          disable:1
       };
 
       $.ajax({
           type: 'post',
-          url: '{{ path("select_scenario", {'model_id': 'data'}) }}',
+          url: '{{ path("select_scenario", {'model_id': 'data', 'disable':'1'}) }}',
           data: data,
           success: function(data) {
             var $city_selector = $('#ckm_appbundle_documentation_scenario');

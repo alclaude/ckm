@@ -1435,10 +1435,14 @@ die('die');
     public function scenariosAction(Request $request)
     {
         $model_id = $request->request->get('model_id');
+        if( $request->request->get('disable') ) {
+          $disable = $request->request->get('disable');
+        }
+        else {$disable=0; }
 
         $em = $this->getDoctrine()->getManager();
-        #$scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel($model_id);
-        $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findScenarioByModelAndActivated($model_id);
+        if($disable==1)  $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel($model_id);
+        else $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findScenarioByModelAndActivated($model_id);
         
 
         $scenariosArray=array();

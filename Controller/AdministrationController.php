@@ -97,18 +97,6 @@ class administrationController extends Controller
         else {
           $em = $this->getDoctrine()->getManager();
           
-          list($observablesInFile, $parametersInFile) = $scenario->getInputLineInFile();
-          $scenario->cleanFile(          
-                        array_merge(
-                                    $observablesInFile, 
-                                    $observables
-                                    ),
-                         array_merge(  
-                                    $parametersInFile, 
-                                    $parameters
-                                    )
-          );
-          
           $inputs = $scenario->getInput();
         
           $toEnabled=true;
@@ -122,25 +110,36 @@ class administrationController extends Controller
             if($latex==null) {
               $toEnabled=false; 
               $inputWithoutLatex[]=$tmp_ar['0'];
-              $scenario->setIsDocumented(false);
+              #$scenario->setIsDocumented(false);
             }
           }
           if(!$toEnabled) {
             $this->get('session')->getFlashBag()->add(
               'warning',
-              'The scenario '.$scenario->getName().' is now disable because the input '.rtrim(join(", ",$inputWithoutLatex), ', ').' that have no Latex definition'.
+              'It is not possible to add these quantities in scenario '.$scenario->getName().' while these inputs '.rtrim(join(", ",$inputWithoutLatex), ', ').' have not a Latex definition'.
               '<br><br>Please go to <a href="'.$this->container->get('router')->generate('CKMAppBundle_administration_datacard_documentation', array('tab' => 'latex') ).'">Latex definition</a> to 
               add one for these inputs'
             );
-          }
-          
-          $em->persist( $scenario );
-          $em->flush();
+          } else {
+            list($observablesInFile, $parametersInFile) = $scenario->getInputLineInFile();
+            $scenario->cleanFile(          
+                          array_merge(
+                                      $observablesInFile, 
+                                      $observables
+                                      ),
+                           array_merge(  
+                                      $parametersInFile, 
+                                      $parameters
+                                      )
+            );
+            $em->persist( $scenario );
+            $em->flush();
 
-          $this->get('session')->getFlashBag()->add(
-              'success',
-              'Scenario '.$scenario->getName().' edited'
-          );
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'Scenario '.$scenario->getName().' edited'
+            );
+          }
 
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_administration_datacard',
@@ -896,21 +895,20 @@ class administrationController extends Controller
       if ($form->isValid()) {
         $em = $this->getDoctrine()->getManager();
 
-        // TODO
-        // look if all input have a Latex definition before enable the scenario
         $inputs = $scenario->getInput();
 
-        
         $toEnabled=true;
         $inputWithoutLatex=array();
         foreach($inputs as $input){
-          $latex = $this->getDoctrine()
-            ->getRepository('CKMAppBundle:Latex')
-            ->findOneByName($input);
-          if($latex==null) {
-            $toEnabled=false; 
-            $inputWithoutLatex[]=$input;
-            $scenario->setIsDocumented(false);
+          if( !preg_match("/^\s*$/",$input) ) {
+            $latex = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:Latex')
+              ->findOneByName($input);
+            if($latex==null) {
+              $toEnabled=false; 
+              $inputWithoutLatex[]=$input;
+              $scenario->setIsDocumented(false);
+            }
           }
         }
 
