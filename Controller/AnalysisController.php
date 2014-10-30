@@ -1012,7 +1012,7 @@ die('die');
 
       $form1 = $this->createForm(
                               new ObservableTagType(
-                                $this->get('CKM.services.analysisManager')->getScenariosForInput($input)
+                                $this->get('CKM.services.analysisManager')->getScenariosForInput( $input )
                               ),
                               $input);
 

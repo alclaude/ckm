@@ -18,7 +18,7 @@ class AnalysisManager
   public function getScenariosForInput($input) {
     $scenarios = $this->em
       ->getRepository('CKMAppBundle:Scenario')
-      ->findScenarioByModelAndActivated(true);
+      ->findScenarioByModelAndActivated( $input->getAnalyse()->getScenario()->getModel() );
 
     $scenariosWithInput = array();
     foreach($scenarios as $scenario) {
