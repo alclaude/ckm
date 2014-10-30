@@ -17,11 +17,10 @@ class DocumentationType extends AbstractType
 {
     protected $em;
 
-    public function __construct($models, $defaultModel='', $defaultScenario='')
+    public function __construct($models, $scenarioEnabled=0)
     {
         $this->models = $models;
-        $this->defaultModel = $defaultModel;
-        $this->defaultScenario = $defaultScenario;
+        $this->scenarioEnabled = $scenarioEnabled;
     }
 
     /**
@@ -31,9 +30,9 @@ class DocumentationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-      $builder->addEventSubscriber(new AddModelFieldSubscriber($this->models, $this->defaultModel) ) ;
+      $builder->addEventSubscriber(new AddModelFieldSubscriber($this->models) ) ;
 
-      $builder->addEventSubscriber(new AddScenarioFieldSubscriber($this->defaultScenario) ) ;
+      $builder->addEventSubscriber(new AddScenarioFieldSubscriber($this->scenarioEnabled) ) ;
 
       $builder->add('display', 'submit', array(
               'attr'      => array('class' => 'btn btn-primary btn-lg btn-block', 'style' => 'margin:4px 0;'),
