@@ -41,10 +41,10 @@ class CKMExtension extends \Twig_Extension
         $libelle='Analysis under construction';
         break;
        case 2:
-        $libelle='Running analysis';
+        $libelle='Prepared to be launched';
         break;
        case 3:
-        $libelle='Analysis completed';
+        $libelle='Transfered on the computing server';
         break;
        default :
         echo 'Unknown Status' ;

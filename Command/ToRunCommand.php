@@ -36,10 +36,9 @@ class ToRunCommand extends ContainerAwareCommand
 
 
       foreach($analysisToRun as $analysis) {
-
         $analysisRep = $currentRepository.$analysis->getId();
 
-        if( !$fs->exists($analysisRep)) {
+        if( !$fs->exists($analysisRep) ) {
           try {
             $fs->mkdir($analysisRep, 0700);
             # file .data
@@ -55,13 +54,10 @@ class ToRunCommand extends ContainerAwareCommand
           } catch (IOException $e) {
               echo "An error occured while creating your directory ". $analysisRep."\n LOG \n".$e."\n";
           }
-
         }
         else {
           echo 'repertoire '.$analysisRep. ' deja existant'."\n";
         }
       }
-
-
     }
 }
