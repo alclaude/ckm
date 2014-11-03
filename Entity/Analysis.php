@@ -323,11 +323,11 @@ class Analysis
       $datacard  = '';
       $datacard .= '{';
       $datacard .= $rl;
-      $datacard .= '"'.$this->name.'"';
+      $datacard .= '"'.$this->name.'",';
       $datacard .= $rl.$rl;
       #$datacard .= '"'.$this->getScenario()->getName().'"';
       #$datacard .= $rl.$rl;
-      $datacard .= '"'.$this->getScenario()->getModel()->getName().'"';
+      $datacard .= '"'.$this->getScenario()->getModel()->getName().'",';
       $datacard .= $rl.$rl;
 
       # gestion des observables
@@ -425,21 +425,21 @@ class Analysis
       if(isset($targets[1]) ) {
         $datacard .= ', "'.$target2->getName().'"';
       }
-      $datacard  .= '}';
+      $datacard  .= '},';
 
       $datacard  .= ' {';
       $datacard .= $target1->getScanMin();
       if(isset($targets[1]) ) {
         $datacard .= ', '.$target2->getScanMin();
       }
-      $datacard  .= '}';
+      $datacard  .= '},';
 
       $datacard  .= ' {';
       $datacard .= $target1->getScanMax();
       if(isset($targets[1]) ) {
         $datacard .= ', '.$target2->getScanMax();
       }
-      $datacard  .= '}';
+      $datacard  .= '},';
 
       $datacard .= $rl.$rl;
       return $datacard;
