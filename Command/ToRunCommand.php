@@ -12,7 +12,10 @@ class ToRunCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName('ckm:torun');
+        $this->setName('ckm:torun')
+        ->setDescription('Export des datacard dans le dossier ./torun/NumAnalyse/NumAnalyse.data')
+        ->setHelp('Export des datacard dans le dossier ./torun/NumAnalyse/NumAnalyse.data')
+        ;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
