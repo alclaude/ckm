@@ -1464,4 +1464,51 @@ die('die');
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
+    
+    public function resultAnalysisAction($analyse=0)
+    {
+      $this->isGranted('ROLE_ANALYSIS');
+
+      $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+      }
+      
+          /*$answers = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:ScenarioDocumentation')
+              ->findByScenarioCSV($tmp['scenario']);*/
+          $answers = $analyse->getResultDat();
+          
+
+          
+          
+          if( ! $answers ) {
+            return new Response('no result for with analysis');
+          }
+              
+          $handle = fopen('php://memory', 'r+');
+          $header = array();
+
+          #foreach ($answers as $answer) {
+          #    fputcsv($handle, array($answer->getInput() , $answer->getExplanation(), ";" ) );
+          #}
+          
+          #foreach ($answers as $answer) {
+            fwrite($handle, $answers);
+          #}
+          
+          rewind($handle);
+          $content = stream_get_contents($handle);
+          fclose($handle);
+          
+          $fileName = date("Y/m/d").'_'.$analyse->getName().'.txt';
+          
+          return new Response($content, 200, array(
+              'Content-Type' => 'application/force-download',
+              'Content-Disposition' => 'attachment; filename="'.$fileName.'"'
+          ));
+          return new Response('export datacardDocumentationAction');
+    }
+    
 }

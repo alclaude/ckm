@@ -46,6 +46,13 @@ class Analysis
      * @ORM\Column(name="datacard", type="text")
      */
     private $datacard;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="result_dat", type="text")
+     */
+    private $resultDat;
 
     /**
      * @var string
@@ -679,5 +686,28 @@ class Analysis
         $this->setId(null);
         $this->setDate(new \DateTime());
       }
+    }
+
+    /**
+     * Set resultDat
+     *
+     * @param string $resultDat
+     * @return Analysis
+     */
+    public function setResultDat($resultDat)
+    {
+        $this->resultDat = $resultDat;
+
+        return $this;
+    }
+
+    /**
+     * Get resultDat
+     *
+     * @return string 
+     */
+    public function getResultDat()
+    {
+        return $this->resultDat;
     }
 }

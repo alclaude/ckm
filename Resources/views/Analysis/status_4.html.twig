@@ -1,0 +1,56 @@
+{% if analyse.status == 4 %}
+ <div class="col-sm-4">
+   <div >
+    <div class="alert alert-success">
+            <h4>State</h4>
+            <p>This analysis is achieved</p>
+            <h4>
+              <a href="{{ path('CKMAppBundle_dl_result', {'analyse': analyse.id }) }}" target="_blank">see result</a>
+            </h4>
+    </div>
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Next step Analysis</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_see_datacard', {'analyse': analyse.id}) }}">
+            <span class="right btn  btn-xs"><i class="fa fa-eye fa-lg"></i></span>
+            <i class="fa fa-check"></i> See datacard
+          </a>
+          </a>
+            <a style="font-weight:bold" class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_copy', {'analyse': analyse.id}) }}">
+            <span class="right btn btn-success btn-xs"><i class="fa fa-copy fa-lg"></i></span>
+            <i class="fa fa-check"></i> Copy Analysis
+          </a>
+
+        </div>
+      </div>
+    </div>
+{% if target_and_observable is defined and target_and_observable is not null and target_and_observable is not empty %}
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h3 class="panel-title">Did you see...</h3>
+      </div>
+      {% for tar_obs in target_and_observable %}
+        <div class="panel-body">
+          {{ tar_obs.latex.latex }}  is both a target and a input...
+        </div>
+      {% endfor %}
+    </div>
+{% endif %}
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your analysis properties</h3>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+            <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_properties', {'analyse': analyse.id}) }}">
+              <i class="fa fa-check"></i> Modify granularity <span style="float:right;">{{ latex(analyse.granularity)}}</span>
+            </a>
+        </div>
+      </div>
+    </div>
+ </div>  <!-- end left -->
+
+{% endif %}

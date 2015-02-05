@@ -73,6 +73,9 @@ CKMAppBundle_analyse_create_step_3:
 CKMAppBundle_analyse_see_datacard:
     pattern:  /analysis/datacard/see/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:seeDatacard}
+CKMAppBundle_dl_result:
+    pattern:  /analysis/datacard/result/{analyse}
+    defaults: { _controller: CKMAppBundle:Analysis:resultAnalysis}
 CKMAppBundle_analyse_create_analyse_finalize:
     pattern:  /analysis/run/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:finalize}
