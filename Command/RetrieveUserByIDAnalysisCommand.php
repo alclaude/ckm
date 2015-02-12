@@ -42,7 +42,7 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
       #\Doctrine\Common\Util\Debug::dump($analysisToFinalize);
 
       if ( ! $analysisToFinalize) {
-          exit("Bad analysis Id");
+          exit("Bad analysis Id: $ID - $nameFileDat");
       } 
       
       $user = $analysisToFinalize->getUser();
@@ -56,9 +56,8 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
 
       if( $fs->exists($pathDat) ) {
         try {
-          $contentDat = file_get_contents($pathDat);
-
           if( ! $analysisToFinalize->getResultDat() ) {
+            $contentDat = file_get_contents($pathDat);
             $analysisToFinalize->setResultDat($contentDat);
             $analysisToFinalize->setStatus(4);
             $em->getManager()->persist( $analysisToFinalize );
@@ -67,13 +66,14 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
             # envoi du mail
             $message = \Swift_Message::newInstance()
                 ->setSubject('incoming result analysis '.$nameFileDat)
-                ->setFrom('ckmliveweb@gmail.com')
+                #->setFrom('ckmliveweb@gmail.com')
+                ->setFrom( array( 'ckmliveweb@in2p3.fr' => 'CKM Live Web' ) )
                 ->setTo($user->getEmail())
                 ->setBody($template->render('CKMUserBundle:Mail:resultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat ) ) )
             ;
             $mail->send($message);
           }
-          else { echo "analysis contains already a result"; }
+          else { echo "analysis $ID contains already a result"; }
         } catch (IOException $e) {
             echo "An error occured while creating your directory ". $pathDat."\n LOG \n".$e."\n";
         }

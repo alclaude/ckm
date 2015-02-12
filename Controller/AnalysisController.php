@@ -1408,7 +1408,7 @@ die('die');
     }
 
     private function isForbiddenStep($analyse) {
-      if($analyse->getStatus()==2) {
+      if($analyse->getStatus() >= 2) {
         return true;
       }
       return false;

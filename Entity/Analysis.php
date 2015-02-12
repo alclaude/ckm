@@ -126,6 +126,7 @@ class Analysis
         $this->granularity = 250;
         $this->scanMax = 0;
         $this->scanMin = 0;
+        $this->resultDat = '';
 
         $this->date = new \DateTime();
     }
