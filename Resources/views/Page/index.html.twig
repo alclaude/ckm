@@ -1,6 +1,15 @@
 {# src/Blogger/BlogBundle/Resources/views/Page/index.html.twig #}
 {% extends 'CKMAppBundle::layout.html.twig' %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <style type="text/css">
+.obfuscate { unicode-bidi: bidi-override; direction: rtl; clear:both;}
+.obfuscate span { display: none; }
+.green{background-color: #5cb85c;}
+  </style>
+{% endblock %}
+
 {% block titlePage %}
 Home <small>CKM Live Site</small>
 {% endblock %}
@@ -16,5 +25,115 @@ Home <small>CKM Live Site</small>
   {% endfor %}
 {% endfor %}
 
-  Home page text
+<div class="container-fluid">
+  <h3><strong>The CKMfitter group and the CKMfitter analysis</strong></h3>
+  <br />
+  <div class="row">
+    <div class="col-lg-6 col-md-4 col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">CKM Fitter Group</h3>
+          </div>
+          <div class="panel-body">
+             <p> <strong>CKMfitter</strong> is a group of about <a href="http://ckmfitter.in2p3.fr/www/html/ckm_group.html" target="_blank">ten theoreticians and experimentalists</a> who propose global electroweak interpretations of the Flavour Physics data in the framework of the Standard Model (SM) of Particle Physics and beyond (BSM). The involved laboratories are by alphabetical order: <strong> CPT (Marseille), KEK (Japan), LAPP (Annecy-Le-Vieux), LPC (Clermont), LPNHE (Paris), LPT (Orsay), and the Universities of Berlin (Germany) and Melbourne (Australia)</strong>. </p>
+<p> A rather complete description of the group and its activities (including the main results and publications) can be found <a href="http://ckmfitter.in2p3.fr" target="_blank">here</a>. In particular, we provide the  High Energy Physics community with the metrology of the four SM parameters describing the quark flavour charged current transitions in the<strong> Cabibbo-Kobayashi-Maskawa (CKM) paradigm</strong>, established with frequentist techniques to analyse the data.</p>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">SM global fit</h3>
+          </div>
+          <div class="panel-body">
+         <p> In the framework of the Standard Model, the strengths of the charged current quark transitions are described by the CKM matrix, which can be parameterized with four independent parameters, one being a<em> CP</em> violating phase. We propose you to make a metrology of these parameters from experimental observable constraints for which a good control of the theoretical uncertainties exists. </p>
+<img src="http://ckmfitter.in2p3.fr/www/results/plots_ckm14/png/rhoeta_large.png" alt="rhoeta_large" class="img-responsive img-rounded">
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-8 col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">CKM Live Web Project</h3>
+          </div>
+          <div class="panel-body">
+              <p>CKM Live is meant to allow the High Energy Physics community to run dedicated analyses conducted with the CKMfitter software.  <p>
+              <p>You can register <a href="{{ path('fos_user_registration_register') }}">here</a> and once registred <a href="{{ path('CKMAppBundle_analyse_create_step_1') }}">design an analysis</a></p>
+              <p>The CKM live project is brought to you by the following people</p>
+
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <span class="badge obfuscate right green">
+                    rf.3p2ni.tnomrelc<span>null</span>@<span>null</span>edualc
+
+                    &nbsp;<i class="glyphicon glyphicon-envelope"></i>
+                  </span>
+                  <strong>Alexandre CLAUDE</strong>
+                </li>
+                <li class="list-group-item">
+                  <span class="badge obfuscate right green">
+                    rf.srm-vinu.tpc<span>null</span>@<span>null</span>selrahc
+
+                    &nbsp;<i class="glyphicon glyphicon-envelope"></i>
+                  </span>
+                  <strong>Jérôme CHARLES</strong>
+                </li>
+                <li class="list-group-item">
+                  <span class="badge obfuscate right green">
+                    rf.dusp-u.ht<span>null</span>@<span>null</span>noneg-setocsed.neitsabes
+
+                    &nbsp;<i class="glyphicon glyphicon-envelope"></i>
+                  </span>
+                   <strong>Sébastien DESCOTES-GENON</strong>
+                </li>
+                <li class="list-group-item">
+                  <span class="badge obfuscate right green">
+                    rf.3p2ni<span>null</span>@<span>null</span>lietnom
+
+                    &nbsp;<i class="glyphicon glyphicon-envelope"></i>
+                  </span>
+                  <strong>Stéphane MONTEIL</strong>
+                </li>
+              </ul>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">New Physics in &#916;F = 2</h3>
+          </div>
+          <div class="panel-body">
+          <p> It is possible to introduce New Physics contributions in neutral mesons mixing processes in a model-independent way by multiplying the SM mixing matrix elements by a NP complex amplitude. Following the parameterization of <a href="http://arxiv.org/abs/1008.1593" target=_blank>Lenz <em>et al.</em></a> : </p>
+
+{% raw %}
+  \(
+  M_{12}^q = M_{12}^{{
+\rm SM},q}
+  \cdot
+  \Delta_q
+  \)
+{% endraw  %}
+<br />
+
+where \( \Delta_q \) is the complex NP amplitude for a given quark falvour, \( q=d,s \).
+
+<img src="http://ckmfitter.in2p3.fr/www/results/plots_ckm14/png/NPmix_ReImDeltad-noASL.png" alt="NPmix_ReImDeltad-noASL" class="img-responsive img-rounded">
+          </div>
+        </div>
+    </div>
+
+  </div>
+</div>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ["\\(","\\)"] ],
+      displayMath: [ ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 {% endblock %}
