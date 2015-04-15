@@ -283,6 +283,8 @@ class AnalysisController extends Controller
         'step'     => '2',
         'analyse'  => $analyse->getId(),
         'constraint' => $analyse->getScanConstraint(),
+        'scenario' => $analyse->getScenario()->getId(),
+        'scenarioName' => $analyse->getScenario()->getName(),
       ));
     }
 
@@ -444,6 +446,8 @@ class AnalysisController extends Controller
         'message'  => 'Input Element',
         'step'     => '3',
         'analyse'  => $analyse->getId(),
+        'scenario' => $analyse->getScenario()->getId(),
+        'scenarioName' => $analyse->getScenario()->getName(),
       ));
     }
 

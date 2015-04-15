@@ -37,7 +37,18 @@ Analysis - <small> {{ message }} </small>
     {% endif %}
   </div>
 </div>
+
+  {% if step==2 or step==3 %}
+    <div class="col-lg-6">
+      <div class="well">
+      Documentation of the scenario can be retrieved in <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario':scenario, 'input': 0, 'tab':'input' }) }}" target="_blank"><strong> {{ scenarioName }} </strong> </a>     
+      </div>
+    </div>
+  {% endif %}
+
 </div>
+
+
 
 <div class="row">
   <div class="col-sm-6">
@@ -60,7 +71,7 @@ Analysis - <small> {{ message }} </small>
   </div>
 
 {% if step==3 %}
- <div style="float:right;" class="col-sm-4">
+ <div style="float:right;" class="col-sm-6">
    <div >
     <div class="panel panel-primary">
       <div class="panel-heading">
