@@ -19,7 +19,7 @@ class ScenarioExplainationType extends AbstractType
         $builder
             ->add('name', 'text', array(
               'attr' => array('class' => 'form-control'),
-              'read_only' => true,
+              #'read_only' => true,
               ))
             ->add('model', 'entity', array(
              'class' => 'CKMAppBundle:Model',
