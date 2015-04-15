@@ -22,7 +22,8 @@ class DocumentationController extends Controller
 
       $scenario = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Scenario')
-        ->findOneByName($scenario);
+        //->findOneByName($scenario);
+        ->findOneById($scenario);
 
       if (!$scenario) {
         throw $this->createNotFoundException('scenario not exist');

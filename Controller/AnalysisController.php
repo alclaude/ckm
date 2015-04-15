@@ -494,7 +494,8 @@ class AnalysisController extends Controller
         throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
       }
 
-      if( $analyse->getStatus()!=2 ){
+      #if( $analyse->getStatus()!=2 ){
+      if( $analyse->getStatus()<2 ){
         return $this->errorForm(
           'warning',
           'You can only copy a finalized analysis',
@@ -506,6 +507,8 @@ class AnalysisController extends Controller
       $analyseClone = clone $analyse;
       $analyseClone->setStatus(1);
       $analyseClone->setName( $analyseClone->getName().' [copy]' );
+      #
+      $analyseClone->setResultDat('');
 
 
       $parameters = $this->getDoctrine()
@@ -586,10 +589,10 @@ class AnalysisController extends Controller
       $em->persist($analyse);
       $em->flush();
 
-      $this->get('session')->getFlashBag()->add(
-            'success',
-            'Your analysis ['.  $analyse->getId() .'] have been run'
-      );
+      #$this->get('session')->getFlashBag()->add(
+      #      'success',
+      #      'Your analysis ['.  $analyse->getId() .'] have been run'
+      #);
 
       return $this->redirect(
         $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',

@@ -1,5 +1,7 @@
 {# src/Blogger/BlogBundle/Resources/views/Analysis/createAnalysisStep.html.twig #}
+{% form_theme form 'CKMAppBundle::Form/errors.html.twig' %}
 {% extends 'CKMAppBundle::layout.html.twig' %}
+
 
 {% block stylesheets %}
     {{ parent() }}
@@ -29,7 +31,7 @@ Analysis - <small> {{ message }} </small>
 	  
 	<p>You can cancel the current selection by typing CTRL and selecting another element (on Unix/Windows) or by typing Command reselecting the selection (on Mac OS).</p>
 	
-    <p>You can select several elements by pressing Command/Alt or shift (on Unix/Windows) at the time of selection</p>
+  <p>You can select several elements by pressing Command/Alt (on Mac OS) or shift (on Unix/Windows) at the time of selection</p>
     
   </div>
 </div>

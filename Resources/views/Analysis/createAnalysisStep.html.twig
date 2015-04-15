@@ -29,6 +29,12 @@ Analysis - <small> {{ message }} </small>
 <div class="col-lg-6">
   <div class="alert alert-info">
 	  <p>Each step will help you to define the elements of your analysis. If you have already completed one step but change your mind, please do not use the “Back” feature of your browser. Instead, keep on following the steps up to the summary of your analysis, where you will be able to modify the information already provided, if necessary.</p>
+    
+    {% if step==2 or step==3 %}
+    <p>You can cancel the current selection by typing CTRL and selecting another element (on Unix/Windows) or by typing Command reselecting the selection (on Mac OS).</p>
+	
+    <p>You can select several elements by pressing Command/Alt (on Mac OS) or shift (on Unix/Windows) at the time of selection</p>
+    {% endif %}
   </div>
 </div>
 </div>

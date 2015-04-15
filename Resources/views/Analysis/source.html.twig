@@ -74,7 +74,11 @@ Analysis - <small>Personalize your analysis </small>
             <div class="table-responsive">
             {% for target in getIsTargets(analyse) %}
             <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
-              <i class="fa fa-check"></i>  #{{ target.id }} - {{ target.latex.latex }}
+              <i class="fa fa-check"></i> 
+              {% if debug_mode == 1 %}
+                #{{ target.id }} - 
+              {% endif %} 
+              {{ target.latex.latex }}
               <span style="float:right;">
               {{ latex('['~target.scanMin~','~target.scanMax~']') }}
               </span>
@@ -95,7 +99,11 @@ Analysis - <small>Personalize your analysis </small>
                   {% set paramEverInUse = paramEverInUse|merge({ (parameter.latex.latex): target.latex.latex }) %}
                   {% set paramGetObs    = paramGetObs|merge({ (parameter.latex.latex): target.latex.latex }) %}
                       <tr>
-                        <td> #{{ parameter.id }} -
+                        <td> 
+                        {% if debug_mode == 1 %}  
+                          #{{ parameter.id }} -
+                        {% endif %} 
+                          
                         {% if parameter.latex.latex %}
                           {{ parameter.latex.latex}}
                         {% endif %} </td>
@@ -139,7 +147,12 @@ Analysis - <small>Personalize your analysis </small>
 
     {% for observable in observables %}
                     <tr>
-                      <td> #{{ observable.id }} - {{ observable.latex.latex}}</td>
+                      <td> 
+                      {% if debug_mode == 1 %} 
+                        #{{ observable.id }} - 
+                      {% endif %}
+                        
+                      {{ observable.latex.latex}}</td>
                       {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': observable} only %}
                       <td>
                         <div class="text-right">
@@ -162,7 +175,11 @@ Analysis - <small>Personalize your analysis </small>
                       {% set paramGetObs = paramGetObs|merge({ (oneParameter.latex.latex): observable.latex.latex }) %}
                     {% endif %}
                       <tr class="collapse row{{ counter }}" style="{{ style|e }}" >
-                        <td>#{{ oneParameter.id }} -
+                        <td>
+                        {% if debug_mode == 1 %}   
+                          #{{ oneParameter.id }} -
+                        {% endif %}  
+                          
                         {% if oneParameter.latex.latex is defined %}
                           {{ oneParameter.latex.latex}}
                         {% else %}
