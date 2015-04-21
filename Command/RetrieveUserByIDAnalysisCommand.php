@@ -74,8 +74,8 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
             $mail->send($message);
             
             # in case of bad result, admin are warned
-            if( preg_match('/overtime/', $nameFileDat, $matches) or
-                preg_match('/error/',    $nameFileDat, $matches) ) {
+            if( preg_match('/overtime\.dat/', $nameFileDat, $matches) or
+                preg_match('/error\.dat/',    $nameFileDat, $matches) ) {
 
               $message = \Swift_Message::newInstance()
                 ->setSubject('[Admin] bad incoming result analysis '.$nameFileDat)
