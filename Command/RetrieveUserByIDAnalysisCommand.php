@@ -72,6 +72,20 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
                 ->setBody($template->render('CKMUserBundle:Mail:resultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat ) ) )
             ;
             $mail->send($message);
+            
+            # in case of bad result, admin are warned
+            if( preg_match('/overtime/', $nameFileDat, $matches) or
+                preg_match('/error/',    $nameFileDat, $matches) ) {
+
+              $message = \Swift_Message::newInstance()
+                ->setSubject('[Admin] bad incoming result analysis '.$nameFileDat)
+                ->setFrom( array( 'ckmliveweb@in2p3.fr' => 'CKM Live Web' ) )
+                ->setTo( $this->getContainer()->getParameter('email_admin') )
+                ->setBody($template->render('CKMUserBundle:Mail:AdminBadResultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat, "id" => $ID ) ) )
+              ;
+              $mail->send($message);
+            }
+            
           }
           else { echo "analysis $ID contains already a result"; }
         } catch (IOException $e) {
