@@ -32,7 +32,7 @@
                           <td> {{scenario.name}}</td>
                           <td> {{scenario.isDocumented  ? 'true' : 'false' }} </td>
                           <td> {{scenario.model.name}}</td>
-                          <td> <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.name, 'input': 0 }) }}">Scenario explanation</a></td>
+                          <td> <a target="_blank" href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': scenario.id, 'input': 0, 'tab':'input' }) }}">Scenario explanation</a></td>
                         </tr>
                       {% endfor %}
                       </table>
