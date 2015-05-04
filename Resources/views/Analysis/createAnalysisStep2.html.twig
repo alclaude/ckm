@@ -12,7 +12,11 @@
 Analysis - <small> {{ message }} </small>
 {% endblock %}
 {% block content %}
-<h3>Analysis Definition - {{ message1 }}</h3>
+<h3>{{ message1 }}</h3>
+
+{% if message2 is defined and message2 is not null %}
+<p>{{ message2 }}</p>
+{% endif %}
 
 {% for flashMessage in app.session.flashbag.get('notice') %}
   <div class="row">
@@ -40,7 +44,7 @@ Analysis - <small> {{ message }} </small>
 <div class="row">
   <div class="col-lg-8">
     <div class="well">
-    Documentation of the scenario can be retrieved in <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario':scenario, 'input': 0, 'tab':'input' }) }}" target="_blank"><strong> {{ scenarioName }} </strong> </a>     
+     Information on this scenario (including the default input values) can be found on the <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario':scenario, 'input': 0, 'tab':'input' }) }}" target="_blank"><strong> {{ scenarioName }} documentation page</strong> </a>     
     </div>
   </div>
 </div>

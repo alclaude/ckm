@@ -8,7 +8,13 @@
 {% endblock %}
 
 {% block titlePage %}
-Analysis - <small>{{ type }} definition</small>
+
+{% if type is defined and type == 'Observable' %}
+Setting the value of an {{ type }} 
+{% else %}
+Setting the value of a {{ type }} 
+{% endif %}
+
 {% endblock %}
 {% block content %}
 <h3>Edit {{ type }}  {{ observable.latex.latex }} </h3>
@@ -25,18 +31,20 @@ Analysis - <small>{{ type }} definition</small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-sm-10">
+  <div class="col-sm-7">
     <div class="alert alert-dismissable alert-info">
     <p>In this interface, you can change the properties of your input.
     
-      <ul>You have two systems :
-      <li>a system tag where you can use either the default value of the datacard <a style="color: navy;" href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.id, 'input': observable.id , 'tab':'input' }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or a value from a different scenario</li>
-      <li>a specific system where you can put your own specific data (value, theoretical and experimentale uncertainty)</li>
+      <ul>You have two possibilities
+      <li>on the left, you can take the input from a reference CKMfitter analysis, either the default value of the datacard <a style="color: navy;" href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.id, 'input': observable.id , 'tab':'input' }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or a value from a different scenario</li>
+      <li>on the right, you can set your own specific data (central value, experimental and theoretical uncertainties)</li>
       </ul>
-      Choose either one or the other.
     </p>
     </div>
   </div>
+  <div class="col-sm-3">
+    <p class="well"><a style="color: navy;" href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.id, 'input': observable.id , 'tab':'input' }) }}" target="_blank">Information for {{ observable.latex.latex }} can be found on the scenario<strong> {{ observable.analyse.scenario.name }} </strong>  </a></p>
+  </div>  
 </div>
 <div class="row">
   <div class="col-sm-4">

@@ -32,7 +32,7 @@ class AnalysisStep3Type extends AbstractType
       $builder
         ->add('sourceElement', 'choice'/*'entity'*/, array(
          'choices'   => $obs,
-         'label'     => 'Input elements',
+         'label'     => 'Inputs',
          'mapped'    => false,
          'multiple'  => true,
          'attr'      => array('class' => 'form-control', 'size' => 12),

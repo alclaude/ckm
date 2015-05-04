@@ -87,7 +87,7 @@ class AnalysisStep2Type extends AbstractType
             'required'  => false,
           ))
         ->add('isAbscissa', 'choice', array(
-             'choices'   => array('y' => 'Second', 'n' => 'First'),
+             'choices'   => array('n' => 'First', 'y' => 'Second'),
              'empty_value' => false,
              'data'      => 'n',
              'mapped'    => false,

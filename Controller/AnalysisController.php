@@ -71,8 +71,9 @@ class AnalysisController extends Controller
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep.html.twig', array(
         'form'     => $form->createView(),
-        'message1' => 'step 1',
+        'message1' => 'Choose your scenario',
         'message'  => 'Scenario & Scan constraint',
+        'message2' => 'Select the model and the scenario that will be the basis of your analysis',
         'step'     => '1',
       ));
     }
@@ -278,8 +279,9 @@ class AnalysisController extends Controller
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep2.html.twig', array(
         'form' => $form->createView(),
-        'message1' => 'step 2',
+        'message1' => 'Choose your target',
         'message'  => 'Target Input',
+        'message2' => 'Select the target(s), i.e., the quantity(ies) that you want to constrain through your analysis',
         'step'     => '2',
         'analyse'  => $analyse->getId(),
         'constraint' => $analyse->getScanConstraint(),
@@ -442,8 +444,9 @@ class AnalysisController extends Controller
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep.html.twig', array(
         'form' => $form->createView(),
-        'message1' => 'step 3',
+        'message1' => 'Choose your inputs',
         'message'  => 'Input Element',
+        'message2' => 'Select the inputs, i.e., the quantities that will be used to constrain your target',
         'step'     => '3',
         'analyse'  => $analyse->getId(),
         'scenario' => $analyse->getScenario()->getId(),
@@ -1054,7 +1057,7 @@ die('die');
       ));
     }
 
-    public function editInputAction($input_id=0, $type='Observable', $tab='') {
+    public function editInputAction($input_id=0, $type='observable', $tab='') {
       $request = $this->getRequest();
 
       $observable = $this->getDoctrine()

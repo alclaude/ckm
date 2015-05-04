@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block titlePage %}
-Analysis - <small>Personalize your analysis </small>
+Personalize your analysis
 {% endblock %}
 
 
@@ -42,6 +42,8 @@ Analysis - <small>Personalize your analysis </small>
       </div>
   {% endfor %}
 {% endfor %}
+
+<p class="well">You can change the value of any input by clicking on the associated green button (both in the “Target” and “Inputs” thumbnails). You can see the parameters on which a given input depends by clicking on the corresponding grey button</p>
 
 <h4 style="text-transform: uppercase;margin-bottom:15px;">
 <i class="fa fa-asterisk "></i>  {{analyse.name}} &nbsp;&nbsp;&nbsp;<a title="Rename analysis" class="btn btn-default btn-xs" href="{{ path('CKMAppBundle_analyse_analyse_name_edit', {'analyse': analyse.id}) }}"><i class="glyphicon glyphicon-pencil"></i> </a>
@@ -89,9 +91,9 @@ Analysis - <small>Personalize your analysis </small>
                       <tr>
                         <th class="header">Parameter </th>
                         <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
-                        <th style="border-bottom:2px solid black;" class="header">Property </th>
+                        <th style="border-bottom:2px solid black;" class="header">Value </th>
                         <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
-                        <th class="header">Explanations </th>
+                        <th class="header">Documentation </th>
                         <th class="header">Edit </th>
                       </tr>
                     </thead>
@@ -110,7 +112,7 @@ Analysis - <small>Personalize your analysis </small>
                         {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': parameter} only %}
                         <td>
                           <div class="text-right" id="{{parameter.name}}">
-                            <a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': parameter.id, 'type':'Parameter'})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a>
+                            <a class="btn btn-success btn-xs" href="{{path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': parameter.id, 'type':'parameter'})}}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i> </a>
                           </div>
                         </td>
                       </tr>
@@ -128,18 +130,18 @@ Analysis - <small>Personalize your analysis </small>
       <div id="inputs"  class="tab-pane {{ tabInput|raw }} {{ tabInputIn|raw }} fade" class="col-sm-8 ">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your input Observable(s)</h3>
+            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your input observable(s)</h3>
           </div>
           <div class="panel-body">
             <div class="table-responsive">
                 <table class="table table-condensed table-hover">
                   <thead>
                     <tr>
-                      <th class="header">Observable </th>
+                      <th class="header">observable </th>
                       <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
-                      <th style="border-bottom:2px solid black;" class="header">Property </th>
+                      <th style="border-bottom:2px solid black;" class="header">Value </th>
                       <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
-                      <th class="header">Explanations </th>
+                      <th class="header">Documentation </th>
                       <th class="header">Actions </th>
                     </tr>
                   </thead>
@@ -156,7 +158,7 @@ Analysis - <small>Personalize your analysis </small>
                       {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': observable} only %}
                       <td>
                         <div class="text-right">
-                          <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': observable.id, 'type':'Observable'}) }}">
+                          <a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source_input', {'input_id': observable.id, 'type':'observable'}) }}">
                             <i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit observable" title="Edit observable"></i>
                           </a>
                           <a class="btn btn-danger btn-xs" href="{{ path('CKMAppBundle_analyse_input_delete', {'input': observable.id}) }}">
@@ -165,7 +167,7 @@ Analysis - <small>Personalize your analysis </small>
                         </div>
                       </td>
                 {% if observable.parameters is defined %}
-                      <tr class="clickable" data-toggle="collapse" id="row{{ counter }}" data-target=".row{{ counter }}" class="success"><td colspan="7" ><i class="glyphicon glyphicon-plus"></i> Parameters of the Observable {{observable.latex.latex}} <span style="float:right;" class="badge">See parameter...</span></td></tr>
+                      <tr class="clickable" data-toggle="collapse" id="row{{ counter }}" data-target=".row{{ counter }}" class="success"><td colspan="7" ><i class="glyphicon glyphicon-plus"></i> Parameters of the observable {{observable.latex.latex}} <span style="float:right;" class="badge">Show parameters...</span></td></tr>
                   {% for oneParameter in observable.parameters %}
                     {% if oneParameter.latex.latex in paramEverInUse|keys %}
                       {% set style = "background:#eee" %}
