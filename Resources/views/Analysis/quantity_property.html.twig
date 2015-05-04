@@ -1,9 +1,11 @@
 
 
 {% if quantity.value != 0 %}
-<td ><span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} value">{{quantity.value}}</span></td>
-<td><span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} experimental Uncertity">{{quantity.expUncertity}}</span></td>
-<td><span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} theoretical Uncertity">{{quantity.thUncertity}}</span></td>
+<td colspan="3">
+<span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} value">{{quantity.value}}</span> &pm;
+<span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} experimental Uncertity">{{quantity.expUncertity}}</span> &pm;
+<span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} theoretical Uncertity">{{quantity.thUncertity}}</span>
+</td>
 {% else %}
 <td >&nbsp;</td>
 <td><span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} tag">{{quantity.currentTag}}</span></td>
