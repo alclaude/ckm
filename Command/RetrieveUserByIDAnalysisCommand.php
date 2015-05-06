@@ -81,7 +81,7 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
                 ->setSubject('[Admin] bad incoming result analysis '.$nameFileDat)
                 ->setFrom( array( 'ckmliveweb@in2p3.fr' => 'CKM Live Web' ) )
                 ->setTo( $this->getContainer()->getParameter('email_admin') )
-                ->setBody($template->render('CKMUserBundle:Mail:AdminBadResultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat, "id" => $ID ) ) )
+                ->setBody($template->render('CKMUserBundle:Mail:AdminBadResultNotification.txt.twig', array('user' => $user->getName(), 'login' => $user->getUsername(), 'analysis' => $nameFileDat, "id" => $ID ) ) )
               ;
               $mail->send($message);
             }
