@@ -23,7 +23,7 @@ Administration - <small>Analysis management</small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-sm-12 col-md-12 col-lg-10">
+  <div class="col-sm-12 col-md-12 col-lg-12">
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Analysis from users</h3>
@@ -43,6 +43,7 @@ Administration - <small>Analysis management</small>
                 <th class="header">Model</th>
                 <th class="header">user</th>
                 <th class="header">Delete</th>
+                <th class="header">log analyse</th>
               </tr>
             </thead>
             {% for analyse in analysis %}
@@ -70,6 +71,9 @@ Administration - <small>Analysis management</small>
                   {% else %}
                       --
                   {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('CKMAppBundle_dl_log', {'analyse': analyse.id }) }}" target="_blank">see log of job</a>
                 </td>
               </tr>
             {% endfor %}

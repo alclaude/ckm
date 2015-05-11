@@ -29,6 +29,7 @@ use CKM\AppBundle\Form\Admin\ScenarioExplainationType;
 use CKM\AppBundle\Form\Admin\addDatacardQuantityType;
 
 use \Doctrine\ORM\NoResultException;
+use Symfony\Component\Filesystem\Filesystem;
 
 class administrationController extends Controller
 {
@@ -1112,4 +1113,71 @@ class administrationController extends Controller
             )
     );
   }
+  
+  public function logAnalysisAction($analyse=0)
+  {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $analyse = $this->getAnalysis($analyse);
+
+    if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+      throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+    }
+    
+    $answers = '';
+    
+    $pathLogFile = $this->get('kernel')->getRootDir().$this->container->getParameter('result_path').$analyse->getId().'/'.$analyse->getId().'.cmd.log';
+    
+    $fs = new Filesystem();
+    
+    if( $fs->exists($pathLogFile) ) {
+      $answers = file_get_contents($pathLogFile);
+    } else {
+      return new Response('
+      Debbug log: <br />
+      File cmd.log does not exist for this analysis in the Web Server. <br />
+      You can ask administrator if the file exists on the  calcul Server <br />
+      ');
+    }
+    
+    if( ! $answers ) {
+      return new Response('no result for with analysis');
+    }
+        
+    $handle = fopen('php://memory', 'r+');
+    $header = array();
+
+    fwrite($handle, $answers);        
+    rewind($handle);
+    $content = stream_get_contents($handle);
+    fclose($handle);
+    
+    $fileName = date("Y/m/d").'_#'.$analyse->getId().'.cmd.log';
+    
+    return new Response($content, 200, array(
+        'Content-Type' => 'application/force-download',
+        'Content-Disposition' => 'attachment; filename="'.$fileName.'"'
+    ));
+    return new Response('export datacardDocumentationAction');
+  }
+    
+    /*
+     * Teste et retourne l existance d une analyse
+     */
+    public function getAnalysis($id) {
+      $em = $this->getDoctrine()
+                 ->getManager();
+
+      $analyse = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Analysis')
+        ->findOneById($id);
+
+      if (!$analyse) {
+        #throw $this->createNotFoundException('analyse not exist');
+        throw new HttpException(404, "analyse not exist");
+      }
+      return $analyse;
+    }
 }
