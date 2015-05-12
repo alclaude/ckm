@@ -1122,9 +1122,9 @@ class administrationController extends Controller
 
     $analyse = $this->getAnalysis($analyse);
 
-    if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-      throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
-    }
+    #if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+    #  throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+    #}
     
     $answers = '';
     
