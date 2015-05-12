@@ -625,7 +625,8 @@ class AnalysisController extends Controller
       $analyse = $this->getAnalysis($analyse);
       // FS#9
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        #throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw new AccessDeniedHttpException('no credentials for this action');
       }
 
       $em = $this->getDoctrine()

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 use CKM\AppBundle\Validator\DimensionRules;
 
@@ -131,7 +132,14 @@ class Analysis
         $this->date = new \DateTime();
     }
 
-
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('name', new Assert\Regex(array(
+            'pattern' => '/[^a-zA-Z0-9 _-]/',
+            'match'   => false,
+            'message' => "Analysis' name contains a forbidden character",
+        )));
+    }
 
     public function isNumberOfTargetValid(ExecutionContextInterface $context)
     {
