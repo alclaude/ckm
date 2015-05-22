@@ -55,6 +55,7 @@ Administration - <small>Scenario & Model management</small>
                         <tr>
                           <th class="header">Scenario </th>
                           <th class="header">Name </th>
+                          <th class="header">Tag </th>
                           <th class="header">Model </th>
                           <th class="header">Date </th>
                           <th class="header">Enabled ? </th>
@@ -66,6 +67,7 @@ Administration - <small>Scenario & Model management</small>
                         <tr>
                           <td>  {{ scenario.id }}</td>
                           <td>  {{ scenario.name }}</td>
+                          <td>  {{ scenario.tag }}</td>
                           <td>  {{ scenario.model.name }}</td>
                           <td>  {{ scenario.dateCreate|date("m/d/Y - H:i") }}</td>
                           <td>  {{ scenario.isDocumented ? 'true' : 'false'}} </td>
