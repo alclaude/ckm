@@ -37,7 +37,7 @@ Setting the value of a {{ type }}
     
       <ul>You have two possibilities
       <li>on the left, you can take the input from a reference CKMfitter analysis, either the default value of the datacard <a style="color: navy;" href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.id, 'input': observable.id , 'tab':'input' }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or a value from a different scenario</li>
-      <li>on the right, you can set your own specific data (central value, experimental and theoretical uncertainties)</li>
+      <li>on the right, you can set your own values (central value, experimental and theoretical value). The central value must be within the range indicated in brackets.</li>
       </ul>
     </p>
     </div>
@@ -61,7 +61,7 @@ Setting the value of a {{ type }}
   <div class="col-sm-6">
     <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> ... or change Specific values (Range for central value [{{observable.allowedRangeMin}}, {{observable.allowedRangeMax}}])</h3>
+            <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> ... or give your own values (Range for central value [{{observable.allowedRangeMin}}, {{observable.allowedRangeMax}}])</h3>
           </div>
           <div class="panel-body">
             <p>Notice : you must change the three values at once</p>

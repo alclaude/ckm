@@ -27,7 +27,7 @@ class ObservableTagType extends AbstractType
               'expanded'  => false,
               'multiple'  => false,
               #'data' => $tag,
-              'label' => 'Define tag system for Input',
+              'label' => 'Define Reference for the Input',
               'attr'      => array('class' => 'form-control'),
             ))
         ;

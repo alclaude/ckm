@@ -97,7 +97,7 @@ class AnalysisController extends Controller
       $request = $this->getRequest();
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       # re choose target
@@ -317,7 +317,7 @@ class AnalysisController extends Controller
       }
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       $request = $this->getRequest();
@@ -483,7 +483,7 @@ class AnalysisController extends Controller
       $analyse = $this->getAnalysis($analyse);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       return $this->render('CKMAppBundle:Analysis:seeDatacard.html.twig', array(
@@ -498,7 +498,7 @@ class AnalysisController extends Controller
       $analyse = $this->getAnalysis($analyse);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       #if( $analyse->getStatus()!=2 ){
@@ -572,7 +572,7 @@ class AnalysisController extends Controller
 
       $this->get('session')->getFlashBag()->add(
             'success',
-            'Your analysis ['.  $analyse->getId() .'] have been copy in analysis ['.$analyseClone->getId().']'
+            'Your analysis ['.  $analyse->getId() .'] have been copy in a new analysis ['.$analyseClone->getId().']. Please go to Your analysis/Ongoing analyses in order to edit the copy.'
       );
 
       return $this->redirect(
@@ -588,7 +588,7 @@ class AnalysisController extends Controller
       $analyse = $this->getAnalysis($analyse);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       $analyse->setStatus(2);
@@ -666,7 +666,7 @@ class AnalysisController extends Controller
       $analyse = $this->getAnalysis($analyse);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the input analysis of this user');
       }
 
       $em = $this->getDoctrine()->getEntityManager();
@@ -724,13 +724,13 @@ class AnalysisController extends Controller
           ->findOneById( $analyse );
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the input analysis of this user');
       }
 
       if( $this->isForbiddenStep($analyse) ){
         return $this->errorForm(
           'danger',
-          'You can not modify with analysis',
+          'You can not modify a finalised analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $analyse->getId(), 'tab'=> 'input' )
         );
@@ -774,7 +774,7 @@ class AnalysisController extends Controller
       $analyse = $observableDeleted->getAnalyse();
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the input analysis of this user');
       }
 
       if( $this->isForbiddenStep($analyse) ){
@@ -907,7 +907,7 @@ die('die');
       $analyse = $this->getAnalysis($analyse);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the input analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the input analysis of this user');
       }
 
       $em = $this->getDoctrine()->getEntityManager();
@@ -955,7 +955,7 @@ die('die');
       }
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the analysis of this user');
       }
 
       $em = $this->getDoctrine()->getEntityManager();
@@ -1011,14 +1011,14 @@ die('die');
       if( $this->isForbiddenStep( $this->getAnalysis($input->getAnalyse()->getId() )) ){
         return $this->errorForm(
           'warning',
-          'You can not modify with analysis',
+          'You can not modify a finalised analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $input->getAnalyse()->getId() )
         );
       }
 
       if ($input->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the analysis of this user');
       }
 
       $form1 = $this->createForm(
@@ -1074,14 +1074,14 @@ die('die');
       if( $this->isForbiddenStep( $this->getAnalysis($observable->getAnalyse()->getId() )) ){
         return $this->errorForm(
           'warning',
-          'You can not modify with analysis',
+          'You can not modify a finalised analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $observable->getAnalyse()->getId() )
         );
       }
 
       if ($observable->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the analysis of this user');
       }
 
       $form = $this->createForm(new ObservableType, $observable);
@@ -1155,14 +1155,14 @@ die('die');
       if( $this->isForbiddenStep( $this->getAnalysis($parameter->getAnalyse()->getId() )) ){
         return $this->errorForm(
           'warning',
-          'You can not modify with analysis',
+          'You can not modify a finalised analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $parameter->getAnalyse()->getId() )
         );
       }
 
       if ($parameter->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to remove the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to remove the analysis of this user');
       }
 
       $form = $this->createForm(new ParameterType, $parameter);
@@ -1210,7 +1210,7 @@ die('die');
       if( $this->isForbiddenStep( $this->getAnalysis($target->getAnalyse()->getId() )) ){
         return $this->errorForm(
           'warning',
-          'You can not modify with analysis',
+          'You can not modify a finalised analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $target->getAnalyse()->getId() )
         );
@@ -1218,7 +1218,7 @@ die('die');
       $request = $this->getRequest();
 
       if ($target->getAnalyse()->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       $form = $this->createForm(new TargetScanType, $target);
@@ -1265,7 +1265,7 @@ die('die');
       if( $this->isForbiddenStep($analysis) ){
         return $this->errorForm(
           'warning',
-          'You can not modify with analysis',
+          'You can not modify a finalised analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $analysis->getId() )
         );
@@ -1273,7 +1273,7 @@ die('die');
       $request = $this->getRequest();
 
       if ($analysis->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       $form = $this->createForm(new AnalysisPropertiesType, $analysis);
@@ -1333,7 +1333,7 @@ die('die');
       }
 
       if ($user->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to see the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to see the analysis of this user');
       }
 
 /*      $analysisListByUser = $em->getRepository('CKMAppBundle:Analysis')
@@ -1483,7 +1483,7 @@ die('die');
       $analyse = $this->getAnalysis($analyse);
 
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
-        throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
       
           /*$answers = $this->getDoctrine()
