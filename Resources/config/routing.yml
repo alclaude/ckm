@@ -70,6 +70,11 @@ CKMAppBundle_analyse_create_step_3:
     defaults: { _controller: CKMAppBundle:Analysis:createAnalyseStep3}
     requirements:
         analyse:  \d+
+CKMAppBundle_analyse_create_step_4:
+    pattern:  /analysis/createAnalyse/step4/{analyse}/{step}
+    defaults: { _controller: CKMAppBundle:Analysis:createAnalyseStep4}
+    requirements:
+        analyse:  \d+
 CKMAppBundle_analyse_see_datacard:
     pattern:  /analysis/datacard/see/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:seeDatacard}

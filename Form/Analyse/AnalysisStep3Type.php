@@ -123,7 +123,7 @@ class AnalysisStep3Type extends AbstractType
      */
     public function getName()
     {
-        return 'ckm_appbundle_analysis_step2';
+        return 'ckm_appbundle_analysis_step3';
     }
 
 }

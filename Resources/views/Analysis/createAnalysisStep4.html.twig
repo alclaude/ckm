@@ -1,0 +1,64 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/createAnalysisStep.html.twig #}
+{% form_theme form 'CKMAppBundle::Form/errors.html.twig' %}
+{% extends 'CKMAppBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+  {% include 'CKMAppBundle:Analysis:mathjax.html.twig' %}
+{% endblock %}
+
+{% block titlePage %}
+Analysis - <small> {{ message }} </small>
+{% endblock %}
+{% block content %}
+<h3>{{ message1 }}</h3>
+
+{% for flashMessage in app.session.flashbag.get('notice') %}
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="alert alert-danger">
+          <p><span class="label label-default"> Warning </span>&nbsp; {{ flashMessage }}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<div class="row">
+  <div class="col-lg-6">
+    {% if message2 is defined and message2 is not null %}
+    <p>
+      <strong>{{ message2 }}</strong>
+      <div class="row"> 
+        <div class="col-lg-12">
+          <a class="btn btn-success right" href="{{ path('CKMAppBundle_analyse_create_analyse_source', {'analyse': analyse, 'step':4} ) }}"><i class="glyphicon glyphicon-thumbs-up"></i> Skip plotting step</a>
+        </div>
+      </div>
+    </p>
+    {% endif %}
+    <div class="alert alert-info">
+      <p>Each step will help you to define the elements of your analysis. If you have already completed one step but change your mind, please do not use the “Back” feature of your browser. Instead, keep on following the steps up to the summary of your analysis, where you will be able to modify the information already provided, if necessary.</p>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="row">
+  <div class="col-sm-6">
+    <form role="form" method="post" {{ form_enctype(form) }}>
+      {{ form_widget(form) }}
+      <br />
+      <div class="form-group">          
+          {% if step==1 %}
+          <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_by_user', {'user_id':app.user.id} ) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
+          {% endif %}
+          {% if step==2 or step==3 or step==4 %}
+          <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_create_analyse_remove', {'analyse': analyse}) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
+          {% endif %}
+          
+          <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

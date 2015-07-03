@@ -60,7 +60,6 @@ Analysis - <small> {{ message }} </small>
       {{ form_widget(form) }}
       <br />
       <div class="form-group">
-        <div class="col-sm-6">
           {% if step==1 %}
           <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_by_user', {'user_id':app.user.id} ) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
           {% endif %}
@@ -69,7 +68,6 @@ Analysis - <small> {{ message }} </small>
           {% endif %}
 
           <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Submit</button>
-        </div>
       </div>
     </form>
   </div>

@@ -13,10 +13,12 @@ use CKM\AppBundle\Form\ObservableTagType;
 use CKM\AppBundle\Form\ParameterType;
 use CKM\AppBundle\Form\AnalysisPropertiesType;
 use CKM\AppBundle\Form\AnalysisNameType;
+use CKM\AppBundle\Entity\Plotting;
 
 use CKM\AppBundle\Form\Analyse\AnalysisStep1Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep2Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep3Type;
+use CKM\AppBundle\Form\Analyse\AnalysisStep4Type;
 use CKM\AppBundle\Form\TargetScanType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,7 +51,7 @@ class AnalysisController extends Controller
           $analyse->setUser( $this->get('security.context')->getToken()->getUser() );
 
           $tmp = $request->request->get($form->getName()) ;
-          echo $tmp['scenario'];
+          #echo $tmp['scenario'];
           $scenario = $this->getDoctrine()
             ->getRepository('CKMAppBundle:Scenario')
             ->findOneById($tmp['scenario']);
@@ -303,6 +305,74 @@ class AnalysisController extends Controller
       );
     }
 
+    public function createAnalyseStep4Action($analyse=0, $step=4, $tab='') {
+      $this->isGranted('ROLE_ANALYSIS');
+      $analyse = $this->getAnalysis($analyse);
+
+      if( $this->isForbiddenStep($analyse) ){
+        return $this->errorForm(
+          'warning',
+          'You can not modify with analysis',
+          'CKMAppBundle_analyse_create_analyse_source',
+          array('analyse' => $analyse->getId() )
+        );
+      }
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
+      }
+
+      $request = $this->getRequest();
+
+      $em = $this->getDoctrine()->getManager();
+      $plotting = new Plotting();
+      $form = $this->createForm(new AnalysisStep4Type($em),  $plotting);
+
+      if ($request->getMethod() == 'POST') {
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+          $tmp = $request->request->get($form->getName()) ;
+
+          if(!isset($tmp["nickname"]) or empty($tmp["nickname"]) or 
+             !isset($tmp["title"]) or empty($tmp["title"]) ) {
+            return $this->errorForm('notice',
+              'Please fill all fields in the form',
+              'CKMAppBundle_analyse_create_step_4',
+              array('analyse' => $analyse->getId(), 'step' => $step )
+            );
+          }
+
+          $plotting->setAnalysis($analyse);
+          $numberOfPlot = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:Plotting')
+            ->countNumberOfPlot( $analyse->getId() );
+
+          $plotting->setNumberOfPlot($numberOfPlot);
+
+          $em->persist( $plotting );
+          $em->flush();
+
+          return $this->redirect(
+                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                        array('analyse' => $analyse->getId(), 'step' => 4, 'tab'=> $tab )
+                  )
+          );
+        }
+      }
+      
+      return $this->render('CKMAppBundle:Analysis:createAnalysisStep4.html.twig', array(
+        'form'     => $form->createView(),
+        'message1' => 'Parameterise the plotting',
+        'message'  => 'Plotting',
+        'message2' => 'This step is not mandatory, you can bypass her by clicking skip plotting',
+        'step'     => '4',
+        'analyse'  => $analyse->getId(),
+        'scenario' => $analyse->getScenario()->getId(),
+        'scenarioName' => $analyse->getScenario()->getName(),
+      ));
+    }
+
     public function createAnalyseStep3Action($analyse=0, $step=3, $tab='') {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
@@ -436,8 +506,8 @@ class AnalysisController extends Controller
           $this->setLatexAnalysis($analyse);
 
           return $this->redirect(
-                  $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                                      array('analyse' => $analyse->getId(), 'step' => 4, 'tab'=> $tab )
+                  $this->generateUrl('CKMAppBundle_analyse_create_step_4',
+                                      array('analyse' => $analyse->getId(), 'step' => 4 )
                   )
           );
         }
