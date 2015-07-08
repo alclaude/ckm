@@ -28,10 +28,12 @@ class PlottingRepository extends EntityRepository
   public function findLastPlottingByAnalysis($analysis)
   {
     $em = $this->getEntityManager();
-    $query = $em->createQuery('SELECT p FROM CKM\AppBundle\Entity\Plotting p WHERE p.analysis = :analyse ORDER BY p.numberOfPlot')
+    $query = $em->createQuery('SELECT p FROM CKM\AppBundle\Entity\Plotting p WHERE p.analysis = :analyse ORDER BY p.numberOfPlot DESC')
     ->setParameter('analyse', $analysis )
-    ->setMaxResults(5)
-    ->setFirstResult(1);
-    return $query->getOneOrNullResult();
+    #->setMaxResults(1)
+    #->setFirstResult(1)
+    ;
+    #return $query->getOneOrNullResult();
+    return $query->getResult();
   }
 }

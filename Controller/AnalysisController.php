@@ -544,13 +544,17 @@ class AnalysisController extends Controller
           ->getRepository('CKMAppBundle:Plotting')
           ->findLastPlottingByAnalysis( $analyse->getId() );
 
+      # Pour le moment juste un element a inclure dans la datacard
       if( $plotting ) {
-        $nickname = $plotting->getNickname();
-        $title    = $plotting->getTitle();
+        # le premier element
+        $plot = $plotting[0];
+        $nickname = $plot->getNickname();
+        $title    = $plot->getTitle();
       } else {
         $nickname = '__NO__NICKNAME__';
         $title    = '__NO__TITLE__';
       }
+
 
       $em = $this->getDoctrine()
                  ->getManager();
@@ -599,7 +603,6 @@ class AnalysisController extends Controller
       #
       $analyseClone->setResultDat('');
 
-
       $parameters = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Parameter')
         ->findByAnalysis( $analyse->getId() );
@@ -645,7 +648,6 @@ class AnalysisController extends Controller
 
         $all_ar_observables[]=$observableClone;
       }
-
 
       $em->persist($analyseClone);
       $em->flush();
@@ -722,6 +724,10 @@ class AnalysisController extends Controller
       $liste_targetElement = $em->getRepository('CKMAppBundle:Input')
                                   ->findTargetByAnalysis($analyse->getId());
 
+      # retrieve the last plotting. Only last plotting is write in the datacard
+      $plotting = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Plotting')
+          ->findLastPlottingByAnalysis( $analyse->getId() );
 
       $arMatchTargetObs= $this->getDoctrine()
           ->getRepository('CKMAppBundle:Input')
@@ -740,6 +746,7 @@ class AnalysisController extends Controller
             'targets' => $liste_targetElement,
             'target_and_observable' => $arMatchTargetObs,
             'tab'=> $tab,
+            'plots'=>$plotting,
         ));
     }
 
