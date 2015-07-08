@@ -25,7 +25,8 @@ class AnalysisManager
       $scenarioInputs=$scenario->getInput();
       foreach($scenarioInputs as $scenarioInput) {
         if($scenarioInput==$input->getName() ) {
-          $scenariosWithInput[$scenario->getName()]=$scenario->getName();
+          #$scenariosWithInput[$scenario->getName()]=$scenario->getName();
+          $scenariosWithInput[$scenario->getName()]=$scenario->getTag();
           break;
         }
       }
