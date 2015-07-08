@@ -37,7 +37,7 @@ class AnalysisManager
 
     return $scenariosWithInput;
   }
-  
+
   public function isInputsInScenario($inputsName, $scenario) {
     foreach($inputsName as $inputName) {
       $tmp_ar = explode(';',$inputName);

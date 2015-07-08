@@ -539,10 +539,22 @@ class AnalysisController extends Controller
           ->getRepository('CKMAppBundle:Parameter')
           ->findByParameterAnalysis( $analyse->getId() );
 
+      # retrieve the last plotting. Only last plotting is write in the datacard
+      $plotting = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Plotting')
+          ->findLastPlottingByAnalysis( $analyse->getId() );
+
+      if( $plotting ) {
+        $nickname = $plotting->getNickname();
+        $title    = $plotting->getTitle();
+      } else {
+        $nickname = '__NO__NICKNAME__';
+        $title    = '__NO__TITLE__';
+      }
 
       $em = $this->getDoctrine()
                  ->getManager();
-      $analyse->setDatacard($observables, $parameters, $targets);
+      $analyse->setDatacard($observables, $parameters, $targets, $nickname, $title);
       $em->persist($analyse);
       $em->flush();
     }

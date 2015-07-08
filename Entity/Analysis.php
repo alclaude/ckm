@@ -318,15 +318,15 @@ class Analysis
      * @param string $datacard
      * @return Analysis
      */
-    public function setDatacard($observables, $parameters, $targets)
+    public function setDatacard($observables, $parameters, $targets, $nickname='__NO__NICKNAME__', $title='__NO__TITLE__' )
     {
         #$this->datacard = $datacard;
-        $this->datacard = $this->initDatacard($observables, $parameters, $targets);
+        $this->datacard = $this->initDatacard($observables, $parameters, $targets, $nickname, $title);
 
         return $this;
     }
 
-    private function initDatacard($observables, $parameters, $targets)
+    private function initDatacard($observables, $parameters, $targets, $nickname, $title)
     {
       #$this->datacard = $datacard;
 
@@ -344,6 +344,16 @@ class Analysis
       #$datacard .= '"'.$this->getScenario()->getName().'"';
       #$datacard .= $rl.$rl;
       $datacard .= '"'.$this->getScenario()->getModel()->getName().'",';
+      $datacard .= $rl.$rl;
+
+      # ecriture du tag
+      $datacard .= '"'.$this->setTag4Datacard($observables, $parameters).'",';
+      $datacard .= $rl.$rl;
+      # ecriture nickname
+      $datacard .= '"'.$nickname.'",';
+      $datacard .= $rl.$rl;
+      # ecriture title
+      $datacard .= '"'.$title.'",';
       $datacard .= $rl.$rl;
 
       # gestion des observables
@@ -423,6 +433,34 @@ class Analysis
       #die('debbug');
 
       return $datacard;
+    }
+
+    private function setTag4Datacard($observables, $parameters) {
+      $tag=$observables[0]->getCurrentTag();
+
+      $notToPrints=array('A', 'lambda', 'rhobar', 'etabar');
+
+      foreach( $parameters as $parameter ) {
+        if( ! in_array( $parameter->getName(), $notToPrints) ){
+          if( $parameter->getCurrentTag() !== $tag) {
+              return 'personnal';
+          }
+
+          if(  $parameter->getValue()!= 0 and $parameter->getExpUncertity()!=0 and $parameter->getThUncertity()!=0 ) {
+           return 'personnal';
+          }
+        }
+      }
+
+      foreach( $observables as $observable ) {
+        if( $observable->getCurrentTag() !== $tag) {
+            return 'personnal';
+        }
+        if( $observable->getValue()!= 0 and $observable->getExpUncertity()!=0 and $observable->getThUncertity()!=0 ) {
+         return 'personnal';
+        }
+      }
+      return $tag;
     }
 
     private function writeTargets($targets,$rl) {
