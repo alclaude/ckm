@@ -63,6 +63,13 @@ class Plotting
     private $pathPng;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="path_pdf", type="string", length=255)
+     */
+    private $pathPdf;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="number_of_plot", type="integer")
@@ -75,6 +82,7 @@ class Plotting
       $this->title    = '';
       $this->pathEps  = '';
       $this->pathPng  = '';
+      $this->pathPdf  = '';
       $this->numberOfPlot = -1;
     }
 
@@ -224,5 +232,28 @@ class Plotting
     public function getAnalysis()
     {
         return $this->analysis;
+    }
+
+    /**
+     * Set pathPdf
+     *
+     * @param string $pathPdf
+     * @return Plotting
+     */
+    public function setPathPdf($pathPdf)
+    {
+        $this->pathPdf = $pathPdf;
+
+        return $this;
+    }
+
+    /**
+     * Get pathPdf
+     *
+     * @return string
+     */
+    public function getPathPdf()
+    {
+        return $this->pathPdf;
     }
 }
