@@ -1,3 +1,4 @@
 parameters:
     max_analysis_per_page: 8
     result_path: /../src/CKM/AppBundle/Command/resultCKMAnalysis/
+    result_path_plotting: ../src/CKM/AppBundle/Command/Plot_resultCKMAnalysis/

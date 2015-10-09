@@ -15,6 +15,12 @@ class AnalysisManager
     $this->securityContext = $securityContext;
   }
 
+  public function hasFormatPlot($analysisID, $extensionFormat) {
+    return $this->em
+      ->getRepository('CKMAppBundle:Model')
+      ->findByIsEnable($isEnabled);
+  }
+
   public function getScenariosForInput($input) {
     $scenarios = $this->em
       ->getRepository('CKMAppBundle:Scenario')

@@ -81,6 +81,11 @@ CKMAppBundle_analyse_see_datacard:
 CKMAppBundle_dl_result:
     pattern:  /analysis/datacard/result/{analyse}
     defaults: { _controller: CKMAppBundle:Analysis:resultAnalysis}
+CKMAppBundle_dl_result_plotting:
+    pattern:  /analysis/datacard/result/{analyse}/{plotNameExtension}/{numberOfPlot}
+    defaults: { _controller: CKMAppBundle:Analysis:resultAnalysisPlotting, plotNameExtension: 'toto'}
+    requirements:
+        plotNameExtension:  '[a-zA-Z0-9-_\/.\s]+'
 CKMAppBundle_dl_log:
     pattern:  /administration/log/result/{analyse}
     defaults: { _controller: CKMAppBundle:Administration:logAnalysis}

@@ -208,6 +208,7 @@ Personalise your analysis
           </div>
         </div>
       </div>
+      <!-- plotting -->
       <div id="plot"  class="tab-pane fade" class="col-sm-8 ">
         <div class="panel panel-primary">
           <div class="panel-heading">
@@ -218,6 +219,19 @@ Personalise your analysis
               {% for plot in plots %}
               <p>{{ plot.nickname }}</p>
               <p>{{ plot.title }}</p>
+              <p>{{ plot.pathPdf }}</p>
+              {% if plot.pathPdf and plot.pathPdf is defined %}
+                <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathPdf, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">see result</a>
+              {% endif %}
+              <p>{{ plot.pathEps }}</p>
+              {% if plot.pathEps and plot.pathEps is defined %}
+                <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathEps, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">see result</a>
+              {% endif %}
+              <p>{{ plot.pathPng }}</p>
+              {% if plot.pathPng and plot.pathPng is defined %}
+                <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathPng, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">see result</a>
+              {% endif %}
+              <hr />
               {% endfor %}
             {% else %}
             <strong>There is no plot defined for this analysis</strong>

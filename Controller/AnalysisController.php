@@ -547,9 +547,9 @@ class AnalysisController extends Controller
       # Pour le moment juste un element a inclure dans la datacard
       if( $plotting ) {
         # le premier element
-        $plot = $plotting[0];
-        $nickname = $plot->getNickname();
-        $title    = $plot->getTitle();
+        #$plot = $plotting[0];
+        $nickname = $plotting->getNickname();
+        $title    = $plotting->getTitle();
       } else {
         $nickname = '__NO__NICKNAME__';
         $title    = '__NO__TITLE__';
@@ -727,7 +727,7 @@ class AnalysisController extends Controller
       # retrieve the last plotting. Only last plotting is write in the datacard
       $plotting = $this->getDoctrine()
           ->getRepository('CKMAppBundle:Plotting')
-          ->findLastPlottingByAnalysis( $analyse->getId() );
+          ->findPlottingsByAnalysis( $analyse->getId() );
 
       $arMatchTargetObs= $this->getDoctrine()
           ->getRepository('CKMAppBundle:Input')
@@ -1506,6 +1506,21 @@ die('die');
       }
       return $analyse;
     }
+    
+    public function getPlot($id) {
+      $em = $this->getDoctrine()
+                 ->getManager();
+
+      $plot = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Plotting')
+        ->findOneById($id);
+
+      if (!$plot) {
+        #throw $this->createNotFoundException('analyse not exist');
+        throw new HttpException(404, "plot not exist");
+      }
+      return $plot;
+    }
 
     private function isForbiddenStep($analyse) {
       if($analyse->getStatus() >= 2) {
@@ -1563,6 +1578,53 @@ die('die');
         $response = new Response(json_encode(array( $jsonContent )));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
+    }
+    
+    public function resultAnalysisPlottingAction($analyse=0,$plotNameExtension='', $numberOfPlot=0)
+    {
+      $this->isGranted('ROLE_ANALYSIS');
+
+      $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
+      }
+  
+      $pathBase = $this->container->getParameter('result_path_plotting');
+      
+      $path=$pathBase.$analyse->getId()."/plot".$numberOfPlot.".toplot/".$plotNameExtension;
+#echo $path."<br />";
+#echo getcwd();
+      #$answers = readFile($path);
+      
+
+      #exit('debbug');
+      
+      if (preg_match("/(.*?\.(eps|png|pdf))$/i", $plotNameExtension, $extension)) {
+        $ContentType = '';
+        switch ($extension[2]) {
+            case 'eps':
+                $ContentType = 'image/x-eps';
+                break;
+            case 'pdf':
+                $ContentType = 'application/pdf';
+                break;
+            case 'png':
+                $ContentType = 'image/png';
+                break;
+        }
+      }
+
+       $response = new Response();
+       $response->setContent(file_get_contents($path));
+       $response->headers->set(
+           'Content-Type',
+           $ContentType
+       ); // Affiche le pdf au lieux de le télécharger
+       $response->headers->set('Content-disposition', 'filename=' . $plotNameExtension);
+ 
+       return $response;
+
     }
     
     public function resultAnalysisAction($analyse=0)

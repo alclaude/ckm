@@ -30,10 +30,31 @@ class PlottingRepository extends EntityRepository
     $em = $this->getEntityManager();
     $query = $em->createQuery('SELECT p FROM CKM\AppBundle\Entity\Plotting p WHERE p.analysis = :analyse ORDER BY p.numberOfPlot DESC')
     ->setParameter('analyse', $analysis )
+    ->setMaxResults(1)
+    ->setFirstResult(0)
+    ;
+    return $query->getOneOrNullResult();
+  }
+  
+  public function findPlottingsByAnalysis($analysis)
+  {
+    $em = $this->getEntityManager();
+    $query = $em->createQuery('SELECT p FROM CKM\AppBundle\Entity\Plotting p WHERE p.analysis = :analyse ORDER BY p.numberOfPlot DESC')
+    ->setParameter('analyse', $analysis )
     #->setMaxResults(1)
     #->setFirstResult(1)
     ;
     #return $query->getOneOrNullResult();
     return $query->getResult();
   }
+  
+  public function findPlottingByAnalysisAndNumberOfPlot($analysisID, $numberOfPlot){
+    $em = $this->getEntityManager();
+    $query = $em->createQuery('SELECT p FROM CKM\AppBundle\Entity\Plotting p WHERE p.analysis = :analyse AND p.numberOfPlot = :numberOfPlot ')
+    ->setParameter('analyse', $analysisID )
+    ->setParameter('numberOfPlot', $numberOfPlot )
+    ;
+    return $query->getOneOrNullResult();
+  }
+  
 }

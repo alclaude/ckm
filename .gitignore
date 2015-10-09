@@ -1,2 +1,10 @@
 *~
 *.tar.gz
+*.sh
+BatchRemote/
+inprogress/
+resultCKMAnalysis/
+Batch/
+Plot_resultCKMAnalysis/
+.settings/
+
