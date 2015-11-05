@@ -45,6 +45,7 @@ class ToPlotCommand extends ContainerAwareCommand
         
         if($plotToRun) {
           #echo \Doctrine\Common\Util\Debug::dump($plotToRun);
+          # on verifie absence de eps qui devrait tjs etre present comme format
           if( !$plotToRun->getPathEps() ) {
             #echo "\n $analysisRep : rep analysis exist\n";
             if( $fs->exists($analysisRep) ) {
@@ -67,7 +68,10 @@ class ToPlotCommand extends ContainerAwareCommand
                 ) {
                   //echo "\nmkdir php\n";
                   $fs->mkdir($plotDir.'.toplot', 0700);
-                  $analysisFile = $plotDir.'.toplot/'.$analysis->getName().'.dat';
+                  //$analysisFile = $plotDir.'.toplot/'.$analysis->getName().'.dat';
+                  // create file .dat with format title____nickname____scenario-tag____dimension.dat
+                  $analysisFile = $plotDir.'.toplot/'.$plotToRun->getTitle().'____'.$plotToRun->getNickname().'____'.$analysis->getScenario()->getTag().'____'.$analysis->getScanConstraint().'.dat';
+                  echo $analysisFile."\n";
                   $fs->touch($analysisFile);
                   file_put_contents( $analysisFile, $analysis->getResultDat() );
                 }
@@ -99,6 +103,7 @@ class ToPlotCommand extends ContainerAwareCommand
         }
         */
       }
+
     
     }
 }
