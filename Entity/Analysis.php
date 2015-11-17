@@ -346,15 +346,7 @@ class Analysis
       $datacard .= '"'.$this->getScenario()->getModel()->getName().'",';
       $datacard .= $rl.$rl;
 
-      # ecriture du tag
-      $datacard .= '"'.$this->setTag4Datacard($observables, $parameters).'",';
-      $datacard .= $rl.$rl;
-      # ecriture nickname
-      $datacard .= '"'.$nickname.'",';
-      $datacard .= $rl.$rl;
-      # ecriture title
-      $datacard .= '"'.$title.'",';
-      $datacard .= $rl.$rl;
+
 
       # gestion des observables
     /*
@@ -420,6 +412,16 @@ class Analysis
       }
 
       #$datacard .= $rl;
+
+      # ecriture du tag
+      $datacard .= '"'.$this->setTag4Datacard($observables, $parameters).'",';
+      $datacard .= $rl.$rl;
+      # ecriture nickname
+      $datacard .= '"'.$nickname.'",';
+      $datacard .= $rl.$rl;
+      # ecriture title
+      $datacard .= '"'.$title.'",';
+      $datacard .= $rl.$rl;
 
       $datacard .= $this->writeTargets($targets,$rl);
 
