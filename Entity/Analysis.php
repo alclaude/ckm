@@ -448,7 +448,7 @@ class Analysis
               return 'personnal';
           }
 
-          if(  $parameter->getValue()!= 0 and $parameter->getExpUncertity()!=0 and $parameter->getThUncertity()!=0 ) {
+          if( $parameter->getValue()!= 0 and ($parameter->getExpUncertity()!=0 or $parameter->getThUncertity()!=0) ) {
            return 'personnal';
           }
         }
@@ -458,7 +458,7 @@ class Analysis
         if( $observable->getCurrentTag() !== $tag) {
             return 'personnal';
         }
-        if( $observable->getValue()!= 0 and $observable->getExpUncertity()!=0 and $observable->getThUncertity()!=0 ) {
+        if( $observable->getValue()!= 0 and ($observable->getExpUncertity()!=0 or $observable->getThUncertity()!=0) ) {
          return 'personnal';
         }
       }

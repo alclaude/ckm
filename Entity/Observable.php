@@ -229,7 +229,8 @@ class Observable extends Input
               }
               elseif( $type==='parameter' ) {
                 $tmp_ar_param = explode(';',$line);
-                if( preg_match($paramPattern, preg_quote($tmp_ar_param['0']) ) ) {
+                #if( preg_match($paramPattern, preg_quote($tmp_ar_param['0']) ) ) {
+                if( preg_match($paramPattern, $tmp_ar_param['0'] ) ) {
                   $tmp_obj_param = new Parameter($this->getAnalyse(), $tmp_ar_param['0'], '', $tmp_ar_param['1'], $tmp_ar_param['2'], $tmp_ar_param['3'] ) ;
 
                   array_push($tmp_ar_params, $tmp_obj_param );
