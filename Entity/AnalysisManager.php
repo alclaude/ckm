@@ -83,6 +83,11 @@ class AnalysisManager
         // Sinon on déclenche une exception « Accès interdit »
         throw new AccessDeniedHttpException('no credentials for this action');
     }
+
+    $plots = $this->em
+      ->getRepository('CKMAppBundle:Plotting')
+      ->findPlottingsByAnalysis( $analyse->getId() );
+
     $targets = $this->em
       ->getRepository('CKMAppBundle:Input')
       ->findTargetByAnalysis( $analyse->getId() );
@@ -105,6 +110,10 @@ class AnalysisManager
       foreach($parameters as $parameter) {
         $this->em->remove($parameter);
       }
+    }
+
+    foreach($plots as $plot) {
+      $this->em->remove($plot);
     }
 
     $this->em->remove($analyse);
