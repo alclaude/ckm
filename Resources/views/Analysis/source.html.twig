@@ -237,6 +237,12 @@ Personalise your analysis
               {% endfor %}
             {% else %}
             <strong>There is no plot defined for this analysis</strong>
+            </p>
+              <i class="fa fa-arrow-circle-o-right "></i>
+              <a href="{{ path('CKMAppBundle_analyse_create_step_4', {'analyse': analyse.id, 'step':0}) }}">
+              Define a plot for this analysis
+              </a>
+            </p>
             {% endif %}
           </div>
         </div>
