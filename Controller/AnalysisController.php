@@ -363,9 +363,9 @@ class AnalysisController extends Controller
       
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep4.html.twig', array(
         'form'     => $form->createView(),
-        'message1' => 'Parameterise the plotting',
+        'message1' => 'Parametrise the plotting',
         'message'  => 'Plotting',
-        'message2' => 'This step is not mandatory, you can bypass her by clicking skip plotting',
+        'message2' => 'This step is not mandatory and it can be skipped clicking the green button “Skip plotting”',
         'step'     => '4',
         'analyse'  => $analyse->getId(),
         'scenario' => $analyse->getScenario()->getId(),
