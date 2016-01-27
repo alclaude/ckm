@@ -599,7 +599,7 @@ class AnalysisController extends Controller
       $em = $this->getDoctrine()->getManager();
       $analyseClone = clone $analyse;
       $analyseClone->setStatus(1);
-      $analyseClone->setName( $analyseClone->getName().' [copy]' );
+      $analyseClone->setName( $analyseClone->getName().' _copy_' );
       #
       $analyseClone->setResultDat('');
 
