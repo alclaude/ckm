@@ -505,11 +505,20 @@ class AnalysisController extends Controller
           $em->flush();
           $this->setLatexAnalysis($analyse);
 
-          return $this->redirect(
-                  $this->generateUrl('CKMAppBundle_analyse_create_step_4',
-                                      array('analyse' => $analyse->getId(), 'step' => 4 )
-                  )
-          );
+          if($step==0) {
+            return $this->redirect(
+                    $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                                        array('analyse' => $analyse->getId(), 'step' => 4 )
+                    )
+            );
+          }
+          else {
+            return $this->redirect(
+                    $this->generateUrl('CKMAppBundle_analyse_create_step_4',
+                                        array('analyse' => $analyse->getId(), 'step' => 4 )
+                    )
+            );
+          }
         }
       }
       return $this->render('CKMAppBundle:Analysis:createAnalysisStep.html.twig', array(
