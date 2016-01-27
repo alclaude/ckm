@@ -1206,7 +1206,7 @@ die('die');
           if( $tmp['expUncertity']==0 and $tmp['thUncertity']==0 ) {
             $this->get('session')->getFlashBag()->add(
                 'notice',
-                'Please, the two Uncertity can not be null at once'
+                'The two uncertainties cannot be both null.'
             );
             return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source_input',
