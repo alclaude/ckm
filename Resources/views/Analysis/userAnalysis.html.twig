@@ -13,7 +13,7 @@ Analysis - <small>List </small>
 
 {% if analysesbyuser is defined %}
 <div class="row">
-  <div class="col-sm-8 ">
+  <div class="col-sm-12 ">
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-arrow-circle-o-right "></i> Your Analysis</h3>
@@ -72,14 +72,5 @@ No analysis defined...
       </div>
 {% endfor %}
 
-  <div class="panel panel-default">
-    <div class="panel-heading">User</div>
-      <div class="panel-body">
-        <ul class="list-group">
-          <li class="list-group-item">{{ app.user.username  }}</li>
-        </ul>
-      </div>
-    </div>
-  </div>
 </div>
 {% endblock %}
