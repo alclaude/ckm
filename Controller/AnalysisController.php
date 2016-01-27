@@ -686,8 +686,11 @@ class AnalysisController extends Controller
       #);
 
       return $this->redirect(
-        $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+        /*$this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
                             array('analyse' => $analyse->getId(), 'step' => 4 )
+        )*/
+        $this->generateUrl('CKMAppBundle_analyse_by_user',
+                            array('user_id' => $analyse->getUser()->getId(), 'page' => 1 )
         )
       );
     }
