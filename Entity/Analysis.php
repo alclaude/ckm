@@ -449,7 +449,7 @@ class Analysis
           }
 
           //if( $parameter->getValue()!= 0 and ($parameter->getExpUncertity()!=0 or $parameter->getThUncertity()!=0) ) {
-          if( is_null($parameter->getValue()) and is_null($parameter->getExpUncertity()) and is_null($parameter->getThUncertity()) ) {
+          if( !is_null($parameter->getValue()) and !is_null($parameter->getExpUncertity()) and !is_null($parameter->getThUncertity()) ) {
            return 'personnal';
           }
         }
@@ -460,7 +460,7 @@ class Analysis
             return 'personnal';
         }
         //if( $observable->getValue()!= 0 and ($observable->getExpUncertity()!=0 or $observable->getThUncertity()!=0) ) {
-        if( is_null($observable->getValue()) and is_null($observable->getExpUncertity()) and is_null($observable->getThUncertity()) ) {  
+        if( !is_null($observable->getValue()) and !is_null($observable->getExpUncertity()) and !is_null($observable->getThUncertity()) ) {  
          return 'personnal';
         }
       }
