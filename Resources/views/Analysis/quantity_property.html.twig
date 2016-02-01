@@ -1,6 +1,6 @@
 
 
-{% if quantity.value != 0 %}
+{% if quantity.value is not null and quantity.expUncertity is not null and quantity.thUncertity is not null%}
 <td colspan="3">
 <span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} value">{{quantity.value}}</span> &pm;
 <span class="tool" data-toggle="tooltip" data-original-title="{{quantity.name}} experimental Uncertity">{{quantity.expUncertity}}</span> &pm;

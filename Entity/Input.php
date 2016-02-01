@@ -275,7 +275,8 @@ class Input
      */
     public function getValue()
     {
-        return (float)$this->value;
+        //return (float)$this->value;
+        return $this->value;
     }
 
     /**

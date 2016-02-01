@@ -531,7 +531,7 @@ class Analysis
         $datacard .= '"'.$element->getName().'"';
         $datacard .= ',';
 
-        if( $element->getValue()== 0 and $element->getExpUncertity()==0 and $element->getThUncertity()==0) {
+        if( is_null($element->getValue()) and is_null($element->getExpUncertity()) and is_null($element->getThUncertity()) ) {
           #$datacard .= $element->getCurrentTag();
           $datacard .= '"'.$element->getCurrentTag().'"';
         } else {
