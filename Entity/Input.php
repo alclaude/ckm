@@ -50,9 +50,9 @@ class Input
     /**
      * @var float
      *
-     * @ORM\Column(name="value", type="float", nullable=false)
+     * @ORM\Column(name="value", type="float", nullable=true)
      */
-    private $value=0;
+    private $value;
 
     /**
      * @var float
@@ -71,17 +71,17 @@ class Input
     /**
      * @var float
      *
-     * @ORM\Column(name="exp_uncertity", type="float", nullable=false)
+     * @ORM\Column(name="exp_uncertity", type="float", nullable=true)
      */
-    private $expUncertity=0;
+    private $expUncertity;
 
 
     /**
      * @var float
      *
-     * @ORM\Column(name="th_uncertity", type="float", nullable=false)
+     * @ORM\Column(name="th_uncertity", type="float", nullable=true)
      */
-    private $thUncertity=0;
+    private $thUncertity;
 
     /**
      * @var boolean
