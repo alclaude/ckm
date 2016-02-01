@@ -1136,9 +1136,9 @@ die('die');
           //$em->persist($observable);
           $tmp = $request->request->get($form1->getName());
 
-          $input->setValue( 0 );
-          $input->setExpUncertity( 0 );
-          $input->setThUncertity( 0 );
+          $input->setValue( null );
+          $input->setExpUncertity( null );
+          $input->setThUncertity( null );
 
           $em->persist( $input );
           $em->flush();
