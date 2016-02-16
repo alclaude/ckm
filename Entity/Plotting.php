@@ -86,6 +86,20 @@ class Plotting
       $this->numberOfPlot = -1;
     }
 
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('title', new Assert\Regex(array(
+            'pattern' => '/[^a-zA-Z0-9 _-]/',
+            'match'   => false,
+            'message' => "Title' name contains a forbidden character",
+        )));
+        $metadata->addPropertyConstraint('nickname', new Assert\Regex(array(
+            'pattern' => '/[^a-zA-Z0-9 _-]/',
+            'match'   => false,
+            'message' => "Nickname' name contains a forbidden character",
+        )));
+    }
+
     /**
      * Get id
      *
