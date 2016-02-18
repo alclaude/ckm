@@ -540,6 +540,18 @@ class AnalysisController extends Controller
           ->getRepository('CKMAppBundle:Input')
           ->findTargetByAnalysis( $analyse->getId() );
 
+      # find root notation target
+      $rootTargets = array();
+      foreach( $targets as $target )
+      {
+        $name = $target->getLatex()->getName();
+
+        if($target->getLatex()->getRoot())
+          $rootTargets[] = $target->getLatex()->getRoot();
+        else
+          $rootTargets[] = $name;
+      }
+
       $observables= $this->getDoctrine()
           ->getRepository('CKMAppBundle:Observable')
           ->findByObservableAnalysis( $analyse->getId() );
@@ -567,7 +579,7 @@ class AnalysisController extends Controller
 
       $em = $this->getDoctrine()
                  ->getManager();
-      $analyse->setDatacard($observables, $parameters, $targets, $nickname, $title);
+      $analyse->setDatacard($observables, $parameters, $targets, $rootTargets, $nickname, $title);
       $em->persist($analyse);
       $em->flush();
     }

@@ -318,15 +318,15 @@ class Analysis
      * @param string $datacard
      * @return Analysis
      */
-    public function setDatacard($observables, $parameters, $targets, $nickname='__NO__NICKNAME__', $title='__NO__TITLE__' )
+    public function setDatacard($observables, $parameters, $targets, $rootTargets, $nickname='__NO__NICKNAME__', $title='__NO__TITLE__' )
     {
         #$this->datacard = $datacard;
-        $this->datacard = $this->initDatacard($observables, $parameters, $targets, $nickname, $title);
+        $this->datacard = $this->initDatacard($observables, $parameters, $targets, $rootTargets, $nickname, $title);
 
         return $this;
     }
 
-    private function initDatacard($observables, $parameters, $targets, $nickname, $title)
+    private function initDatacard($observables, $parameters, $targets, $rootTargets, $nickname, $title)
     {
       #$this->datacard = $datacard;
 
@@ -423,7 +423,7 @@ class Analysis
       $datacard .= '"'.$title.'",';
       $datacard .= $rl.$rl;
 
-      $datacard .= $this->writeTargets($targets,$rl);
+      $datacard .= $this->writeTargets($targets, $rootTargets, $rl);
 
       $datacard .= $this->getGranularity();
       $datacard .= $rl;
@@ -467,18 +467,28 @@ class Analysis
       return $tag;
     }
 
-    private function writeTargets($targets,$rl) {
+    private function writeTargets($targets, $rootTargets, $rl) {
       $target1=$targets[0];
+      $rootTarget1=$rootTargets[0];
 
       if(isset($targets[1]) ) {
         $target2=$targets[1];
+        $rootTarget2=$rootTargets[1];
         if($target2->getIsAbscissa() ) {
           $target2=$targets[0];
           $target1=$targets[1];
+          $rootTarget2=$rootTargets[0];
+          $rootTarget1=$rootTargets[1];
         }
       }
 
-      $datacard  = '{';
+      # notation root des target juste apres le plot title
+      $datacard  = '"'.$rootTarget1.'"'.$rl.$rl;
+      if(isset($rootTargets[1]) ) {
+        $datacard  .= '"'.$rootTarget2.'"'.$rl.$rl;
+      }
+
+      $datacard .= '{';
       $datacard .= '"'.$target1->getName().'"';
       if(isset($targets[1]) ) {
         $datacard .= ', "'.$target2->getName().'"';
