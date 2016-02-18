@@ -37,6 +37,12 @@ class Latex
      */
     private $latex;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="root", type="string", length=255, nullable=true)
+     */
+    private $root;
 
     /**
      * Get id
@@ -92,5 +98,28 @@ class Latex
     public function getLatex()
     {
       return $this->latex;
+    }
+
+    /**
+     * Set root
+     *
+     * @param string $root
+     * @return Latex
+     */
+    public function setRoot($root)
+    {
+        $this->root = $root;
+
+        return $this;
+    }
+
+    /**
+     * Get root
+     *
+     * @return string 
+     */
+    public function getRoot()
+    {
+        return $this->root;
     }
 }

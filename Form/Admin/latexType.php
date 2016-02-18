@@ -21,6 +21,9 @@ class latexType extends AbstractType
           ->add('latex', 'text', array(
               'attr' => array('class' => 'form-control'),
             ))
+            ->add('root', 'text', array(
+              'attr' => array('class' => 'form-control'),
+            ))
           //->add('associatedElement')
         ;
     }
