@@ -483,10 +483,11 @@ class Analysis
       }
 
       # notation root des target juste apres le plot title
-      $datacard  = '"'.$rootTarget1.'"'.$rl.$rl;
+      $datacard  = '{"'.$rootTarget1.'"';
       if(isset($rootTargets[1]) ) {
-        $datacard  .= '"'.$rootTarget2.'"'.$rl.$rl;
+        $datacard  .= ',"'.$rootTarget2.'"';
       }
+      $datacard .= '},'.$rl.$rl;
 
       $datacard .= '{';
       $datacard .= '"'.$target1->getName().'"';
