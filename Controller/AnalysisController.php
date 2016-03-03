@@ -491,7 +491,19 @@ class AnalysisController extends Controller
             }
           }
 
-          $analyse->setDatacard( $observablesInputForPrintDatacard, $all_ar_parameters, $targets );
+          # find root notation target
+          $rootTargets = array();
+          foreach( $targets as $target )
+          {
+            $name = $target->getLatex()->getName();
+
+            if($target->getLatex()->getRoot())
+              $rootTargets[] = $target->getLatex()->getRoot();
+            else
+              $rootTargets[] = $name;
+          }
+
+          $analyse->setDatacard( $observablesInputForPrintDatacard, $all_ar_parameters, $targets, $rootTargets );
 
           #$analyse = print_r($analyse,true);
           #die('debbug <pre>'.$analyse .'</pre>');
