@@ -39,19 +39,26 @@ class administrationController extends Controller
       throw new AccessDeniedHttpException('no credentials for this action');
     }
 
-    $scenarios = $this->getDoctrine()
+    /*$scenarios = $this->getDoctrine()
           ->getRepository('CKMAppBundle:Scenario')
-          ->findAll();
+          ->findAll();*/
 
+    $activeScenarios = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Scenario')
+          ->findScenarioByActivated();
+
+    $notActiveScenarios = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Scenario')
+          ->findScenarioByNotActivated();
 
     return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
       'tab'=>$tab,
       'error'=>$error,
-      'scenarios'=>$scenarios,
+      'activeScenarios'=>$activeScenarios,
+      'notActiveScenarios'=>$notActiveScenarios,
     ));
   }
-  
-  
+
   public function addQuantityAction($scenario=0) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
