@@ -44,7 +44,7 @@ class AchievementPlottingCommand extends ContainerAwareCommand
       #\Doctrine\Common\Util\Debug::dump($analysisToFinalize);
 
       if ( ! $analysisToFinalize) {
-          exit("Bad analysis Id: $ID - $nameFileDat");
+          exit("Bad analysis Id: $ID - $nameFilePlot");
       } 
       
       $user = $analysisToFinalize->getUser();
@@ -99,15 +99,15 @@ class AchievementPlottingCommand extends ContainerAwareCommand
                   $em->getManager()->flush();
                   
                   # envoi du mail
-                  /*$message = \Swift_Message::newInstance()
+                  $message = \Swift_Message::newInstance()
                       ->setSubject('incoming result analysis '.$nameFileDat)
                       #->setFrom('ckmliveweb@gmail.com')
                       ->setFrom( array( 'ckmliveweb@in2p3.fr' => 'CKM Live Web' ) )
                       ->setTo($user->getEmail())
-                      ->setBody($template->render('CKMUserBundle:Mail:resultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat ) ) )
+                      ->setBody($template->render('CKMUserBundle:Mail:plotNotification.txt.twig', array('user' => $user->getName(), 'plot' => $nameFilePlot ) ) )
                   ;
                   $mail->send($message);
-                  
+                  /*
                   # in case of bad result, admin are warned
                   if( preg_match('/overtime\.dat/', $nameFileDat, $matches) or
                       preg_match('/error\.dat/',    $nameFileDat, $matches) ) {

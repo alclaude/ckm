@@ -29,8 +29,8 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
            
       if ( ! $ID or ! $nameFileDat) {
           exit("no ID or pathDat given");
-      } 
-      
+      }
+
       ## start
       $em = $this->getContainer()->get('doctrine');
       $template = $this->getContainer()->get('templating');
@@ -62,14 +62,24 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
             $analysisToFinalize->setStatus(4);
             $em->getManager()->persist( $analysisToFinalize );
             $em->getManager()->flush();
-            
+
+            $notifPlotting = '';
+
+            if($plotting = $em->getRepository('CKMAppBundle:Plotting')
+                  ->findLastPlottingByAnalysis($ID)
+            ){
+              if(!$plotting->getPathEps()){
+                $notifPlotting = "The requested plot coming soon";
+              }
+            }
+
             # envoi du mail
             $message = \Swift_Message::newInstance()
                 ->setSubject('incoming result analysis '.$nameFileDat)
                 #->setFrom('ckmliveweb@gmail.com')
                 ->setFrom( array( 'ckmliveweb@in2p3.fr' => 'CKM Live Web' ) )
                 ->setTo($user->getEmail())
-                ->setBody($template->render('CKMUserBundle:Mail:resultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat ) ) )
+                ->setBody($template->render('CKMUserBundle:Mail:resultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat, 'notifPlotting' => $notifPlotting) ) )
             ;
             $mail->send($message);
             
