@@ -71,9 +71,13 @@ class ToPlotCommand extends ContainerAwareCommand
                   //$analysisFile = $plotDir.'.toplot/'.$analysis->getName().'.dat';
                   // create file .dat with format title____nickname____scenario-tag____dimension.dat
                   $analysisFile = $plotDir.'.toplot/'.$plotToRun->getTitle().'____'.$plotToRun->getNickname().'____'.$analysis->getScenario()->getTag().'____'.$analysis->getScanConstraint().'.dat';
-                  echo $analysisFile."\n";
+
                   $fs->touch($analysisFile);
-                  file_put_contents( $analysisFile, $analysis->getResultDat() );
+                  $result=$analysis->getResultDat();
+                  $result = preg_replace("#__NO__TITLE__#", $plotToRun->getTitle(),$result);
+                  $result = preg_replace("#__NO__NICKNAME__#", $plotToRun->getNickname(),$result);
+
+                  file_put_contents( $analysisFile, $result );
                 }
               }
             }
