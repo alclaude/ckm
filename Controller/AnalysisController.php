@@ -1628,7 +1628,7 @@ die('die');
   
       $pathBase = $this->container->getParameter('result_path_plotting');
       
-      $path=$pathBase.$analyse->getId()."/plot".$numberOfPlot.".toplot/".$plotNameExtension;
+      $path=$pathBase.$analyse->getId().".endplot/plot".$numberOfPlot.".toplot/".$plotNameExtension;
 #echo $path."<br />";
 #echo getcwd();
       #$answers = readFile($path);
