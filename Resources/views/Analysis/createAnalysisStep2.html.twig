@@ -29,7 +29,7 @@ Analysis - <small> {{ message }} </small>
 {% endfor %}
 
 <div class="row">
-  <div class="col-lg-8">
+  <div class="col-sm-12">
     <div class="alert alert-info">
     <p>Each step will help you to define the elements of your analysis. If you have already completed one step but change your mind, please do not use the “Back” feature of your browser. Instead, keep on following the steps up to the summary of your analysis, where you will be able to modify the information already provided, if necessary.</p>
       
@@ -42,7 +42,7 @@ Analysis - <small> {{ message }} </small>
 </div>
 
 <div class="row">
-  <div class="col-lg-8">
+  <div class="col-sm-12">
     <div class="well">
      Information on this scenario (including the default input values) can be found on the <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario':scenario, 'input': 0, 'tab':'input' }) }}" target="_blank"><strong> {{ scenarioName }} documentation page</strong> </a>     
     </div>
@@ -50,12 +50,11 @@ Analysis - <small> {{ message }} </small>
 </div>
 
 <div class="row">  
-  <div class="col-sm-8">
+  <div class="col-sm-12">
 
     <form role="form" method="post" {{ form_enctype(form) }}>
 
       <div class="form-group">
-
 
         <div class="col-sm-6">
             {{ form_errors(form.targetObservable) }}
@@ -71,6 +70,8 @@ Analysis - <small> {{ message }} </small>
         </div>
 
         <div class="col-sm-5">
+            <div id="target-range-warning" >
+            </div>
             {{ form_errors(form.scanMin1) }}
             {{ form_label(form.scanMin1) }}&nbsp;<span id="target12"></span>
             {{ form_widget(form.scanMin1) }}
@@ -80,6 +81,8 @@ Analysis - <small> {{ message }} </small>
             {{ form_widget(form.scanMax1) }}
 
             {% if constraint==2 %}
+              <br /><div id="target-range-warning2" >
+              </div>
               {{ form_errors(form.scanMin2) }}
               {{ form_label(form.scanMin2) }}&nbsp;<span id="target22"></span>
               {{ form_widget(form.scanMin2) }}
@@ -122,4 +125,72 @@ Analysis - <small> {{ message }} </small>
     $("#target21").text('('+array[1]+')');
     $("#target22").text('('+array[1]+')');
    });
+
+/* check target range */
+
+var checktarget1 = function(whichTarget){
+  var $target, $scanMaxTarget, $scanMinTarget, placement;
+  if(whichTarget=="target1"){
+    target = $("option:selected").map(function(){ return this.value }).get()[0];
+    scanMaxTarget = $("#ckm_appbundle_analysis_step2_scanMax1").val();
+    scanMinTarget = $("#ckm_appbundle_analysis_step2_scanMin1").val();
+    placement="target-range-warning";
+  }
+  else if(whichTarget=="target2"){
+    target = $("option:selected").map(function(){ return this.value }).get()[1];
+    scanMaxTarget = $("#ckm_appbundle_analysis_step2_scanMax2").val();
+    scanMinTarget = $("#ckm_appbundle_analysis_step2_scanMin2").val();
+    placement="target-range-warning2";
+  }
+  else{
+    console.log("no param");
+  }
+
+    if(!(target!="" && scanMaxTarget!="" && scanMinTarget!="") || !(target!=null)){
+      //console.log('log : '+target+" "+scanMaxTarget+" "+scanMinTarget);
+      return ;
+    }
+
+    var data = {
+        target1:target,
+        scanMaxTarget1: scanMaxTarget,
+        scanMinTarget1: scanMinTarget
+    };
+    checktarget(data).done(function( data ) {
+        var data = JSON.parse(data[0]);
+        //console.log(data);
+        var $msg =  '<div id="'+placement+'" class="alert alert-warning">Range for '+
+                    data.target+
+                    ' is between '+
+                    data.targetValue[0]+
+                    ' and '+
+                    data.targetValue[1]+
+                    '</div>';
+        $( "#"+placement ).replaceWith( $msg );
+    })
+  };
+
+  function checktarget(data) {
+    return  $.ajax({
+        type: 'post',
+        url: '{{ path("check_target_range", {'test': 'data', 'scenarioId':scenario}) }}',
+        data: data,
+        dataType : "json",
+    })
+    .fail(function( xhr, status, errorThrown ) {
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+    })
+  }
+
+  $("#ckm_appbundle_analysis_step2_scanMax1").on("change",function() { checktarget1("target1") } );
+  $("#ckm_appbundle_analysis_step2_scanMin1").on("change",function() { checktarget1("target1") } ) ;
+  $("select[name='ckm_appbundle_analysis_step2[targetObservable][]']").on("change",function() { checktarget1("target1") } );
+  $("select[name='ckm_appbundle_analysis_step2[targetParameter][]']").on("change",function() { checktarget1("target1") } );
+
+  $("#ckm_appbundle_analysis_step2_scanMax2").on("change",function() { checktarget1("target2") } );
+  $("#ckm_appbundle_analysis_step2_scanMin2").on("change",function() { checktarget1("target2") } ) ;
+  $("select[name='ckm_appbundle_analysis_step2[targetObservable][]']").on("change",function() { checktarget1("target2") } );
+  $("select[name='ckm_appbundle_analysis_step2[targetParameter][]']").on("change",function() { checktarget1("target2") } );
 {% endblock %}

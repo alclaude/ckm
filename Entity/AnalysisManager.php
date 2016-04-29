@@ -4,6 +4,7 @@ namespace CKM\AppBundle\Entity;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AnalysisManager
 {
@@ -118,6 +119,32 @@ class AnalysisManager
 
     $this->em->remove($analyse);
     $this->em->flush();
+  }
+
+  public function checkTargetScanValueInScenario($path, $target ) {
+    if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
+        // Sinon on déclenche une exception « Accès interdit »
+        throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    if ($path=='' or $target=='') {
+      throw new \Exception('path or target not defined');
+    }
+
+    $data = file_get_contents($path) or die("fichier non trouv&eacute;");
+    $lines = explode("\n", $data);
+    $new_line = "^\n$" ;
+    $observablePattern =  '/^'.preg_quote( $target, '/' ).'/';
+    // info input
+    $tmp_ar_obs = array();
+    // recherche des elements de l input
+    foreach($lines as $line) {
+      if( ! preg_match("/$new_line/", $line) ) {
+        if( preg_match($observablePattern, $line) ) {
+          return explode(';',$line);
+        }
+      }
+    }
+    return false;
   }
 
 }

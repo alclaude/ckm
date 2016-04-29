@@ -98,6 +98,9 @@ CKMAppBundle_analyse_create_analyse_copy:
 select_scenario:
     pattern:  /scenarios
     defaults: { _controller: CKMAppBundle:Analysis:scenarios}
+check_target_range:
+    pattern:  /check-target-range/{scenarioId}
+    defaults: { _controller: CKMAppBundle:Analysis:checkTargetRange}
 ## pages administration
 CKMAppBundle_administration_datacard_add:
     pattern:  /administration/datacard/add

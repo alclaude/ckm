@@ -1528,6 +1528,24 @@ die('die');
     /*
      * Teste et retourne l existance d une analyse
      */
+    public function getScenario($id) {
+      $em = $this->getDoctrine()
+                 ->getManager();
+
+      $scenario = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Scenario')
+        ->findOneById($id);
+
+      if (!$scenario) {
+        #throw $this->createNotFoundException('analyse not exist');
+        throw new HttpException(404, "scenario not exist");
+      }
+      return $scenario;
+    }
+
+    /*
+     * Teste et retourne l existance d une analyse
+     */
     public function getAnalysis($id) {
       $em = $this->getDoctrine()
                  ->getManager();
@@ -1610,6 +1628,42 @@ die('die');
 
         $serializer = new Serializer($normalizers, $encoders);
         $jsonContent = $serializer->serialize($scenariosArray, 'json');
+
+        $response = new Response(json_encode(array( $jsonContent )));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    public function checkTargetRangeAction(Request $request, $scenarioId)
+    {
+        $target = $request->request->get('target1');
+        $scanMaxTarget1 = $request->request->get('scanMaxTarget1');
+        $scanMinTarget1 = $request->request->get('scanMinTarget1');
+
+        $check=array(
+              'scanMaxTarget1' => $scanMaxTarget1,
+              'scanMinTarget1' => $scanMinTarget1,
+              'target' => $target,
+              'scenario' => $scenarioId,
+        );
+
+        $scenario = $this->getScenario($scenarioId);
+        $targetValue = $this->get('CKM.services.analysisManager')->checkTargetScanValueInScenario($scenario->getWebPath(), $target);
+
+        $check['targetValue'] =  array($targetValue[2] , $targetValue[3] );
+
+        if($scanMaxTarget1<=$targetValue[3] and  $scanMinTarget1>=$targetValue[2])
+          $check['check'] = 'OK';
+        else
+          $check['check'] = 'KO';
+
+        $em = $this->getDoctrine()->getManager();
+
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($check, 'json');
 
         $response = new Response(json_encode(array( $jsonContent )));
         $response->headers->set('Content-Type', 'application/json');
