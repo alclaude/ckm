@@ -129,32 +129,26 @@ Analysis - <small> {{ message }} </small>
 /* check target range */
 
 var checktarget1 = function(whichTarget){
-  var $target, $scanMaxTarget, $scanMinTarget, placement;
+  var $target, placement;
   if(whichTarget=="target1"){
     target = $("option:selected").map(function(){ return this.value }).get()[0];
-    scanMaxTarget = $("#ckm_appbundle_analysis_step2_scanMax1").val();
-    scanMinTarget = $("#ckm_appbundle_analysis_step2_scanMin1").val();
     placement="target-range-warning";
   }
   else if(whichTarget=="target2"){
     target = $("option:selected").map(function(){ return this.value }).get()[1];
-    scanMaxTarget = $("#ckm_appbundle_analysis_step2_scanMax2").val();
-    scanMinTarget = $("#ckm_appbundle_analysis_step2_scanMin2").val();
     placement="target-range-warning2";
   }
   else{
     console.log("no param");
   }
 
-    if(!(target!="" && scanMaxTarget!="" && scanMinTarget!="") || !(target!=null)){
+    if(!(target!="") || !(target!=null)){
       //console.log('log : '+target+" "+scanMaxTarget+" "+scanMinTarget);
       return ;
     }
 
     var data = {
         target1:target,
-        scanMaxTarget1: scanMaxTarget,
-        scanMinTarget1: scanMinTarget
     };
     checktarget(data).done(function( data ) {
         var data = JSON.parse(data[0]);
@@ -184,13 +178,9 @@ var checktarget1 = function(whichTarget){
     })
   }
 
-  $("#ckm_appbundle_analysis_step2_scanMax1").on("change",function() { checktarget1("target1") } );
-  $("#ckm_appbundle_analysis_step2_scanMin1").on("change",function() { checktarget1("target1") } ) ;
   $("select[name='ckm_appbundle_analysis_step2[targetObservable][]']").on("change",function() { checktarget1("target1") } );
   $("select[name='ckm_appbundle_analysis_step2[targetParameter][]']").on("change",function() { checktarget1("target1") } );
 
-  $("#ckm_appbundle_analysis_step2_scanMax2").on("change",function() { checktarget1("target2") } );
-  $("#ckm_appbundle_analysis_step2_scanMin2").on("change",function() { checktarget1("target2") } ) ;
   $("select[name='ckm_appbundle_analysis_step2[targetObservable][]']").on("change",function() { checktarget1("target2") } );
   $("select[name='ckm_appbundle_analysis_step2[targetParameter][]']").on("change",function() { checktarget1("target2") } );
 {% endblock %}

@@ -1637,12 +1637,8 @@ die('die');
     public function checkTargetRangeAction(Request $request, $scenarioId)
     {
         $target = $request->request->get('target1');
-        $scanMaxTarget1 = $request->request->get('scanMaxTarget1');
-        $scanMinTarget1 = $request->request->get('scanMinTarget1');
 
         $check=array(
-              'scanMaxTarget1' => $scanMaxTarget1,
-              'scanMinTarget1' => $scanMinTarget1,
               'target' => $target,
               'scenario' => $scenarioId,
         );
@@ -1651,11 +1647,6 @@ die('die');
         $targetValue = $this->get('CKM.services.analysisManager')->checkTargetScanValueInScenario($scenario->getWebPath(), $target);
 
         $check['targetValue'] =  array($targetValue[2] , $targetValue[3] );
-
-        if($scanMaxTarget1<=$targetValue[3] and  $scanMinTarget1>=$targetValue[2])
-          $check['check'] = 'OK';
-        else
-          $check['check'] = 'KO';
 
         $em = $this->getDoctrine()->getManager();
 
