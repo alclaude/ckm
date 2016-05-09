@@ -41,6 +41,7 @@
       {% for tar_obs in target_and_observable %}
         <div class="panel-body">
           {{ tar_obs.latex.latex }}  is both a target and a input...
+          {{ render(controller('CKMAppBundle:Analysis:removeInputValueOfTheTarget', {'analyse': analyse.id, 'target': tar_obs.id} )) }}
         </div>
       {% endfor %}
     </div>

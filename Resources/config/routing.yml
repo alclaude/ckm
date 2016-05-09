@@ -101,6 +101,9 @@ select_scenario:
 check_target_range:
     pattern:  /check-target-range/{scenarioId}
     defaults: { _controller: CKMAppBundle:Analysis:checkTargetRange}
+CKMAppBundle_analyse_remove_input_target:
+    pattern:  /analysis/input/removeInputInTarget/{analyse}/{target}
+    defaults: { _controller: CKMAppBundle:Analysis:removeInputValueOfTheTarget,target:0 }
 ## pages administration
 CKMAppBundle_administration_datacard_add:
     pattern:  /administration/datacard/add

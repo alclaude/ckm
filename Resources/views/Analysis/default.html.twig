@@ -1,0 +1,7 @@
+{# src/Blogger/BlogBundle/Resources/views/Analysis/index.html.twig #}
+{% block content %}
+    <form role="form" action="{{ path(route, { (param1): value1, (param2): value2, } ) }}" method="post" {{ form_enctype(form) }}>
+      {{ form_widget(form) }}
+      {{ form_rest(form) }}
+    </form>
+{% endblock %}

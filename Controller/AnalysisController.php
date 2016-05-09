@@ -1753,5 +1753,63 @@ die('die');
           ));
           return new Response('export datacardDocumentationAction');
     }
+
+    public function removeInputValueOfTheTargetAction(Request $request, $analyse=0, $target=0){
+      $this->isGranted('ROLE_ANALYSIS');
+
+      $analyse = $this->getAnalysis($analyse);
+
+      if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
+        throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
+      }
+
+    $request = $this->getRequest();
     
+    $target = $this->getDoctrine()
+        ->getRepository('CKMAppBundle:Input')
+        ->findOneById($target);
+    
+    // faire l eform sur la target = un input
+    $form = $this->createFormBuilder($target)
+            ->add('token', 'hidden',array(
+                'mapped'           => false,
+            ))
+            ->add('remove as input',
+                  'submit',
+                    array(
+                        'attr' => array('class' => 'btn btn-warning right btn-sm'),
+                        )
+                  )
+            ->getForm();
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+
+
+
+        //$em->persist( $scenario );
+        //$em->flush();
+        
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
+                    array( 'analyse' => $analyse->getId() )
+                )
+        );
+      }
+
+    }
+    return $this->render('CKMAppBundle:Analysis:default.html.twig', array(
+      'form' => $form->createView(),
+      'route'=>'CKMAppBundle_analyse_remove_input_target',
+      'param1'=> 'analyse',
+      'param2'=>'target',
+      'value1'=>$analyse->getId(),
+      'value2'=>$target->getId(),
+    ));
+
+      return new Response('in removeInputValueOfTheTargetAction '.$analyse->getId().' -' .$target.' ');
+    }
+
 }
