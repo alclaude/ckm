@@ -1768,13 +1768,16 @@ die('die');
     $target = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Input')
         ->findOneById($target);
-    
-    // faire l eform sur la target = un input
+
+    $msgBtn = '';
+    if(!$target->getRemoveAsInput()) $msgBtn = 'Remove ';
+    else $msgBtn = 'Replace ';
+
     $form = $this->createFormBuilder($target)
             ->add('token', 'hidden',array(
                 'mapped'           => false,
             ))
-            ->add('remove as input',
+            ->add( $msgBtn.'as input',
                   'submit',
                     array(
                         'attr' => array('class' => 'btn btn-warning right btn-sm'),
@@ -1787,10 +1790,14 @@ die('die');
       if ($form->isValid()) {
         $em = $this->getDoctrine()->getManager();
 
+          if(!$target->getRemoveAsInput()) {
+            $target->setRemoveAsInput(true);
+          } else {
+            $target->setRemoveAsInput(false);
+          }
 
-
-        //$em->persist( $scenario );
-        //$em->flush();
+        $em->persist( $target );
+        $em->flush();
         
         return $this->redirect(
                 $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',

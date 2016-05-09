@@ -98,6 +98,13 @@ class Input
     private $isInput=true;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="remove_as_input", type="boolean")
+     */
+    private $removeAsInput=false;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="scan_max", type="float")
@@ -583,5 +590,28 @@ class Input
     public function getIsAbscissa()
     {
         return $this->isAbscissa;
+    }
+
+    /**
+     * Set removeAsInput
+     *
+     * @param boolean $removeAsInput
+     * @return Input
+     */
+    public function setRemoveAsInput($removeAsInput)
+    {
+        $this->removeAsInput = $removeAsInput;
+
+        return $this;
+    }
+
+    /**
+     * Get removeAsInput
+     *
+     * @return boolean
+     */
+    public function getRemoveAsInput()
+    {
+        return $this->removeAsInput;
     }
 }
