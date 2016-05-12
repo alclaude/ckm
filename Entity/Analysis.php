@@ -490,9 +490,16 @@ class Analysis
       $datacard .= '},'.$rl.$rl;
 
       $datacard .= '{';
-      $datacard .= '"'.$target1->getName().'"';
+      $datacard .= '"';
+
+      if($target1->getRemoveAsInput()) $datacard .= '!';
+
+      $datacard .= $target1->getName().'"';
       if(isset($targets[1]) ) {
-        $datacard .= ', "'.$target2->getName().'"';
+        $datacard .= ', "';
+        if($target2->getRemoveAsInput()) $datacard .= '!';
+
+        $datacard .= $target2->getName().'"';
       }
       $datacard  .= '},';
 
