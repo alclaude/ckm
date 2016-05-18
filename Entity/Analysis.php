@@ -504,16 +504,16 @@ class Analysis
       $datacard  .= '},';
 
       $datacard  .= ' {';
-      $datacard .= $target1->getScanMin();
+      $datacard .= $this->floatNumber($target1->getScanMin());
       if(isset($targets[1]) ) {
-        $datacard .= ', '.$target2->getScanMin();
+        $datacard .= ', '.$this->floatNumber($target2->getScanMin());
       }
       $datacard  .= '},';
 
       $datacard  .= ' {';
-      $datacard .= $target1->getScanMax();
+      $datacard .= $this->floatNumber($target1->getScanMax());
       if(isset($targets[1]) ) {
-        $datacard .= ', '.$target2->getScanMax();
+        $datacard .= ', '.$this->floatNumber($target2->getScanMax());
       }
       $datacard  .= '},';
 
@@ -555,16 +555,32 @@ class Analysis
           #$datacard .= $element->getCurrentTag();
           $datacard .= '"'.$element->getCurrentTag().'"';
         } else {
-          $datacard .= $element->getValue();
+          $datacard .= $this->floatNumber($element->getValue());
           $datacard .= ',';
-          $datacard .= $element->getExpUncertity();
+          $datacard .= $this->floatNumber($element->getExpUncertity());
           $datacard .= ',';
-          $datacard .= $element->getThUncertity();
+          $datacard .= $this->floatNumber($element->getThUncertity());
         }
         $datacard .= '}';
         $datacard .= ',';
         $datacard .= $rl.$rl;
         return $datacard;
+    }
+
+    public function floatNumber($number,$decimal = '.')
+    {
+      if($number==0) return $number;
+
+      $scale = $this->countDecimals($number);
+      return  rtrim(sprintf('%.'.$scale.'F', $number), '0');
+    }
+
+    function countDecimals($fNumber)
+    {
+        $fNumber = floatval($fNumber);
+        for ( $iDecimals = 0; $fNumber != round($fNumber, $iDecimals); $iDecimals++ );
+
+        return $iDecimals;
     }
 
     /**
