@@ -35,7 +35,7 @@ class AnalysisStep4Type extends AbstractType
              */
        ->add('nickname', 'text', array(
           'attr' => array('class' => 'form-control', 'maxlength'=>8),
-          'label'  => 'Please enter a nickname to appear on the plot of the result',
+          'label'  => 'Please enter a nickname to appear as CKMlive by nickname',
           
         ))
        ->add('title', 'text', array(

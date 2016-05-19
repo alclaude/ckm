@@ -1777,7 +1777,7 @@ die('die');
             ->add('token', 'hidden',array(
                 'mapped'           => false,
             ))
-            ->add( $msgBtn.'as input',
+            ->add( $msgBtn.'its input value',
                   'submit',
                     array(
                         'attr' => array('class' => 'btn btn-warning right btn-sm'),

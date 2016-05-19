@@ -66,7 +66,7 @@ Analysis - <small> {{ message }} </small>
             {{ form_widget(form.targetParameter) }}
 <br />
           <a class="btn btn-danger" href="{{ path('CKMAppBundle_analyse_create_analyse_remove', {'analyse': analyse}) }}"><i class="glyphicon glyphicon-remove"></i> Cancel Analysis</a>
-          <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Submit</button>
+          <button class="btn btn-primary" type="submit" ><i class="glyphicon glyphicon-ok"></i>  &nbsp;Continue</button>
         </div>
 
         <div class="col-sm-5">
@@ -108,7 +108,7 @@ Analysis - <small> {{ message }} </small>
 
 {% block document_ready %}
     {{ parent() }}
-   $("select[name='ckm_appbundle_analysis_step2[targetObservable][]']").change( function() // lorsqu'un nouveau fournisseur est sélectionné
+   $("select[name='ckm_appbundle_analysis_step2[targetObservable][]']").change( function()
    {
     var array =  $("option:selected").map(function(){ return this.value }).get() ;
     $("#target11").text('('+array[0]+')');
@@ -117,7 +117,7 @@ Analysis - <small> {{ message }} </small>
     $("#target22").text('('+array[1]+')');
    });
 
-   $("select[name='ckm_appbundle_analysis_step2[targetParameter][]']").change( function() // lorsqu'un nouveau fournisseur est sélectionné
+   $("select[name='ckm_appbundle_analysis_step2[targetParameter][]']").change( function()
    {
     var array =  $("option:selected").map(function(){ return this.value }).get() ;
     $("#target11").text('('+array[0]+')');
@@ -153,9 +153,9 @@ var checktarget1 = function(whichTarget){
     checktarget(data).done(function( data ) {
         var data = JSON.parse(data[0]);
         //console.log(data);
-        var $msg =  '<div id="'+placement+'" class="alert alert-warning">Range for '+
+        var $msg =  '<div id="'+placement+'" class="alert alert-warning">A meaningful range for '+
                     data.target+
-                    ' is between '+
+                    ' can be between '+
                     data.targetValue[0]+
                     ' and '+
                     data.targetValue[1]+
