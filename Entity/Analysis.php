@@ -569,7 +569,8 @@ class Analysis
 
     public function floatNumber($number,$decimal = '.')
     {
-      if($number==0) return $number;
+      //if($number==0) return $number;
+      if(is_numeric($number)&&(intval($number)==floatval($number))) return $number;
 
       $scale = $this->countDecimals($number);
       return  rtrim(sprintf('%.'.$scale.'F', $number), '0');
