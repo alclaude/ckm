@@ -713,10 +713,11 @@ class AnalysisController extends Controller
       $em->persist($analyse);
       $em->flush();
 
-      #$this->get('session')->getFlashBag()->add(
-      #      'success',
-      #      'Your analysis ['.  $analyse->getId() .'] have been run'
-      #);
+      $this->get('session')->getFlashBag()->add(
+            'success',
+            'Your analysis ['.  $analyse->getId() .'] - "'.$analyse->getName() .'" has been submitted. You will soon receive an email notification informing you of the end of its execution.
+            '
+      );
 
       return $this->redirect(
         /*$this->generateUrl('CKMAppBundle_analyse_create_analyse_source',

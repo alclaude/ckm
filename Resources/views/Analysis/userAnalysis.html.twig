@@ -12,13 +12,13 @@ Analysis - <small>List </small>
 {% block content %}
 
 <div class="col-sm-12">
-  {% for flashMessage in app.session.flashbag.get('information') %}
-      <div class="alert alert-success">
-              <h4>Success!</h4>
-              <p>{{ flashMessage }}</p>
-      </div>
-{% endfor %}
-
+  {% for type, flashMessages in app.session.flashbag.all() %}
+    {% for flashMessage in flashMessages %}
+        <div class="alert alert-{{ type }}">
+            <span class="label label-{{ type }}">{{ type }}</span> &nbsp;{{ flashMessage }}
+        </div>
+    {% endfor %}
+  {% endfor %}
 </div>
 
 {% if analysesbyuser is defined %}
