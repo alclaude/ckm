@@ -36,6 +36,7 @@ Administration - <small>Scenario & Model management</small>
         <li class="{{ tabData|raw }}" ><a data-toggle="tab" href="#scenario">Scenario</a></li>
         <li class="{{ tabLatex|raw }}" ><a data-toggle="tab" href="#inactive-scenario">Inactive scenario</a></li>
         <li class="{{ tabLatex|raw }}" ><a data-toggle="tab" href="#model"> Model</a></li>
+        <li class="{{ tabLatex|raw }}" ><a data-toggle="tab" href="#tag"> Tags</a></li>
       </ul>
 
       <div class="tab-content" id="myTabContent">
@@ -170,7 +171,12 @@ Administration - <small>Scenario & Model management</small>
 
         <div id="model" class="tab-pane {{ tabLatex|raw }} {{ tabLatexIn|raw }} fade" class="col-sm-8 ">
           {{ render(controller('CKMAppBundle:Administration:model')) }}
-        </div> <!-- end div latex-->
+        </div> <!-- end div model-->
+
+        <div id="tag" class="tab-pane {{ tabLatex|raw }} {{ tabLatexIn|raw }} fade" class="col-sm-8 ">
+          {{ render(controller('CKMAppBundle:Administration:tagInput')) }}
+        </div> <!-- end div tag-->
+
       </div> <!-- end div tab-content -->
     </div> <!-- end div tabs-->
   </div> <!-- div class="col-lg-8 " -->

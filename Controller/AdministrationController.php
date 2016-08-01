@@ -12,6 +12,7 @@ use CKM\AppBundle\Entity\ElementTarget;
 use CKM\AppBundle\Entity\Scenario;
 use CKM\AppBundle\Entity\Latex as Latex;
 use CKM\AppBundle\Entity\Model;
+use CKM\AppBundle\Entity\TagInput;
 use CKM\AppBundle\Entity\ScenarioDocumentation;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,6 +26,7 @@ use CKM\AppBundle\Form\ScenarioListType;
 use CKM\AppBundle\Form\DocumentationType;
 use CKM\AppBundle\Form\Admin\latexType;
 use CKM\AppBundle\Form\Admin\modelType;
+use CKM\AppBundle\Form\Admin\tagInputType;
 use CKM\AppBundle\Form\Admin\ScenarioExplainationType;
 use CKM\AppBundle\Form\Admin\addDatacardQuantityType;
 
@@ -1006,6 +1008,60 @@ class administrationController extends Controller
     );
   }
 
+  public function tagInputAction(Request $request) {
+    $tagInputs = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:TagInput')
+          ->findAll();
+
+    return $this->render('CKMAppBundle:Administration:tagInput.html.twig',
+      array(
+        'tagInputs'  => $tagInputs,
+      )
+    );
+  }
+
+  public function editTagInputAction($tagInput=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $request = $this->getRequest();
+
+    if ($tagInput==0) {
+      $tagInput = new TagInput();
+    }
+    else {
+      $tagInput = $this->getDoctrine()
+            ->getRepository('CKMAppBundle:TagInput')
+            ->findOneById($tagInput);
+    }
+    if (!$tagInput) {
+      throw $this->createNotFoundException('tagInput not exist');
+    }
+
+    $form = $this->createForm(new tagInputType, $tagInput);
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist( $tagInput );
+        $em->flush();
+
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard',
+                    array('tab'=>'tag')
+                )
+        );
+      }
+    }
+
+    return $this->render('CKMAppBundle:Administration:editModel.html.twig', array(
+      'form' => $form->createView(),
+      'kind'     => 'Tag Input'
+    ));
+  }
+
   public function editModelAction($model=0) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
@@ -1044,8 +1100,49 @@ class administrationController extends Controller
 
     return $this->render('CKMAppBundle:Administration:editModel.html.twig', array(
       'form' => $form->createView(),
+      'kind'     => 'Model'
     ));
 
+  }
+
+  public function deleteTagInputAction($tagInput=0) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    $request = $this->getRequest();
+
+    $tagInput = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:TagInput')
+          ->findOneById($tagInput);
+
+    if (!$tagInput) {
+      throw $this->createNotFoundException('tagInput not exist');
+    }
+
+    $tmp=$tagInput->getName();
+    $em = $this->getDoctrine()->getEntityManager();
+
+    try {
+        $em->remove($tagInput);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add(
+        'success',
+        'Tag input '.$tmp.' deleted with success'
+        );
+    } catch (\Exception $e) {
+    #} catch (\Doctrine\ORM\ORMException $e) {
+        $this->get('session')->getFlashBag()->add(
+            'danger',
+            'Impossible to delete '.$tmp.' cause it is still in use in one analysis : '.$e->getMessage()
+        );
+    }
+
+    return $this->redirect(
+          $this->generateUrl('CKMAppBundle_administration_datacard',
+                              array('tab' => 'tag')
+          )
+    );
   }
 
   public function deleteModelAction($model=0) {

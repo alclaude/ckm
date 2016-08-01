@@ -165,6 +165,16 @@ CKMAppBundle_administration_model_show:
 CKMAppBundle_administration_model_delete:
     pattern:  /administration/model/delete/{model}
     defaults: { _controller: CKMAppBundle:Administration:deleteModel}
+
+CKMAppBundle_administration_tag_input:
+    pattern:  /administration/tagInput
+    defaults: { _controller: CKMAppBundle:Administration:tagInput}
+CKMAppBundle_administration_tag_input_edit:
+    pattern:  /administration/taginput/edit/{tagInput}
+    defaults: { _controller: CKMAppBundle:Administration:editTagInput}
+CKMAppBundle_administration_tag_input_delete:
+    pattern:  /administration/taginput/delete/{tagInput}
+    defaults: { _controller: CKMAppBundle:Administration:deleteTagInput}
 ## test
 CKMAppBundle_test_datacard:
     pattern:  /administration/datacard/test/{analyse}
