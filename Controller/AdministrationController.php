@@ -83,14 +83,24 @@ class administrationController extends Controller
         
         $parameters=array();
         $observables=array();
+        list($observables, $error_obs)  = $this->cleanCSV($tmp['observables'], 6);
+        list($parameters, $error_param) = $this->cleanCSV($tmp['parameters'], 5);
+        
         if(isset($tmp['observables']) and !empty($tmp['observables'])) {
-          list($observables, $error_obs)  = $this->cleanCSV($tmp['observables'], 5);
           $missObs   = $this->get('CKM.services.analysisManager')->isInputsInScenario( $observables, $scenario );
         }
         if(isset($tmp['parameters']) and !empty($tmp['parameters'])) {
-          list($parameters, $error_param) = $this->cleanCSV($tmp['parameters'], 4);
           $missParam = $this->get('CKM.services.analysisManager')->isInputsInScenario( $parameters, $scenario );
         }
+
+        $checkNbOfElt = $this->get('CKM.services.analysisManager')
+                ->checkNumberEltInScenarioEdit($observables, $parameters,
+                                              $this->container->getParameter('nb_elt_by_observable_line'),
+                                              $this->container->getParameter('nb_elt_by_parameter_line')
+                                              );
+        $checkTagElt = $this->get('CKM.services.analysisManager')
+                      ->checkTagInputInScenarioEdit($observables, $parameters);
+                                              
 
         if ( (isset($error_obs) && count($error_obs)>0) or (isset($error_param) && count($error_param)>0) ) {
             $this->get('session')->getFlashBag()->add(
@@ -314,16 +324,39 @@ class administrationController extends Controller
             'form1' => $form->createView(),
           ));
         }
- 
-            
-        $datacard->setTag($tag);
-        $em->persist($datacard);
-        $em->flush();
+        
+        $checkNbOfElt = $this->get('CKM.services.analysisManager')
+                        ->checkNumberEltInScenarioAdd($tmp, $up,
+                                                      $this->container->getParameter('nb_elt_by_observable_line'),
+                                                      $this->container->getParameter('nb_elt_by_parameter_line')
+                                                      );
 
-        $this->get('session')->getFlashBag()->add(
-          'success',
-          'File upload '
-        );
+        $checkTagElt = $this->get('CKM.services.analysisManager')
+                        ->checkTagInputInScenarioAdd($tmp, $up);
+
+        if($checkNbOfElt !== true  ){
+        //if( ! $this->get('CKM.services.analysisManager')->checkTagInputInScenarioAdd($tmp, $up) ){
+          $this->get('session')->getFlashBag()->add(
+              'danger',
+              'Failure when adding a new scenario : issue with the number of argument : '.$checkNbOfElt
+          );
+        }
+        elseif($checkTagElt !== true ){
+          $this->get('session')->getFlashBag()->add(
+              'danger',
+              'Failure when adding a new scenario : issue with an input tag i.e. the last element line. The tag is missing or doesn\'t exist in the database TagInput : '.$checkTagElt
+          );
+        }
+        else{
+          $datacard->setTag($tag);
+          $em->persist($datacard);
+          $em->flush();
+
+          $this->get('session')->getFlashBag()->add(
+            'success',
+            'File upload '
+          );
+        }
 
         return $this->redirect(
                 $this->generateUrl('CKMAppBundle_administration_datacard',

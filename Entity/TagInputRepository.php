@@ -12,4 +12,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class TagInputRepository extends EntityRepository
 {
+    public function findTagInputByActivated()
+    {
+      $tagInputs=$this->getEntityManager()
+          ->createQuery(
+              'SELECT ti FROM CKM\AppBundle\Entity\TagInput ti WHERE ti.isEnable=:isEnable'
+          )
+          ->setParameters(array(
+                          'isEnable'   => 1,
+                          )
+                        )
+          ->getResult();
+
+      return $tagInputs;
+      #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
+    }
 }

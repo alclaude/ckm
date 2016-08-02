@@ -32,6 +32,7 @@ class AnalysisStep3Type extends AbstractType
       $builder
         ->add('sourceElement', 'choice'/*'entity'*/, array(
          'choices'   => $obs,
+         //'choices'   => array_merge($obs, $param),
          'label'     => 'Inputs',
          'mapped'    => false,
          'multiple'  => true,

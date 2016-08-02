@@ -121,6 +121,108 @@ class AnalysisManager
     $this->em->flush();
   }
 
+  public function checkTagInputInScenarioAdd($file, $upload) {
+    if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
+      // Sinon on déclenche une exception « Accès interdit »
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $tagInputs = $this->em
+      ->getRepository('CKMAppBundle:TagInput')
+      ->findTagInputByActivated();
+
+    $data = file_get_contents( $upload->getPathname() ) or die("fichier non trouv&eacute;");
+    $lines = explode("\n", $data);
+
+    $tagsName = array();
+    foreach($tagInputs as $tagInput) {
+      $tagsName[]=$tagInput->getName();
+    }
+
+    foreach($lines as $line) {
+      if( ! preg_match("/^# /", $line) ) {
+        $tmp_ar = explode(';',$line);
+        $tag = $tmp_ar[count($tmp_ar)-1];
+        echo $tmp_ar[count($tmp_ar)-1]."\n";
+        echo $line."\n";
+        if (!in_array($tag, $tagsName)) {
+          return $line;
+        }
+      }
+    }
+    return true;
+  }
+  
+    public function checkTagInputInScenarioEdit($file, $upload) {
+    if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
+      // Sinon on déclenche une exception « Accès interdit »
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+  }
+
+  public function checkNumberEltInScenarioAdd($file, $upload, $nbObservable, $nbParameter) {
+    if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
+      // Sinon on déclenche une exception « Accès interdit »
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    $data = file_get_contents( $upload->getPathname() ) or die("fichier non trouv&eacute;");
+    $lines = explode("\n", $data);
+
+    $type='';
+    $new_line = "^\n$" ;
+    $observables = array();
+    $parameters  = array();
+
+    foreach($lines as $line) {
+      if( ! preg_match("/$new_line/", $line) ) {
+        if( preg_match('/observable/', $line) ) {
+          $type='observable';
+        }
+        elseif( preg_match('/parameter/', $line) ) {
+          $type='parameter';
+        }
+        else {
+          if( $type==='observable' ) {
+            $observables[] = $line;
+          }
+          if( $type==='parameter' ) {
+            $parameters[] = $line;
+          }
+        }
+      }
+    }
+
+    foreach($observables as $observable) {
+        $tmp_ar = explode(';',$observable);
+        if(count($tmp_ar)!=$nbObservable) return $observable;
+    }
+    foreach($parameters as $parameter) {
+        $tmp_ar = explode(';',$parameter);
+        if(count($tmp_ar)!=$nbParameter) return $parameter;
+    }
+
+    return true;
+  }
+
+  public function checkNumberEltInScenarioEdit($observables, $parameters, $nbObservable, $nbParameter) {
+    if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
+      // Sinon on déclenche une exception « Accès interdit »
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+
+    foreach($observables as $observable) {
+        $tmp_ar = explode(';',$observable);
+        if(count($tmp_ar)!=$nbObservable) return $observable;
+    }
+    foreach($parameters as $parameter) {
+        $tmp_ar = explode(';',$parameter);
+        if(count($tmp_ar)!=$nbParameter) return $parameter;
+    }
+
+    return true;
+  }
   public function checkTargetScanValueInScenario($path, $target ) {
     if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
         // Sinon on déclenche une exception « Accès interdit »

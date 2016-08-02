@@ -2,3 +2,5 @@ parameters:
     max_analysis_per_page: 14
     result_path: /../src/CKM/AppBundle/Command/resultCKMAnalysis/
     result_path_plotting: ../src/CKM/AppBundle/Command/Plot_resultCKMAnalysis/
+    nb_elt_by_observable_line: 6
+    nb_elt_by_parameter_line: 5

@@ -207,7 +207,7 @@ class Observable extends Input
         if( ! preg_match("/$new_line/", $line) ) {
           if( preg_match($observablePattern, $line) ) {
             $tmp_ar_obs = explode(';',$line);
-            # les parametres associes a une observable sont le 6eme item dans le fichier :index=3
+            # les parametres associes a une observable sont le 5eme item dans le fichier :index=4
             $tmp_ar_obsParam = explode(',',$tmp_ar_obs['4']);
             break;
           }
