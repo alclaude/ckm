@@ -80,16 +80,18 @@ class administrationController extends Controller
       $form->handleRequest($request);
       if ($form->isValid()) {
         $tmp = $request->request->get($form->getName()) ;
-        
+
         $parameters=array();
         $observables=array();
-        $observables = $this->cleanCSV($tmp['observables'], 6);
-        $parameters = $this->cleanCSV($tmp['parameters'], 5);
-        
+        $missObs=array();
+        $missParam=array();
+
         if(isset($tmp['observables']) and !empty($tmp['observables'])) {
+          $observables = $this->cleanCSV($tmp['observables'], 6);
           $missObs   = $this->get('CKM.services.analysisManager')->isInputsInScenario( $observables, $scenario );
         }
         if(isset($tmp['parameters']) and !empty($tmp['parameters'])) {
+          $parameters = $this->cleanCSV($tmp['parameters'], 5);
           $missParam = $this->get('CKM.services.analysisManager')->isInputsInScenario( $parameters, $scenario );
         }
 
@@ -100,23 +102,16 @@ class administrationController extends Controller
                                               );
         $checkTagElt = $this->get('CKM.services.analysisManager')
                       ->checkTagInputInScenarioEdit($observables, $parameters);
-                                              
 
-        /*if ( (isset($error_obs) && count($error_obs)>0) or (isset($error_param) && count($error_param)>0) ) {
-            $this->get('session')->getFlashBag()->add(
-                'danger',
-                'Invalid CSV Format : an Observable line has 5 elements and a parameter 4'
-            );
-        }*/
-        //elseif ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
         if ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
             $this->get('session')->getFlashBag()->add(
-                'danger',
-                'Observable or Parameter already exist in the scenario list'
+                'warning',
+                'Observable or Parameter already exist in the scenario list and have been overwrite: '.
+                join(' - ', array_merge($missObs, $missParam))
             );
         }
-        elseif($checkNbOfElt !== true  ){
-        //if( ! $this->get('CKM.services.analysisManager')->checkTagInputInScenarioAdd($tmp, $up) ){
+
+        if($checkNbOfElt !== true  ){
           $this->get('session')->getFlashBag()->add(
               'danger',
               'Failure when editing a new scenario : issue with the number of argument : '.$checkNbOfElt
@@ -156,6 +151,30 @@ class administrationController extends Controller
             );
           } else {
             list($observablesInFile, $parametersInFile) = $scenario->getInputLineInFile();
+
+            foreach ($observables as $keyObservable => $valueObservable) {
+              $tmp_valueObservable = explode(';',$valueObservable);
+              foreach ($observablesInFile as $keyObservableInFile => $valueObservableInFile) {
+                $tmp_valueObservableInFile = explode(';',$valueObservableInFile);
+                if($tmp_valueObservableInFile[0]===$tmp_valueObservable[0]){
+                  $observablesInFile[$keyObservableInFile] = $valueObservable;
+                  unset($observables[$keyObservable]);
+                  break;
+                }
+              }
+            }
+            foreach ($parameters as $keyParameter => $valueParameter) {
+              $tmp_valueParameter = explode(';',$valueParameter);
+              foreach ($parametersInFile as $keyParameterInFile => $valueParameterInFile) {
+                $tmp_valueParameterInFile = explode(';',$valueParameterInFile);
+                if($tmp_valueParameterInFile[0]===$tmp_valueParameter[0]){
+                  $parametersInFile[$keyParameterInFile] = $valueParameter;
+                  unset($parameters[$keyParameter]);
+                  break;
+                }
+              }
+            }
+
             $scenario->cleanFile(          
                           array_merge(
                                       $observablesInFile, 

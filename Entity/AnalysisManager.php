@@ -47,24 +47,30 @@ class AnalysisManager
   }
 
   public function isInputsInScenario($inputsName, $scenario) {
+    $presents=array();
+
     foreach($inputsName as $inputName) {
       $tmp_ar = explode(';',$inputName);
-      if( $this->isInputInScenario($tmp_ar['0'], $scenario) ) {
-        return true;
-      }
+      $return='';
+      $return=$this->isInputInScenario($tmp_ar['0'], $scenario) ;
+      if($return) $presents[]=$return;
     }
-    return false;
+
+    if(count($presents)>0)
+      return $presents;
+    else
+      return false;
   }
-  
+
   public function isInputInScenario($inputName, $scenario) {
     $scenarioInputs=$scenario->getInput();
-    
+
     foreach($scenarioInputs as $scenarioInput) {
       if( $scenarioInput==$inputName ) {
-        return true;
+        return $inputName;
       }
     }
-    return false;
+    //return false;
   }
 
   public function getScenariosIsDocumented($isDocumented) {
@@ -231,14 +237,20 @@ class AnalysisManager
       throw new AccessDeniedHttpException('no credentials for this action');
     }
 
-    foreach($observables as $observable) {
-        $tmp_ar = explode(';',$observable);
-        if(count($tmp_ar)!=$nbObservable) return $observable;
+    if(count($observables)>0){
+      foreach($observables as $observable) {
+          $tmp_ar = explode(';',$observable);
+          if(count($tmp_ar)!=$nbObservable) return $observable;
+      }
     }
-    foreach($parameters as $parameter) {
-        $tmp_ar = explode(';',$parameter);
-        if(count($tmp_ar)!=$nbParameter) return $parameter;
+    if(count($parameters)>0){
+      foreach($parameters as $parameter) {
+          $tmp_ar = explode(';',$parameter);
+          if(count($tmp_ar)!=$nbParameter) return $parameter;
+      }
     }
+
+
 
     return true;
   }
