@@ -252,9 +252,9 @@ class Scenario
       $handle = fopen($this->getWebPath(), 'w');
       
       $answers = array_merge(
-        array('# observable;default input;min allowed value;max allowed value;associated parameters'),
+        array('# observable;default input;min allowed value;max allowed value;associated parameters;input tag'),
         $observables,
-        array('# parameter;default input;min allowed value;max allowed value'),
+        array('# parameter;default input;min allowed value;max allowed value;input tag'),
         $parameters
       );
 
