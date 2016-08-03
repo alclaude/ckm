@@ -143,8 +143,7 @@ class AnalysisManager
       if( ! preg_match("/^# /", $line) ) {
         $tmp_ar = explode(';',$line);
         $tag = $tmp_ar[count($tmp_ar)-1];
-        echo $tmp_ar[count($tmp_ar)-1]."\n";
-        echo $line."\n";
+
         if (!in_array($tag, $tagsName)) {
           return $line;
         }
@@ -153,12 +152,32 @@ class AnalysisManager
     return true;
   }
   
-    public function checkTagInputInScenarioEdit($file, $upload) {
+    public function checkTagInputInScenarioEdit($observables, $parameters) {
     if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
       // Sinon on déclenche une exception « Accès interdit »
       throw new AccessDeniedHttpException('no credentials for this action');
     }
 
+    $tagInputs = $this->em
+      ->getRepository('CKMAppBundle:TagInput')
+      ->findTagInputByActivated();
+
+    $tagsName = array();
+    foreach($tagInputs as $tagInput) {
+      $tagsName[]=$tagInput->getName();
+    }
+
+    $quantities = array_merge($observables, $parameters);
+
+    foreach($quantities as $quantitie) {
+        $tmp_ar = explode(';',$quantitie);
+        $tag = $tmp_ar[count($tmp_ar)-1];
+
+        if (!in_array($tag, $tagsName)) {
+          return $quantitie;
+        }
+    }
+    return true;
   }
 
   public function checkNumberEltInScenarioAdd($file, $upload, $nbObservable, $nbParameter) {

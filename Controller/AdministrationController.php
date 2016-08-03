@@ -83,8 +83,8 @@ class administrationController extends Controller
         
         $parameters=array();
         $observables=array();
-        list($observables, $error_obs)  = $this->cleanCSV($tmp['observables'], 6);
-        list($parameters, $error_param) = $this->cleanCSV($tmp['parameters'], 5);
+        $observables = $this->cleanCSV($tmp['observables'], 6);
+        $parameters = $this->cleanCSV($tmp['parameters'], 5);
         
         if(isset($tmp['observables']) and !empty($tmp['observables'])) {
           $missObs   = $this->get('CKM.services.analysisManager')->isInputsInScenario( $observables, $scenario );
@@ -102,17 +102,31 @@ class administrationController extends Controller
                       ->checkTagInputInScenarioEdit($observables, $parameters);
                                               
 
-        if ( (isset($error_obs) && count($error_obs)>0) or (isset($error_param) && count($error_param)>0) ) {
+        /*if ( (isset($error_obs) && count($error_obs)>0) or (isset($error_param) && count($error_param)>0) ) {
             $this->get('session')->getFlashBag()->add(
                 'danger',
                 'Invalid CSV Format : an Observable line has 5 elements and a parameter 4'
             );
-        }
-        elseif ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
+        }*/
+        //elseif ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
+        if ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
             $this->get('session')->getFlashBag()->add(
                 'danger',
                 'Observable or Parameter already exist in the scenario list'
             );
+        }
+        elseif($checkNbOfElt !== true  ){
+        //if( ! $this->get('CKM.services.analysisManager')->checkTagInputInScenarioAdd($tmp, $up) ){
+          $this->get('session')->getFlashBag()->add(
+              'danger',
+              'Failure when editing a new scenario : issue with the number of argument : '.$checkNbOfElt
+          );
+        }
+        elseif($checkTagElt !== true ){
+          $this->get('session')->getFlashBag()->add(
+              'danger',
+              'Failure when editing a new scenario : issue with an input tag i.e. the last element line. The tag is missing or doesn\'t exist in the database TagInput : '.$checkTagElt
+          );
         }
         else {
           $em = $this->getDoctrine()->getManager();
@@ -713,28 +727,17 @@ class administrationController extends Controller
     if(! is_array($lines) ) $lines = explode(PHP_EOL, $lines);
     $new_line = "^\n$" ;
     $quantities = array();
-    $CSVerror= array();
     
     foreach($lines as $key => $line) {
 
       if( ! preg_match("/$new_line/", $line) ) {
         $tmp_ar = array();
         $tmp_ar = explode(';',$line);
-        #try {
-          if( count($tmp_ar) != $arg ) {
-            $CSVerror[]=$line;
-            #return array();
-          }
-          else {
-            $line=preg_replace("/\s*$/","",$line);
-            $quantities[]=$line;
-          }
-        #} catch (\Exception $e) {
-        #  throw new \Exception('Something wrong with the CSV Format');
-        #}
+        $line=preg_replace("/\s*$/","",$line);
+        $quantities[]=$line;
       }
     }
-    return array($quantities, $CSVerror);
+    return $quantities;
   }
 
   private function csvToArrayDocUser($lines) {
