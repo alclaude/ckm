@@ -26,8 +26,8 @@ class AnalysisStep3Type extends AbstractType
     {
       //\Doctrine\Common\Util\Debug::dump($builder);
       $path = $options['data']->getScenario()->getWebPath();
-      list($obs, $param) = $this->getListOfDatacardObservable( $path ) ;
-      list($obs, $param) = $this->latexLike($obs, $param) ;
+      $obs = $this->getListOfDatacardObservable( $path ) ;
+      $obs= $this->latexLike($obs) ;
 
       $builder
         ->add('sourceElement', 'choice'/*'entity'*/, array(
@@ -42,45 +42,34 @@ class AnalysisStep3Type extends AbstractType
       ;
     }
 
-    private function latexLike($observables, $parameters){
-      foreach($observables as &$observable) {
-        $latex = $this->em
-          ->getRepository('CKMAppBundle:Latex')
-          ->findOneByName( $observable );
+    private function latexLike($observablesAggrByTag){
+      foreach($observablesAggrByTag as &$observables) {
+        foreach($observables as &$observable) {
+          $latex = $this->em
+            ->getRepository('CKMAppBundle:Latex')
+            ->findOneByName( $observable );
 
-        if($latex) {
-          $observable=$latex->getLatex();
-        } else {
-          $observable= '('.$observable.')';
+          if($latex) {
+            $observable=$latex->getLatex();
+          } else {
+            $observable= '('.$observable.')';
+          }
         }
       }
-      foreach($parameters as &$parameter) {
-        $latex = $this->em
-          ->getRepository('CKMAppBundle:Latex')
-          ->findOneByName( $parameter );
-        if($latex) {
-          $parameter=$latex->getLatex();
-        }
-        else {
-          $parameter='('.$parameter.')';
-        }
-      }
-
-      return array($observables, $parameters);
+      return $observablesAggrByTag;
     }
 
     private function getListOfDatacardObservable($datacardPath){
       $data = file_get_contents($datacardPath) or die("fichier non trouv&eacute;");
       $lines = explode("\n", $data);
 
-
       $type='';
       $new_line = "^\n$" ;
-      $obs_ar = array();
-      $param_ar = array();
+      $observables = array();
+      $obs_aggr = array();
+      $obs_aggr_by_tag = array();
 
       foreach($lines as $line) {
-
         if( ! preg_match("/$new_line/", $line) ) {
           if( preg_match('/observable/', $line) ) {
             $type='observable';
@@ -90,22 +79,28 @@ class AnalysisStep3Type extends AbstractType
           }
           else {
             if( $type==='observable' ) {
-              $tmp_ar = explode(';',$line);
-              #$obs_tmp = new Observable($tmp_ar['0'], $tmp_ar['0'], 1, 2, array("toto", "titi"));
-              #$obs_ar[ "$tmp_ar[0]" ] = $obs_tmp;
-              $obs_ar[ "$tmp_ar[0]" ] = $tmp_ar[0];
-            }
-            if( $type==='parameter' ) {
-              $tmp_ar = explode(';',$line);
-              #$param_tmp = new Parameter($tmp_ar['0'], $tmp_ar['0'], 1, 2);
-              #$param_ar[ "$tmp_ar[0]" ] = $param_tmp;
-              $param_ar[ "$tmp_ar[0]" ] = $tmp_ar[0];
+              $observables[] = $line;
             }
           }
         }
-
       }
-      return array($obs_ar, $param_ar);
+
+      foreach($observables as $observable) {
+        $tmp_ar = explode(';',$observable);
+        $obs_aggr[] = $tmp_ar[5];
+      }
+
+      $obs_tag = array_unique($obs_aggr);
+
+      foreach($observables as $observable) {
+        $tmp_ar = explode(';',$observable);
+        foreach ($obs_tag as $tag) {
+          if($tmp_ar[5]==$tag){
+            $obs_aggr_by_tag[$tag][ $tmp_ar[0] ]= $tmp_ar[0];
+          }
+        }
+      }
+      return $obs_aggr_by_tag;
     }
 
     /**
