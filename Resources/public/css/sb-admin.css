@@ -97,18 +97,49 @@ table.tablesorter thead tr th:hover {
   }
 
   /* Side Nav */
+.navbar-brand {
+    padding: 5px;
+}
 
-  .side-nav {
-  margin-left: -225px;
-  left: 225px;
-  width: 225px;
-  position: fixed;
-  top: 50px;
-  height: 100%;
-  border-radius: 0;
-  border: none;
-  background-color: #222222;
-  overflow-y: auto;
+.side-nav {
+    background-color: #dfdfdf;
+    border: medium none;
+    border-radius: 0;
+    height: 100%;
+    left: 225px;
+    margin-left: -225px;
+    overflow-y: auto;
+    position: fixed;
+    top: 50px;
+    width: 225px;
+}
+
+.right-to-left {
+    border-image: linear-gradient(to right, lightslategray, rgba(0, 0, 0, 0)) 1 100% 1 100%;
+    border-style: solid;
+    border-width: 0 8px 0 0;
+}
+
+  ul.nav.navbar-nav.side-nav li a {color:black;}
+  ul.nav.navbar-nav.side-nav li a:hover,
+  ul.nav.navbar-nav.side-nav li a:active,
+  ul.nav.navbar-nav.side-nav li a:focus {color:white;}
+  div.collapse.navbar-collapse.navbar-ex1-collapse {color:white;}
+
+ /* .panel > .panel-heading {
+    background-image: none;
+    background-color: #3167AC/*black/*#FA9B00*//*#3EA99F/*#3377FF*//*#3167AC*//*#665748*//*#598888*/;
+ /*   border-color:black;
+    color: white;
+  }*/
+  .panel{border-color:black;}
+
+  .navbar-inverse {
+    background-color: #545454/*#2B3856/*#504A4B/*#3D3C3A*/;
+    border-color: #fff;
+  }
+  h1, .h1 {
+    color: #0E50A4;
   }
 
   /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
@@ -126,7 +157,7 @@ table.tablesorter thead tr th:hover {
   }
 
   .side-nav>li.dropdown>ul.dropdown-menu>li>a {
-  color: #999999;
+  color: /*#999999;*/black;
   padding: 15px 15px 15px 25px;
   }
 
@@ -134,7 +165,7 @@ table.tablesorter thead tr th:hover {
   .side-nav>li.dropdown>ul.dropdown-menu>li>a.active,
   .side-nav>li.dropdown>ul.dropdown-menu>li>a:focus {
   color: #fff;
-  background-color: #080808;
+  background-color: #303030;
   }
 
   .side-nav>li>a {
@@ -143,7 +174,7 @@ table.tablesorter thead tr th:hover {
 
   .navbar-inverse .navbar-nav>li>a:hover,
   .navbar-inverse .navbar-nav>li>a:focus {
-  background-color: #080808;
+  background-color: #303030;
   }
 
   /* Nav Messages */
