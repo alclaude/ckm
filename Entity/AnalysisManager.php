@@ -140,24 +140,46 @@ class AnalysisManager
     $data = file_get_contents( $upload->getPathname() ) or die("fichier non trouv&eacute;");
     $lines = explode("\n", $data);
 
+    $type='';
+    $new_line = "^\n$" ;
+    $observables = array();
+    $parameters  = array();
+
+    foreach($lines as $line) {
+      if( ! preg_match("/$new_line/", $line) ) {
+        if( preg_match('/observable/', $line) ) {
+          $type='observable';
+        }
+        elseif( preg_match('/parameter/', $line) ) {
+          $type='parameter';
+        }
+        else {
+          if( $type==='observable' ) {
+            $observables[] = $line;
+          }
+          if( $type==='parameter' ) {
+            $parameters[] = $line;
+          }
+        }
+      }
+    }
+
     $tagsName = array();
     foreach($tagInputs as $tagInput) {
       $tagsName[]=$tagInput->getName();
     }
 
-    foreach($lines as $line) {
-      if( ! preg_match("/^# /", $line) ) {
-        $tmp_ar = explode(';',$line);
-        $tag = $tmp_ar[count($tmp_ar)-1];
+    foreach($observables as $observable) {
+      $tmp_ar = explode(';',$observable);
+      $tag = $tmp_ar[count($tmp_ar)-1];
 
-        if (!in_array($tag, $tagsName)) {
-          return $line;
-        }
+      if (!in_array($tag, $tagsName)) {
+        return $observable;
       }
     }
     return true;
   }
-  
+
     public function checkTagInputInScenarioEdit($observables, $parameters) {
     if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
       // Sinon on déclenche une exception « Accès interdit »
@@ -173,7 +195,8 @@ class AnalysisManager
       $tagsName[]=$tagInput->getName();
     }
 
-    $quantities = array_merge($observables, $parameters);
+    //$quantities = array_merge($observables, $parameters);
+    $quantities = $observables;
 
     foreach($quantities as $quantitie) {
         $tmp_ar = explode(';',$quantitie);

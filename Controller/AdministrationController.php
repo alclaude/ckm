@@ -357,7 +357,7 @@ class administrationController extends Controller
             'form1' => $form->createView(),
           ));
         }
-        
+
         $checkNbOfElt = $this->get('CKM.services.analysisManager')
                         ->checkNumberEltInScenarioAdd($tmp, $up,
                                                       $this->container->getParameter('nb_elt_by_observable_line'),
