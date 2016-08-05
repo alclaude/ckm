@@ -14,9 +14,10 @@ class AnalysisStep3Type extends AbstractType
 {
     protected $em;
 
-    public function __construct( \Doctrine\ORM\EntityManager $em)
+    public function __construct( \Doctrine\ORM\EntityManager $em, $nbObservable)
     {
         $this->em = $em;
+        $this->nbObservable = $nbObservable;
     }
     /**
      * @param FormBuilderInterface $builder
@@ -44,16 +45,29 @@ class AnalysisStep3Type extends AbstractType
 
     private function latexLike($observablesAggrByTag){
       foreach($observablesAggrByTag as &$observables) {
-        foreach($observables as &$observable) {
-          $latex = $this->em
-            ->getRepository('CKMAppBundle:Latex')
-            ->findOneByName( $observable );
+        if(is_array($observables)){
+          foreach($observables as &$observable) {
+            $latex = $this->em
+              ->getRepository('CKMAppBundle:Latex')
+              ->findOneByName( $observable );
 
-          if($latex) {
-            $observable=$latex->getLatex();
-          } else {
-            $observable= '('.$observable.')';
+            if($latex) {
+              $observable=$latex->getLatex();
+            } else {
+              $observable= '('.$observable.')';
+            }
           }
+        }
+        else{
+            $latex = $this->em
+              ->getRepository('CKMAppBundle:Latex')
+              ->findOneByName( $observables );
+
+            if($latex) {
+              $observables=$latex->getLatex();
+            } else {
+              $observables= '('.$observables.')';
+            }
         }
       }
       return $observablesAggrByTag;
@@ -87,19 +101,28 @@ class AnalysisStep3Type extends AbstractType
 
       foreach($observables as $observable) {
         $tmp_ar = explode(';',$observable);
-        $obs_aggr[] = $tmp_ar[5];
+        if(count($tmp_ar)== $this->nbObservable){
+          # retrieve observable tag
+          $obs_aggr[] = $tmp_ar[5];
+        }
+        else{
+          # retrieve observable name
+          $obs_aggr_by_tag[$tmp_ar[0]]=$tmp_ar[0];
+        }
       }
 
-      $obs_tag = array_unique($obs_aggr);
-
-      foreach($observables as $observable) {
-        $tmp_ar = explode(';',$observable);
-        foreach ($obs_tag as $tag) {
-          if($tmp_ar[5]==$tag){
-            $obs_aggr_by_tag[$tag][ $tmp_ar[0] ]= $tmp_ar[0];
+      if(count($obs_aggr)>0){
+        $obs_tag = array_unique($obs_aggr);
+        foreach($observables as $observable) {
+          $tmp_ar = explode(';',$observable);
+          foreach ($obs_tag as $tag) {
+            if($tmp_ar[5]==$tag){
+              $obs_aggr_by_tag[$tag][ $tmp_ar[0] ]= $tmp_ar[0];
+            }
           }
         }
       }
+
       return $obs_aggr_by_tag;
     }
 

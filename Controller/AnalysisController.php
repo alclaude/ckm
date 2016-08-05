@@ -392,7 +392,12 @@ class AnalysisController extends Controller
 
       $request = $this->getRequest();
 
-      $form = $this->createForm(new AnalysisStep3Type($this->getDoctrine()->getManager() ),  $analyse);
+      $form = $this->createForm(new AnalysisStep3Type(
+                                        $this->getDoctrine()->getManager(),
+                                        $this->container->getParameter('nb_elt_by_observable_line')
+                                        ),
+                                $analyse
+                                );
 
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);
