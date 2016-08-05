@@ -131,12 +131,12 @@ class AnalysisType extends AbstractType
       foreach($lines as $line) {
 
         if( ! preg_match("/$new_line/", $line) ) {
-          if( preg_match('/observable/', $line) ) {
+          if( preg_match('/# observable/', $line) ) {
             // Creating objects with dynamic class names
             $type='observable';
 
           }
-          elseif( preg_match('/parameter/', $line) ) {
+          elseif( preg_match('/# parameter/', $line) ) {
             $type='parameter';
           }
           else {
