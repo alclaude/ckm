@@ -33,7 +33,6 @@ Analysis - <small> {{ message }} </small>
 <div class="col-lg-6">
   <div class="alert alert-info">
 	  <p>Each step will help you to define the elements of your analysis. If you have already completed one step but change your mind, please do not use the “Back” feature of your browser. Instead, keep on following the steps up to the summary of your analysis, where you will be able to modify the information already provided, if necessary.</p>
-    
     {% if step==2 or step==3 %}
     <p>You can cancel the current selection by typing CTRL and selecting another element (on Unix/Windows) or by typing Command reselecting the selection (on Mac OS).</p>
 	
@@ -45,14 +44,12 @@ Analysis - <small> {{ message }} </small>
   {% if step==2 or step==3 %}
     <div class="col-lg-6">
       <div class="well">
-       Information on this scenario (including the default input values) can be found on the <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario':scenario, 'input': 0, 'tab':'input' }) }}" target="_blank"><strong> {{ scenarioName }} documentation page</strong> </a>     
-      </div>
+       Information on this scenario (including the default input values) can be found on the <a href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario':scenario, 'input': 0, 'tab':'input' }) }}" target="_blank"><strong> {{ scenarioName }} documentation page</strong> </a>           
+     </div>
     </div>
   {% endif %}
 
 </div>
-
-
 
 <div class="row">
   <div class="col-sm-6">

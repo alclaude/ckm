@@ -18,8 +18,8 @@ use CKM\AppBundle\Entity\Plotting;
 use CKM\AppBundle\Form\Analyse\AnalysisStep1Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep2Type;
 use CKM\AppBundle\Form\Analyse\AnalysisStep3Type;
-use CKM\AppBundle\Form\Analyse\AnalysisStep4Type;
 use CKM\AppBundle\Form\TargetScanType;
+use CKM\AppBundle\Form\Analyse\AnalysisStep4Type;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -308,32 +308,25 @@ class AnalysisController extends Controller
     public function createAnalyseStep4Action($analyse=0, $step=4, $tab='') {
       $this->isGranted('ROLE_ANALYSIS');
       $analyse = $this->getAnalysis($analyse);
-
-      if( $this->isForbiddenStep($analyse) ){
+      /*if( $this->isForbiddenStep($analyse) ){
         return $this->errorForm(
           'warning',
           'You can not modify with analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $analyse->getId() )
         );
-      }
-
+      }*/
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
-
       $request = $this->getRequest();
-
       $em = $this->getDoctrine()->getManager();
       $plotting = new Plotting();
       $form = $this->createForm(new AnalysisStep4Type($em),  $plotting);
-
       if ($request->getMethod() == 'POST') {
         $form->handleRequest($request);
-
         if ($form->isValid()) {
           $tmp = $request->request->get($form->getName()) ;
-
           if(!isset($tmp["nickname"]) or empty($tmp["nickname"]) or 
              !isset($tmp["title"]) or empty($tmp["title"]) ) {
             return $this->errorForm('notice',
@@ -342,17 +335,13 @@ class AnalysisController extends Controller
               array('analyse' => $analyse->getId(), 'step' => $step )
             );
           }
-
           $plotting->setAnalysis($analyse);
           $numberOfPlot = $this->getDoctrine()
             ->getRepository('CKMAppBundle:Plotting')
             ->countNumberOfPlot( $analyse->getId() );
-
           $plotting->setNumberOfPlot($numberOfPlot);
-
           $em->persist( $plotting );
           $em->flush();
-
           return $this->redirect(
                   $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
                         array('analyse' => $analyse->getId(), 'step' => 4, 'tab'=> $tab )
@@ -501,7 +490,6 @@ class AnalysisController extends Controller
           foreach( $targets as $target )
           {
             $name = $target->getLatex()->getName();
-
             if($target->getLatex()->getRoot())
               $rootTargets[] = $target->getLatex()->getRoot();
             else
@@ -562,7 +550,6 @@ class AnalysisController extends Controller
       foreach( $targets as $target )
       {
         $name = $target->getLatex()->getName();
-
         if($target->getLatex()->getRoot())
           $rootTargets[] = $target->getLatex()->getRoot();
         else
@@ -584,6 +571,8 @@ class AnalysisController extends Controller
 
       # Pour le moment juste un element a inclure dans la datacard
       if( $plotting ) {
+        #$nickname = $plotting->getNickname();
+        #$title    = $plotting->getTitle();
         # le premier element
         #$plot = $plotting[0];
         $nickname = $plotting->getNickname();
@@ -593,9 +582,9 @@ class AnalysisController extends Controller
         $title    = '__NO__TITLE__';
       }
 
-
       $em = $this->getDoctrine()
                  ->getManager();
+      #$analyse->setDatacard($observables, $parameters, $targets);
       $analyse->setDatacard($observables, $parameters, $targets, $rootTargets, $nickname, $title);
       $em->persist($analyse);
       $em->flush();
@@ -638,7 +627,6 @@ class AnalysisController extends Controller
       $analyseClone = clone $analyse;
       $analyseClone->setStatus(1);
       $analyseClone->setName( $analyseClone->getName().' _copy_' );
-      #
       $analyseClone->setResultDat('');
 
       $parameters = $this->getDoctrine()
@@ -694,7 +682,7 @@ class AnalysisController extends Controller
 
       $this->get('session')->getFlashBag()->add(
             'success',
-            'Your analysis ['.  $analyse->getId() .'] have been copy in a new analysis ['.$analyseClone->getId().']. Please go to Your analysis/Ongoing analyses in order to edit the copy.'
+            'Your analysis ['.  $analyse->getId() .'] has been copied in a new analysis ['.$analyseClone->getId().']. Please go to Your analysis/Ongoing analyses in order to edit the copy.'
       );
 
       return $this->redirect(
@@ -720,14 +708,12 @@ class AnalysisController extends Controller
 
       $this->get('session')->getFlashBag()->add(
             'success',
-            'Your analysis ['.  $analyse->getId() .'] - "'.$analyse->getName() .'" has been submitted. You will soon receive an email notification informing you of the end of its execution.
-            '
+            'Your analysis ['.  $analyse->getId() .'] - "'.$analyse->getName() .'" has been submitted. You will soon receive an email notification informing you of the end of its execution.'
       );
 
       return $this->redirect(
         /*$this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
-                            array('analyse' => $analyse->getId(), 'step' => 4 )
-        )*/
+                            array('analyse' => $analyse->getId(), 'step' => 4 )*/
         $this->generateUrl('CKMAppBundle_analyse_by_user',
                             array('user_id' => $analyse->getUser()->getId(), 'page' => 1 )
         )
@@ -752,7 +738,7 @@ class AnalysisController extends Controller
       // FS#9
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         #throw $this->createNotFoundException('Sorry, you are not authorized to change the analysis of this user');
-        throw new AccessDeniedHttpException('no credentials for this action');
+        throw new AccessDeniedHttpException('Sorry, you are not authorised to change the analysis of this user');
       }
 
       $em = $this->getDoctrine()
@@ -1341,7 +1327,7 @@ die('die');
       if( $this->isForbiddenStep( $this->getAnalysis($target->getAnalyse()->getId() )) ){
         return $this->errorForm(
           'warning',
-          'You can not modify a finalised analysis',
+          'You can not modify finalised analysis',
           'CKMAppBundle_analyse_create_analyse_source',
           array('analyse' => $target->getAnalyse()->getId() )
         );
@@ -1532,16 +1518,14 @@ die('die');
     }
 
     /*
-     * Teste et retourne l existance d une analyse
+     * Teste et retourne l existance d un scenario
      */
     public function getScenario($id) {
       $em = $this->getDoctrine()
                  ->getManager();
-
       $scenario = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Scenario')
         ->findOneById($id);
-
       if (!$scenario) {
         #throw $this->createNotFoundException('analyse not exist');
         throw new HttpException(404, "scenario not exist");
@@ -1566,15 +1550,13 @@ die('die');
       }
       return $analyse;
     }
-    
+
     public function getPlot($id) {
       $em = $this->getDoctrine()
                  ->getManager();
-
       $plot = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Plotting')
         ->findOneById($id);
-
       if (!$plot) {
         #throw $this->createNotFoundException('analyse not exist');
         throw new HttpException(404, "plot not exist");
@@ -1583,7 +1565,7 @@ die('die');
     }
 
     private function isForbiddenStep($analyse) {
-      if($analyse->getStatus() >= 2) {
+      if($analyse->getStatus()>=2) {
         return true;
       }
       return false;
@@ -1643,36 +1625,28 @@ die('die');
     public function checkTargetRangeAction(Request $request, $scenarioId)
     {
         $target = $request->request->get('target1');
-
         $check=array(
               'target' => $target,
               'scenario' => $scenarioId,
         );
-
         $scenario = $this->getScenario($scenarioId);
         $targetValue = $this->get('CKM.services.analysisManager')->checkTargetScanValueInScenario($scenario->getWebPath(), $target);
-
         $check['targetValue'] =  array($targetValue[2] , $targetValue[3] );
-
+        
         $em = $this->getDoctrine()->getManager();
-
         $encoders = array(new JsonEncoder());
         $normalizers = array(new GetSetMethodNormalizer());
-
         $serializer = new Serializer($normalizers, $encoders);
         $jsonContent = $serializer->serialize($check, 'json');
-
         $response = new Response(json_encode(array( $jsonContent )));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
-    
+
     public function resultAnalysisPlottingAction($analyse=0,$plotNameExtension='', $numberOfPlot=0)
     {
       $this->isGranted('ROLE_ANALYSIS');
-
       $analyse = $this->getAnalysis($analyse);
-
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
@@ -1684,7 +1658,6 @@ die('die');
 #echo getcwd();
       #$answers = readFile($path);
       
-
       #exit('debbug');
       
       if (preg_match("/(.*?\.(eps|png|pdf))$/i", $plotNameExtension, $extension)) {
@@ -1701,7 +1674,6 @@ die('die');
                 break;
         }
       }
-
        $response = new Response();
        $response->setContent(file_get_contents($path));
        $response->headers->set(
@@ -1711,7 +1683,6 @@ die('die');
        $response->headers->set('Content-disposition', 'filename=' . $plotNameExtension);
  
        return $response;
-
     }
     
     public function resultAnalysisAction($analyse=0)
@@ -1762,39 +1733,35 @@ die('die');
 
     public function removeInputValueOfTheTargetAction(Request $request, $analyse=0, $target=0){
       $this->isGranted('ROLE_ANALYSIS');
-
       $analyse = $this->getAnalysis($analyse);
-
       if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
         throw $this->createNotFoundException('Sorry, you are not authorised to change the analysis of this user');
       }
-
-    $request = $this->getRequest();
+      $request = $this->getRequest();
     
-    $target = $this->getDoctrine()
+      $target = $this->getDoctrine()
         ->getRepository('CKMAppBundle:Input')
         ->findOneById($target);
-
-    $msgBtn = '';
-    if(!$target->getRemoveAsInput()) $msgBtn = 'Remove ';
-    else $msgBtn = 'Replace ';
-
-    $form = $this->createFormBuilder($target)
+   
+      $msgBtn = '';
+      if(!$target->getRemoveAsInput()) $msgBtn = 'Remove ';
+      else $msgBtn = 'Replace ';
+ 
+      $form = $this->createFormBuilder($target)
             ->add('token', 'hidden',array(
                 'mapped'           => false,
             ))
-            ->add( $msgBtn.'its input value',
+            ->add($msgBtn.'its input value',
                   'submit',
                     array(
                         'attr' => array('class' => 'btn btn-warning right btn-sm'),
                         )
                   )
             ->getForm();
-
-    if ($request->getMethod() == 'POST') {
-      $form->handleRequest($request);
-      if ($form->isValid()) {
-        $em = $this->getDoctrine()->getManager();
+      if ($request->getMethod() == 'POST') {
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+          $em = $this->getDoctrine()->getManager();
 
           if(!$target->getRemoveAsInput()) {
             $target->setRemoveAsInput(true);
@@ -1802,26 +1769,24 @@ die('die');
             $target->setRemoveAsInput(false);
           }
 
-        $em->persist( $target );
-        $em->flush();
+          $em->persist( $target );
+          $em->flush();
         
-        return $this->redirect(
+          return $this->redirect(
                 $this->generateUrl('CKMAppBundle_analyse_create_analyse_source',
                     array( 'analyse' => $analyse->getId() )
                 )
-        );
+          );
+        }
       }
-
-    }
-    return $this->render('CKMAppBundle:Analysis:default.html.twig', array(
-      'form' => $form->createView(),
-      'route'=>'CKMAppBundle_analyse_remove_input_target',
-      'param1'=> 'analyse',
-      'param2'=>'target',
-      'value1'=>$analyse->getId(),
-      'value2'=>$target->getId(),
-    ));
-
+      return $this->render('CKMAppBundle:Analysis:default.html.twig', array(
+        'form' => $form->createView(),
+        'route'=>'CKMAppBundle_analyse_remove_input_target',
+        'param1'=> 'analyse',
+        'param2'=>'target',
+        'value1'=>$analyse->getId(),
+        'value2'=>$target->getId(),
+      ));
       return new Response('in removeInputValueOfTheTargetAction '.$analyse->getId().' -' .$target.' ');
     }
 

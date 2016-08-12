@@ -34,17 +34,16 @@ Setting the value of a {{ type }}
   <div class="col-sm-7">
     <div class="alert alert-dismissable alert-info">
     <p>In this interface, you can change the properties of your input.
-    
-      <ul>You have two possibilities
+    <ul>You have two possibilities
       <li>on the left, you can take the input from a reference CKMfitter analysis, either the default value of the datacard <a style="color: navy;" href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.id, 'input': observable.id , 'tab':'input' }) }}" target="_blank"><strong> {{ observable.analyse.scenario.name }} </strong> for {{ observable.latex.latex }} </a> or a value from a different scenario</li>
-      <li>on the right, you can set your own values (central value, experimental and theoretical value). The central value must be within the range indicated in brackets.</li>
-      </ul>
+      <li> on the right, you can set your own values (central value, experimental and theoretical value). The central value must be within the range indicated in brackets. </li>      
+    </ul>
     </p>
     </div>
   </div>
   <div class="col-sm-3">
     <p class="well"><a style="color: navy;" href="{{ path('CKMAppBundle_documentation_datacard_input', {'scenario': observable.analyse.scenario.id, 'input': observable.id , 'tab':'input' }) }}" target="_blank">Information for {{ observable.latex.latex }} can be found on the scenario<strong> {{ observable.analyse.scenario.name }} </strong>  </a></p>
-  </div>  
+  </div> 
 </div>
 <div class="row">
   <div class="col-sm-4">

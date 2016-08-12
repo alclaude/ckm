@@ -59,10 +59,9 @@ class ScenarioRepository extends EntityRepository
                           )
                         )
           ->getResult();
-
       return $scenarios;
-      #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
     }
+
     public function findScenarioByNotActivated()
     {
       $scenarios=$this->getEntityManager()
@@ -74,8 +73,6 @@ class ScenarioRepository extends EntityRepository
                           )
                         )
           ->getResult();
-
       return $scenarios;
-      #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
     }
 }

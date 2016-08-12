@@ -165,7 +165,6 @@ CKMAppBundle_administration_model_show:
 CKMAppBundle_administration_model_delete:
     pattern:  /administration/model/delete/{model}
     defaults: { _controller: CKMAppBundle:Administration:deleteModel}
-
 CKMAppBundle_administration_tag_input:
     pattern:  /administration/tagInput
     defaults: { _controller: CKMAppBundle:Administration:tagInput}

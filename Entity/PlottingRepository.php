@@ -1,9 +1,6 @@
 <?php
-
 namespace CKM\AppBundle\Entity;
-
 use Doctrine\ORM\EntityRepository;
-
 /**
  * ScenarioRepository
  *
@@ -18,10 +15,8 @@ class PlottingRepository extends EntityRepository
     $query = $em->createQuery('SELECT COUNT(p.id) FROM CKM\AppBundle\Entity\Plotting p WHERE p.analysis = :analyse');
     $query->setParameter('analyse', $analysis );
     $count = $query->getSingleScalarResult();
-
     $count++;
     echo $analysis." - ".$count." - ";
-
     return $count;
   }
 
@@ -56,5 +51,4 @@ class PlottingRepository extends EntityRepository
     ;
     return $query->getOneOrNullResult();
   }
-  
 }

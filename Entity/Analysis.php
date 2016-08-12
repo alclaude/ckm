@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 use CKM\AppBundle\Validator\DimensionRules;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * Analysis
@@ -47,7 +47,7 @@ class Analysis
      * @ORM\Column(name="datacard", type="text")
      */
     private $datacard;
-    
+
     /**
      * @var string
      *
@@ -318,6 +318,7 @@ class Analysis
      * @param string $datacard
      * @return Analysis
      */
+    #public function setDatacard($observables, $parameters, $targets)
     public function setDatacard($observables, $parameters, $targets, $rootTargets, $nickname='__NO__NICKNAME__', $title='__NO__TITLE__' )
     {
         #$this->datacard = $datacard;
@@ -345,8 +346,6 @@ class Analysis
       #$datacard .= $rl.$rl;
       $datacard .= '"'.$this->getScenario()->getModel()->getName().'",';
       $datacard .= $rl.$rl;
-
-
 
       # gestion des observables
     /*
@@ -439,28 +438,23 @@ class Analysis
 
     private function setTag4Datacard($observables, $parameters) {
       $tag=$observables[0]->getCurrentTag();
-
       $notToPrints=array('A', 'lambda', 'rhobar', 'etabar');
-
       foreach( $parameters as $parameter ) {
         if( ! in_array( $parameter->getName(), $notToPrints) ){
           if( $parameter->getCurrentTag() !== $tag) {
               return 'personnal';
           }
-
-          //if( $parameter->getValue()!= 0 and ($parameter->getExpUncertity()!=0 or $parameter->getThUncertity()!=0) ) {
+           
           if( !is_null($parameter->getValue()) and !is_null($parameter->getExpUncertity()) and !is_null($parameter->getThUncertity()) ) {
-           return 'personnal';
+            return 'personnal';
           }
         }
       }
-
       foreach( $observables as $observable ) {
         if( $observable->getCurrentTag() !== $tag) {
             return 'personnal';
         }
-        //if( $observable->getValue()!= 0 and ($observable->getExpUncertity()!=0 or $observable->getThUncertity()!=0) ) {
-        if( !is_null($observable->getValue()) and !is_null($observable->getExpUncertity()) and !is_null($observable->getThUncertity()) ) {  
+        if( !is_null($observable->getValue()) and !is_null($observable->getExpUncertity()) and !is_null($observable->getThUncertity()) ) {
          return 'personnal';
         }
       }
@@ -490,12 +484,14 @@ class Analysis
       $datacard .= '},'.$rl.$rl;
 
       $datacard .= '{';
+      //$datacard .= '"'.$target1->getName().'"';
       $datacard .= '"';
 
       if($target1->getRemoveAsInput()) $datacard .= '!';
 
       $datacard .= $target1->getName().'"';
       if(isset($targets[1]) ) {
+        //$datacard .= ', "'.$target2->getName().'"';
         $datacard .= ', "';
         if($target2->getRemoveAsInput()) $datacard .= '!';
 
@@ -551,7 +547,7 @@ class Analysis
         $datacard .= '"'.$element->getName().'"';
         $datacard .= ',';
 
-        if( is_null($element->getValue()) and is_null($element->getExpUncertity()) and is_null($element->getThUncertity()) ) {
+        if( is_null($element->getValue()) and is_null($element->getExpUncertity()) and is_null($element->getThUncertity()) ) {          
           #$datacard .= $element->getCurrentTag();
           $datacard .= '"'.$element->getCurrentTag().'"';
         } else {
@@ -571,16 +567,13 @@ class Analysis
     {
       //if($number==0) return $number;
       if(is_numeric($number)&&(intval($number)==floatval($number))) return $number;
-
       $scale = $this->countDecimals($number);
       return  rtrim(sprintf('%.'.$scale.'F', $number), '0');
     }
-
     function countDecimals($fNumber)
     {
         $fNumber = floatval($fNumber);
         for ( $iDecimals = 0; $fNumber != round($fNumber, $iDecimals); $iDecimals++ );
-
         return $iDecimals;
     }
 
@@ -796,4 +789,5 @@ class Analysis
     {
         return $this->resultDat;
     }
+
 }

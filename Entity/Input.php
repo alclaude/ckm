@@ -601,10 +601,8 @@ class Input
     public function setRemoveAsInput($removeAsInput)
     {
         $this->removeAsInput = $removeAsInput;
-
         return $this;
     }
-
     /**
      * Get removeAsInput
      *

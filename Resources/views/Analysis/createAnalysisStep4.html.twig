@@ -46,7 +46,7 @@ Analysis - <small> {{ message }} </small>
 <div class="row">
   <div class="col-sm-6">
     <form role="form" method="post" {{ form_enctype(form) }}>
-    <img  src={# asset('img/git.png') #}"http://ckmlive.in2p3.fr/img/nickname.png" alt="git" class="img-responsive img-rounded">
+      <img  src={{ asset('img/nickname.png') }} alt="nickname" class="img-responsive img-rounded">
       {{ form_widget(form) }}
       <br />
       <div class="form-group">          

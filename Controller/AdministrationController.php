@@ -48,7 +48,6 @@ class administrationController extends Controller
     $activeScenarios = $this->getDoctrine()
           ->getRepository('CKMAppBundle:Scenario')
           ->findScenarioByActivated();
-
     $notActiveScenarios = $this->getDoctrine()
           ->getRepository('CKMAppBundle:Scenario')
           ->findScenarioByNotActivated();
@@ -60,7 +59,8 @@ class administrationController extends Controller
       'notActiveScenarios'=>$notActiveScenarios,
     ));
   }
-
+  
+  
   public function addQuantityAction($scenario=0) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
@@ -87,11 +87,11 @@ class administrationController extends Controller
         $missParam=array();
 
         if(isset($tmp['observables']) and !empty($tmp['observables'])) {
-          $observables = $this->cleanCSV($tmp['observables'], 6);
+	  $observables = $this->cleanCSV($tmp['observables'], 6);
           $missObs   = $this->get('CKM.services.analysisManager')->isInputsInScenario( $observables, $scenario );
         }
         if(isset($tmp['parameters']) and !empty($tmp['parameters'])) {
-          $parameters = $this->cleanCSV($tmp['parameters'], 5);
+	  $parameters = $this->cleanCSV($tmp['parameters'], 5);
           $missParam = $this->get('CKM.services.analysisManager')->isInputsInScenario( $parameters, $scenario );
         }
 
@@ -103,7 +103,7 @@ class administrationController extends Controller
         $checkTagElt = $this->get('CKM.services.analysisManager')
                       ->checkTagInputInScenarioEdit($observables, $parameters);
 
-        if ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
+	if ( (isset($missObs) && $missObs) or (isset($missParam) && $missParam) ) {
             $this->get('session')->getFlashBag()->add(
                 'warning',
                 'Observable or Parameter already exist in the scenario list and have been overwrite: '.
@@ -335,18 +335,14 @@ class administrationController extends Controller
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-
     $datacard = new Scenario();
     $form = $this->createForm(new ScenarioType, $datacard);
-
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
       if ($form->isValid()) {
         $em = $this->getDoctrine()->getManager();
         $tmp = $request->request->get($form->getName()) ;
-
         $up = $form['file']->getData();
-
         $tag = $this->getFirstTag( $up->getPathname() );
         if ($tmp["name"] != $tag) {
           $this->get('session')->getFlashBag()->add(
@@ -357,16 +353,14 @@ class administrationController extends Controller
             'form1' => $form->createView(),
           ));
         }
-
+        
         $checkNbOfElt = $this->get('CKM.services.analysisManager')
                         ->checkNumberEltInScenarioAdd($tmp, $up,
                                                       $this->container->getParameter('nb_elt_by_observable_line'),
                                                       $this->container->getParameter('nb_elt_by_parameter_line')
                                                       );
-
         $checkTagElt = $this->get('CKM.services.analysisManager')
                         ->checkTagInputInScenarioAdd($tmp, $up);
-
         if($checkNbOfElt !== true  ){
         //if( ! $this->get('CKM.services.analysisManager')->checkTagInputInScenarioAdd($tmp, $up) ){
           $this->get('session')->getFlashBag()->add(
@@ -384,13 +378,11 @@ class administrationController extends Controller
           $datacard->setTag($tag);
           $em->persist($datacard);
           $em->flush();
-
           $this->get('session')->getFlashBag()->add(
             'success',
             'File upload '
           );
         }
-
         return $this->redirect(
                 $this->generateUrl('CKMAppBundle_administration_datacard',
                                     array()
@@ -411,7 +403,6 @@ class administrationController extends Controller
     return $this->render('CKMAppBundle:Administration:createDatacard.html.twig', array(
       'form1' => $form->createView(),
     ));
-
     #return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
     #));
   }
@@ -748,7 +739,6 @@ class administrationController extends Controller
     $quantities = array();
     
     foreach($lines as $key => $line) {
-
       if( ! preg_match("/$new_line/", $line) ) {
         $tmp_ar = array();
         $tmp_ar = explode(';',$line);
@@ -906,7 +896,7 @@ class administrationController extends Controller
     $tmp = $analyse->getId();
 
     try {
-      if($analyse->getStatus()!=3 ) {
+      if($analyse->getStatus()!=3) {
         $this->get('CKM.services.analysisManager')->removeAnalysis($analyse);
         $this->get('session')->getFlashBag()->add(
           'information',
@@ -1051,37 +1041,21 @@ class administrationController extends Controller
     );
   }
 
-  public function modelAction(Request $request) {
-    $models = $this->getDoctrine()
-          ->getRepository('CKMAppBundle:Model')
-          ->findAll();
-
-    return $this->render('CKMAppBundle:Administration:model.html.twig',
-      array(
-        'models'  => $models,
-      )
-    );
-  }
-
   public function tagInputAction(Request $request) {
     $tagInputs = $this->getDoctrine()
           ->getRepository('CKMAppBundle:TagInput')
           ->findAll();
-
     return $this->render('CKMAppBundle:Administration:tagInput.html.twig',
       array(
         'tagInputs'  => $tagInputs,
       )
     );
   }
-
   public function editTagInputAction($tagInput=0) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-
     $request = $this->getRequest();
-
     if ($tagInput==0) {
       $tagInput = new TagInput();
     }
@@ -1093,16 +1067,13 @@ class administrationController extends Controller
     if (!$tagInput) {
       throw $this->createNotFoundException('tagInput not exist');
     }
-
     $form = $this->createForm(new tagInputType, $tagInput);
-
     if ($request->getMethod() == 'POST') {
       $form->handleRequest($request);
       if ($form->isValid()) {
         $em = $this->getDoctrine()->getManager();
         $em->persist( $tagInput );
         $em->flush();
-
         return $this->redirect(
                 $this->generateUrl('CKMAppBundle_administration_datacard',
                     array('tab'=>'tag')
@@ -1110,11 +1081,22 @@ class administrationController extends Controller
         );
       }
     }
-
     return $this->render('CKMAppBundle:Administration:editModel.html.twig', array(
       'form' => $form->createView(),
       'kind'     => 'Tag Input'
     ));
+  }
+
+  public function modelAction(Request $request) {
+    $models = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Model')
+          ->findAll();
+
+    return $this->render('CKMAppBundle:Administration:model.html.twig',
+      array(
+        'models'  => $models,
+      )
+    );
   }
 
   public function editModelAction($model=0) {
@@ -1165,22 +1147,17 @@ class administrationController extends Controller
       throw new AccessDeniedHttpException('no credentials for this action');
     }
     $request = $this->getRequest();
-
     $tagInput = $this->getDoctrine()
           ->getRepository('CKMAppBundle:TagInput')
           ->findOneById($tagInput);
-
     if (!$tagInput) {
       throw $this->createNotFoundException('tagInput not exist');
     }
-
     $tmp=$tagInput->getName();
     $em = $this->getDoctrine()->getEntityManager();
-
     try {
         $em->remove($tagInput);
         $em->flush();
-
         $this->get('session')->getFlashBag()->add(
         'success',
         'Tag input '.$tmp.' deleted with success'
@@ -1192,7 +1169,6 @@ class administrationController extends Controller
             'Impossible to delete '.$tmp.' cause it is still in use in one analysis : '.$e->getMessage()
         );
     }
-
     return $this->redirect(
           $this->generateUrl('CKMAppBundle_administration_datacard',
                               array('tab' => 'tag')
@@ -1272,13 +1248,12 @@ class administrationController extends Controller
             )
     );
   }
-  
+
   public function logAnalysisAction($analyse=0)
   {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-
     $analyse = $this->getAnalysis($analyse);
 
     #if ($analyse->getUser()->getId() != $this->get('security.context')->getToken()->getUser()->getId() ) {
@@ -1307,7 +1282,6 @@ class administrationController extends Controller
         
     $handle = fopen('php://memory', 'r+');
     $header = array();
-
     fwrite($handle, $answers);        
     rewind($handle);
     $content = stream_get_contents($handle);
@@ -1339,4 +1313,5 @@ class administrationController extends Controller
       }
       return $analyse;
     }
+
 }

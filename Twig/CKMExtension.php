@@ -45,6 +45,7 @@ class CKMExtension extends \Twig_Extension
         break;
        case 3:
         $libelle='Transfered on the computing server';
+        break;
        case 4:
         $libelle='Achieved';
         break;

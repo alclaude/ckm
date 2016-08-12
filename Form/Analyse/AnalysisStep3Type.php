@@ -17,7 +17,7 @@ class AnalysisStep3Type extends AbstractType
     public function __construct( \Doctrine\ORM\EntityManager $em, $nbObservable)
     {
         $this->em = $em;
-        $this->nbObservable = $nbObservable;
+	$this->nbObservable = $nbObservable;
     }
     /**
      * @param FormBuilderInterface $builder
@@ -28,12 +28,11 @@ class AnalysisStep3Type extends AbstractType
       //\Doctrine\Common\Util\Debug::dump($builder);
       $path = $options['data']->getScenario()->getWebPath();
       $obs = $this->getListOfDatacardObservable( $path ) ;
-      $obs= $this->latexLike($obs) ;
+      $obs= $this->latexLike($obs);
 
       $builder
         ->add('sourceElement', 'choice'/*'entity'*/, array(
          'choices'   => $obs,
-         //'choices'   => array_merge($obs, $param),
          'label'     => 'Inputs',
          'mapped'    => false,
          'multiple'  => true,
@@ -62,7 +61,6 @@ class AnalysisStep3Type extends AbstractType
             $latex = $this->em
               ->getRepository('CKMAppBundle:Latex')
               ->findOneByName( $observables );
-
             if($latex) {
               $observables=$latex->getLatex();
             } else {

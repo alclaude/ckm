@@ -29,8 +29,8 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
            
       if ( ! $ID or ! $nameFileDat) {
           exit("no ID or pathDat given");
-      }
-
+      } 
+      
       ## start
       $em = $this->getContainer()->get('doctrine');
       $template = $this->getContainer()->get('templating');
@@ -42,7 +42,7 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
       #\Doctrine\Common\Util\Debug::dump($analysisToFinalize);
 
       if ( ! $analysisToFinalize) {
-          exit("Bad analysis Id: $ID - $nameFileDat");
+          exit("Bad analysis Id");
       } 
       
       $user = $analysisToFinalize->getUser();
@@ -69,20 +69,31 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
                   ->findLastPlottingByAnalysis($ID)
             ){
               if(!$plotting->getPathEps()){
-                $notifPlotting = "The requested plot coming soon";
+                $notifPlotting = "The requested plot is coming soon, and you will receive an additional mail when it is available.";
               }
+            }
+            else{
+              $notifPlotting = 'You have not request a Plot for your analysis. If you want you can define a Plot in the resume step by clicking on the tab Plot and then on the web link Define a plot for this analysis';
             }
 
             # envoi du mail
-            $message = \Swift_Message::newInstance()
+            $userName='';
+            if($user->getName()){
+              $userName = $user->getName();
+            }else{
+              $userName = $user->getUsername();
+            }
+
+           $message = \Swift_Message::newInstance()
                 ->setSubject('incoming result analysis '.$nameFileDat)
                 #->setFrom('ckmliveweb@gmail.com')
                 ->setFrom( array( 'ckmliveweb@in2p3.fr' => 'CKM Live Web' ) )
                 ->setTo($user->getEmail())
-                ->setBody($template->render('CKMUserBundle:Mail:resultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat, 'notifPlotting' => $notifPlotting) ) )
+                ->setBody($template->render('CKMUserBundle:Mail:resultNotification.txt.twig', array('user' => $user->getName(), 'analysis' => $nameFileDat, 'id' => $ID, 'notifPlotting' => $notifPlotting ) ) )
             ;
             $mail->send($message);
-            
+
+
             # in case of bad result, admin are warned
             if( preg_match('/overtime\.dat/', $nameFileDat, $matches) or
                 preg_match('/error\.dat/',    $nameFileDat, $matches) ) {
@@ -95,9 +106,9 @@ class RetrieveUserByIDAnalysisCommand extends ContainerAwareCommand
               ;
               $mail->send($message);
             }
-            
+
           }
-          else { echo "analysis $ID contains already a result"; }
+          // else { echo "analysis $ID contains already a result"; }
         } catch (IOException $e) {
             echo "An error occured while creating your directory ". $pathDat."\n LOG \n".$e."\n";
         }

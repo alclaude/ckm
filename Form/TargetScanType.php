@@ -50,30 +50,25 @@ class TargetScanType extends AbstractType
         ));
     }
 
-	public function postBind(FormEvent $e)
+    public function postBind(FormEvent $e)
 	{
-		$data = $e->getForm()->getData();
+	$data = $e->getForm()->getData();
         $form = $e->getForm();
-
         $precisionScanMax = $this->countDecimals($data->getScanMax());
         $precisionScanMin = $this->countDecimals($data->getScanMin());
-
         $scanMaxArray = array(
             'attr' => array('class' => 'form-control'),
             'invalid_message'            => 'the value must be a number',
             //'precision' => 20,
           );
-
         $scanMinArray = array(
             'attr' => array('class' => 'form-control'),
             'invalid_message'            => 'the value must be a number',
             //'precision' => 20,
         );
-
         $precisionScanMaxToPrint = '';
         if($precisionScanMax>6) $scanMaxArray['precision'] = $precisionScanMax;
         if($precisionScanMin>6) $scanMinArray['precision'] = $precisionScanMin;
-
         $form->add('scanMax', 'number', $scanMaxArray)
              ->add('scanMin', 'number', $scanMinArray);
 	}
@@ -82,9 +77,9 @@ class TargetScanType extends AbstractType
     {
         $fNumber = floatval($fNumber);
         for ( $iDecimals = 0; $fNumber != round($fNumber, $iDecimals); $iDecimals++ );
-
         return $iDecimals;
     }
+
 
     /**
      * @return string

@@ -77,11 +77,11 @@ Personalise your analysis
             <div class="table-responsive">
             {% for target in getIsTargets(analyse) %}
             <a class="list-group-item" href="{{ path('CKMAppBundle_analyse_create_analyse_scan', {'target_id': target.id}) }}">
-              <i class="fa fa-check"></i> 
+              <i class="fa fa-check"></i>
               {% if debug_mode == 1 %}
-                #{{ target.id }} - 
-              {% endif %} 
-              {{ target.latex.latex }}
+                #{{ target.id }} -
+               {% endif %}
+                 {{ target.latex.latex }}
               <span style="float:right;">
               {{ latex('['~target.scanMin~','~target.scanMax~']') }}
               </span>
@@ -94,7 +94,7 @@ Personalise your analysis
                         <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
                         <th style="border-bottom:2px solid black;" class="header">Value </th>
                         <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
-                        <th class="header">Documentation </th>
+                        <th class="header">Documentation  </th>
                         <th class="header">Edit </th>
                       </tr>
                     </thead>
@@ -103,10 +103,10 @@ Personalise your analysis
                   {% set paramGetObs    = paramGetObs|merge({ (parameter.latex.latex): target.latex.latex }) %}
                       <tr>
                         <td> 
-                        {% if debug_mode == 1 %}  
-                          #{{ parameter.id }} -
+                        {% if debug_mode == 1 %}
+                        #{{ parameter.id }} -
                         {% endif %} 
-                          
+
                         {% if parameter.latex.latex %}
                           {{ parameter.latex.latex}}
                         {% endif %} </td>
@@ -142,7 +142,7 @@ Personalise your analysis
                       <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
                       <th style="border-bottom:2px solid black;" class="header">Value </th>
                       <th style="border-bottom:2px solid black;" class="header">&nbsp; </th>
-                      <th class="header">Documentation </th>
+                      <th class="header">Documentation  </th>
                       <th class="header">Actions </th>
                     </tr>
                   </thead>
@@ -152,9 +152,8 @@ Personalise your analysis
                     <tr>
                       <td> 
                       {% if debug_mode == 1 %} 
-                        #{{ observable.id }} - 
+                      #{{ observable.id }} -
                       {% endif %}
-                        
                       {{ observable.latex.latex}}</td>
                       {% include 'CKMAppBundle:Analysis:quantity_property.html.twig' with {'quantity': observable} only %}
                       <td>
@@ -179,10 +178,9 @@ Personalise your analysis
                     {% endif %}
                       <tr class="collapse row{{ counter }}" style="{{ style|e }}" >
                         <td>
-                        {% if debug_mode == 1 %}   
-                          #{{ oneParameter.id }} -
-                        {% endif %}  
-                          
+                        {% if debug_mode == 1 %}
+                        #{{ oneParameter.id }} -
+                        {% endif %}
                         {% if oneParameter.latex.latex is defined %}
                           {{ oneParameter.latex.latex}}
                         {% else %}
@@ -218,20 +216,29 @@ Personalise your analysis
             {% if plots and plots is defined %}
               {% for plot in plots %}
               <div class="well">
-                <p>{{ plot.nickname }}</p>
-                <p>{{ plot.title }}</p>
-                <p>{{ plot.pathPdf }}</p>
+                <p><label>Nickname:&nbsp; </label>{{ plot.nickname }}</p>
+                <p><label>Plot title:&nbsp; </label>{{ plot.title }}</p>
+                <p><label>Result: </label></p>
+                <ul>
                 {% if plot.pathPdf and plot.pathPdf is defined %}
-                  <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathPdf, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">see result</a>
+                <li>
+                  <p>{{ plot.pathPdf }}</p>
+                  <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathPdf, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">See the pdf plot</a>
                 {% endif %}
-                <p>{{ plot.pathEps }}</p>
+                </li>
                 {% if plot.pathEps and plot.pathEps is defined %}
-                  <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathEps, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">see result</a>
+                <li>
+                  <p>{{ plot.pathEps }}</p>
+                  <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathEps, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">See the eps plot</a>
                 {% endif %}
-                <p>{{ plot.pathPng }}</p>
+                </li>
                 {% if plot.pathPng and plot.pathPng is defined %}
-                  <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathPng, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">see result</a>
+                <li>
+                  <p>{{ plot.pathPng }}</p>
+                  <a href="{{ path('CKMAppBundle_dl_result_plotting', {'analyse': analyse.id, 'plotNameExtension':plot.pathPng, 'numberOfPlot': plot.NumberOfPlot}) }}" target="_blank">See the png plot</a>
                 {% endif %}
+                </li>
+                </ul>
               </div>
               <hr />
               {% endfor %}

@@ -18,7 +18,7 @@ class latexType extends AbstractType
             ->add('name', 'text', array(
               'attr' => array('class' => 'form-control', 'read_only' => true),
             ))
-          ->add('latex', 'text', array(
+            ->add('latex', 'text', array(
               'attr' => array('class' => 'form-control'),
             ))
             ->add('root', 'text', array(

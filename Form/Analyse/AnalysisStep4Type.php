@@ -1,17 +1,11 @@
 <?php
-
 namespace CKM\AppBundle\Form\Analyse;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-
-
 class AnalysisStep4Type extends AbstractType
 {
     protected $em;
-
     public function __construct( \Doctrine\ORM\EntityManager $em)
     {
         $this->em = $em;
@@ -35,7 +29,7 @@ class AnalysisStep4Type extends AbstractType
              */
        ->add('nickname', 'text', array(
           'attr' => array('class' => 'form-control', 'maxlength'=>8),
-          'label'  => 'Please enter a nickname to appear as CKMlive by nickname',
+          'label'  => 'Please enter a nickname. This will appear on the plot as CKMlive by nickname',
           
         ))
        ->add('title', 'text', array(
@@ -44,7 +38,6 @@ class AnalysisStep4Type extends AbstractType
         ))
       ;
     }
-
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -56,7 +49,6 @@ class AnalysisStep4Type extends AbstractType
             'cascade_validation' => true,
         ));
     }
-
     /**
      * @return string
      */
@@ -64,5 +56,4 @@ class AnalysisStep4Type extends AbstractType
     {
         return 'ckm_appbundle_analysis_step4';
     }
-
 }

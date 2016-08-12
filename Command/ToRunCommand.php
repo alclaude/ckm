@@ -25,7 +25,7 @@ class ToRunCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
       ## start
-      $output->writeln('<comment>Analysis prepared to be launched</comment>');
+      #$output->writeln('<comment>Analysis prepared to be launched</comment>');
 
       $em = $this->getContainer()->get('doctrine');
       $analysisToRun = $em
@@ -51,7 +51,7 @@ class ToRunCommand extends ContainerAwareCommand
             #echo '#'.$analysis->getId().' '.$analysis->getName()."\n";
             # TODO
             # .m file
-            #$analysis->setStatus(3);
+            $analysis->setStatus(3);
             $em->getManager()->persist( $analysis );
             $em->getManager()->flush();
           } catch (IOException $e) {

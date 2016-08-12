@@ -48,23 +48,20 @@ class AnalysisManager
 
   public function isInputsInScenario($inputsName, $scenario) {
     $presents=array();
-
     foreach($inputsName as $inputName) {
       $tmp_ar = explode(';',$inputName);
       $return='';
       $return=$this->isInputInScenario($tmp_ar['0'], $scenario) ;
       if($return) $presents[]=$return;
     }
-
     if(count($presents)>0)
       return $presents;
     else
       return false;
   }
-
+  
   public function isInputInScenario($inputName, $scenario) {
     $scenarioInputs=$scenario->getInput();
-
     foreach($scenarioInputs as $scenarioInput) {
       if( $scenarioInput==$inputName ) {
         return $inputName;
@@ -132,7 +129,6 @@ class AnalysisManager
       // Sinon on déclenche une exception « Accès interdit »
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-
     $tagInputs = $this->em
       ->getRepository('CKMAppBundle:TagInput')
       ->findTagInputByActivated();
@@ -168,28 +164,24 @@ class AnalysisManager
     foreach($tagInputs as $tagInput) {
       $tagsName[]=$tagInput->getName();
     }
-
     foreach($observables as $observable) {
       $tmp_ar = explode(';',$observable);
       $tag = $tmp_ar[count($tmp_ar)-1];
-
       if (!in_array($tag, $tagsName)) {
         return $observable;
       }
     }
     return true;
   }
-
+  
     public function checkTagInputInScenarioEdit($observables, $parameters) {
     if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
       // Sinon on déclenche une exception « Accès interdit »
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-
     $tagInputs = $this->em
       ->getRepository('CKMAppBundle:TagInput')
       ->findTagInputByActivated();
-
     $tagsName = array();
     foreach($tagInputs as $tagInput) {
       $tagsName[]=$tagInput->getName();
@@ -201,7 +193,6 @@ class AnalysisManager
     foreach($quantities as $quantitie) {
         $tmp_ar = explode(';',$quantitie);
         $tag = $tmp_ar[count($tmp_ar)-1];
-
         if (!in_array($tag, $tagsName)) {
           return $quantitie;
         }
@@ -214,15 +205,12 @@ class AnalysisManager
       // Sinon on déclenche une exception « Accès interdit »
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-
     $data = file_get_contents( $upload->getPathname() ) or die("fichier non trouv&eacute;");
     $lines = explode("\n", $data);
-
     $type='';
     $new_line = "^\n$" ;
     $observables = array();
     $parameters  = array();
-
     foreach($lines as $line) {
       if( ! preg_match("/$new_line/", $line) ) {
         if( preg_match('/# observable/', $line) ) {
@@ -241,7 +229,6 @@ class AnalysisManager
         }
       }
     }
-
     foreach($observables as $observable) {
         $tmp_ar = explode(';',$observable);
         if(count($tmp_ar)!=$nbObservable) return $observable;
@@ -250,7 +237,6 @@ class AnalysisManager
         $tmp_ar = explode(';',$parameter);
         if(count($tmp_ar)!=$nbParameter) return $parameter;
     }
-
     return true;
   }
 
@@ -259,7 +245,6 @@ class AnalysisManager
       // Sinon on déclenche une exception « Accès interdit »
       throw new AccessDeniedHttpException('no credentials for this action');
     }
-
     if(count($observables)>0){
       foreach($observables as $observable) {
           $tmp_ar = explode(';',$observable);
@@ -272,11 +257,9 @@ class AnalysisManager
           if(count($tmp_ar)!=$nbParameter) return $parameter;
       }
     }
-
-
-
     return true;
   }
+
   public function checkTargetScanValueInScenario($path, $target ) {
     if (!$this->securityContext->isGranted('ROLE_ANALYSIS')) {
         // Sinon on déclenche une exception « Accès interdit »
@@ -285,7 +268,6 @@ class AnalysisManager
     if ($path=='' or $target=='') {
       throw new \Exception('path or target not defined');
     }
-
     $data = file_get_contents($path) or die("fichier non trouv&eacute;");
     $lines = explode("\n", $data);
     $new_line = "^\n$" ;

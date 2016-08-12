@@ -1,9 +1,6 @@
 <?php
-
 namespace CKM\AppBundle\Entity;
-
 use Doctrine\ORM\EntityRepository;
-
 /**
  * ModelRepository
  *
@@ -23,7 +20,6 @@ class TagInputRepository extends EntityRepository
                           )
                         )
           ->getResult();
-
       return $tagInputs;
       #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
     }

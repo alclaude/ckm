@@ -1,15 +1,11 @@
 <?php
-
 namespace CKM\AppBundle\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-
 use CKM\AppBundle\Validator\DimensionRules;
-
 /**
  * Analysis
  *
@@ -27,7 +23,6 @@ class Plotting
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
     /**
      * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\Analysis")
      * @ORM\JoinColumn(nullable=false)
@@ -40,7 +35,6 @@ class Plotting
      * @ORM\Column(name="nickname", type="string", length=8)
      */
     private $nickname;
-
     /**
      * @var string
      *
@@ -109,7 +103,6 @@ class Plotting
     {
         return $this->id;
     }
-
     /**
      * Set nickname
      *
@@ -119,10 +112,8 @@ class Plotting
     public function setNickname($nickname)
     {
         $this->nickname = $nickname;
-
         return $this;
     }
-
     /**
      * Get nickname
      *
@@ -132,7 +123,6 @@ class Plotting
     {
         return $this->nickname;
     }
-
     /**
      * Set title
      *
@@ -142,10 +132,8 @@ class Plotting
     public function setTitle($title)
     {
         $this->title = $title;
-
         return $this;
     }
-
     /**
      * Get title
      *
@@ -155,7 +143,6 @@ class Plotting
     {
         return $this->title;
     }
-
     /**
      * Set pathEps
      *
@@ -165,10 +152,8 @@ class Plotting
     public function setPathEps($pathEps)
     {
         $this->pathEps = $pathEps;
-
         return $this;
     }
-
     /**
      * Get pathEps
      *
@@ -178,7 +163,6 @@ class Plotting
     {
         return $this->pathEps;
     }
-
     /**
      * Set pathPng
      *
@@ -188,10 +172,8 @@ class Plotting
     public function setPathPng($pathPng)
     {
         $this->pathPng = $pathPng;
-
         return $this;
     }
-
     /**
      * Get pathPng
      *
@@ -201,7 +183,6 @@ class Plotting
     {
         return $this->pathPng;
     }
-
     /**
      * Set NumberOfPlot
      *
@@ -211,10 +192,8 @@ class Plotting
     public function setNumberOfPlot($numberOfPlot)
     {
         $this->numberOfPlot = $numberOfPlot;
-
         return $this;
     }
-
     /**
      * Get NumberOfPlot
      *
@@ -224,7 +203,6 @@ class Plotting
     {
         return $this->numberOfPlot;
     }
-
     /**
      * Set analysis
      *
@@ -234,10 +212,8 @@ class Plotting
     public function setAnalysis(\CKM\AppBundle\Entity\Analysis $analysis)
     {
         $this->analysis = $analysis;
-
         return $this;
     }
-
     /**
      * Get analysis
      *
@@ -257,10 +233,8 @@ class Plotting
     public function setPathPdf($pathPdf)
     {
         $this->pathPdf = $pathPdf;
-
         return $this;
     }
-
     /**
      * Get pathPdf
      *

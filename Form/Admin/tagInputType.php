@@ -45,3 +45,4 @@ class tagInputType extends AbstractType
         return 'ckm_appbundle_Tag_Input';
     }
 }
+
