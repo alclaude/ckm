@@ -70,6 +70,8 @@ class ToPlotCommand extends ContainerAwareCommand
                   $analysisFile = $plotDir.'.toplot/'.$title.'____'.$nickname.'____'.$analysis->getScenario()->getTag().'____'.$analysis->getScanConstraint().'.dat';
                   //echo $analysisFile."\n";
 
+                  ini_set('memory_limit', '1024M');
+
                   $fs->touch($analysisFile);
 
                   $result = $analysis->getResultDat();
