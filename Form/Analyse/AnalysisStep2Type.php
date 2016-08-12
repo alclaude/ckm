@@ -27,7 +27,7 @@ class AnalysisStep2Type extends AbstractType
     {
       $path = $options['data']->getScenario()->getWebPath();
 
-      list($obs, $param) = $this->getListOfDatacardObservable( $path );
+      list($obs, $param) = $this->getListOfDatacardObservable( $path );    
       list($obs, $param) = $this->latexLike($obs, $param) ;
 
       /*echo '<pre>';
@@ -121,7 +121,7 @@ class AnalysisStep2Type extends AbstractType
         if($latex) {
           $parameter=$latex->getLatex();
         }
-        else {
+        elseif (!empty($latex)) {
           $parameter='('.$parameter.')';
         }
       }
