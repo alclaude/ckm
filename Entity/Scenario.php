@@ -88,6 +88,13 @@ class Scenario
     private $isDocumented=false;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_development", type="boolean")
+     */
+    private $isDevelopment=false;
+
+    /**
      * @ORM\ManyToOne(targetEntity="CKM\AppBundle\Entity\Model")
      * @ORM\JoinColumn(nullable=false)
      */

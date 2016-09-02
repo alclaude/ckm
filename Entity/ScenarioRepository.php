@@ -31,11 +31,17 @@ class ScenarioRepository extends EntityRepository
       #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
     }
     
-    public function findScenarioByModelAndActivated($model)
+    public function findScenarioByModelAndActivated($model, $isSuperadmin)
     {
+      $sqlForNoAdmin='';
+      
+      if($isSuperadmin!=1){
+          $sqlForNoAdmin=' and s.isDevelopment=0';
+      }
+      
       $scenarios=$this->getEntityManager()
           ->createQuery(
-              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.model = :model and s.isDocumented=:isDocumented'
+              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.model = :model and s.isDocumented=:isDocumented'.$sqlForNoAdmin
           )
           ->setParameters(array(
                           'isDocumented'   => 1,

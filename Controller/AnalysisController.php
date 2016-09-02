@@ -1599,7 +1599,7 @@ die('die');
 
         $em = $this->getDoctrine()->getManager();
         if($disable==1)  $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findByModel($model_id);
-        else $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findScenarioByModelAndActivated($model_id);
+        else $scenarios = $em->getRepository('CKMAppBundle:Scenario')->findScenarioByModelAndActivated($model_id, $this->get('security.context')->isGranted('ROLE_SUPER_ADMIN'));
         
 
         $scenariosArray=array();
