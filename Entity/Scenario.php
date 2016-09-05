@@ -495,4 +495,27 @@ class Scenario
     {
         return $this->documentation;
     }
+
+    /**
+     * Set isDevelopment
+     *
+     * @param boolean $isDevelopment
+     * @return Scenario
+     */
+    public function setIsDevelopment($isDevelopment)
+    {
+        $this->isDevelopment = $isDevelopment;
+
+        return $this;
+    }
+
+    /**
+     * Get isDevelopment
+     *
+     * @return boolean 
+     */
+    public function getIsDevelopment()
+    {
+        return $this->isDevelopment;
+    }
 }
