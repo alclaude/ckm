@@ -47,16 +47,20 @@ class administrationController extends Controller
 
     $activeScenarios = $this->getDoctrine()
           ->getRepository('CKMAppBundle:Scenario')
-          ->findScenarioByActivated();
+          ->findScenarioByActivatedAndNotDev();
     $notActiveScenarios = $this->getDoctrine()
           ->getRepository('CKMAppBundle:Scenario')
-          ->findScenarioByNotActivated();
+          ->findScenarioByNotActivatedAndNotDev();
+    $developmentScenarios = $this->getDoctrine()
+          ->getRepository('CKMAppBundle:Scenario')
+          ->findScenarioByIsDevelopment();
 
     return $this->render('CKMAppBundle:Administration:datacard.html.twig', array(
       'tab'=>$tab,
       'error'=>$error,
       'activeScenarios'=>$activeScenarios,
       'notActiveScenarios'=>$notActiveScenarios,
+      'developmentScenarios'=>$developmentScenarios,
     ));
   }
   
@@ -920,7 +924,88 @@ class administrationController extends Controller
 
   }
 
-  public function switchIsDocumentedAction($scenario) {
+  public function switchIsDevelopmentAction($scenario) {
+    if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+      throw new AccessDeniedHttpException('no credentials for this action');
+    }
+    $scenario = $this->getDoctrine()
+      ->getRepository('CKMAppBundle:Scenario')
+      ->findOneById($scenario);
+
+    if (!$scenario) {
+      throw $this->createNotFoundException('scenario not exist');
+    }
+
+    $request = $this->getRequest();
+    $form = $this->createFormBuilder($scenario)
+            ->add('token', 'hidden',array(
+                'mapped'           => false,
+            ))
+            ->add('switch',
+                  'submit',
+                    array(
+                        'attr' => array('class' => 'form-control btn btn-default'),
+                        )
+                  )
+            ->getForm();
+
+    if ($request->getMethod() == 'POST') {
+      $form->handleRequest($request);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+
+        $inputs = $scenario->getInput();
+
+        $toEnabled=true;
+        $inputWithoutLatex=array();
+        foreach($inputs as $input){
+          if( !preg_match("/^\s*$/",$input) ) {
+            $latex = $this->getDoctrine()
+              ->getRepository('CKMAppBundle:Latex')
+              ->findOneByName($input);
+            if($latex==null) {
+              $toEnabled=false;
+              $inputWithoutLatex[]=$input;
+              $scenario->setIsDocumented(false);
+            }
+          }
+        }
+
+        if($toEnabled) {
+          if($scenario->getIsDevelopment()) {
+            $scenario->setIsDevelopment(false);
+          } else {
+            $scenario->setIsDevelopment(true);
+          }
+        }
+        else {
+          $this->get('session')->getFlashBag()->add(
+          'warning',
+          'The scenario '.$scenario->getName().' can not be enable because the input '.rtrim(join(", ",$inputWithoutLatex), ', ').' that have no Latex definition'.
+          '<br><br>Please go to <a href="'.$this->container->get('router')->generate('CKMAppBundle_administration_datacard_documentation', array('tab' => 'latex') ).'">Latex definition</a> to
+          add one for these inputs'
+          );
+        }
+        $em->persist( $scenario );
+        $em->flush();
+
+        return $this->redirect(
+                $this->generateUrl('CKMAppBundle_administration_datacard', #'CKMAppBundle_administration_datacard_documentation',
+                    array()
+                )
+        );
+      }
+
+    }
+    return $this->render('CKMAppBundle:Administration:default.html.twig', array(
+      'form' => $form->createView(),
+      'route'=>'CKMAppBundle_administration_datacard_swith_development',
+      'param'=>'scenario',
+      'value'=>$scenario->getId(),
+    ));
+  }
+
+public function switchIsDocumentedAction($scenario) {
     if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
       throw new AccessDeniedHttpException('no credentials for this action');
     }

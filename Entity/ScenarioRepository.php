@@ -54,28 +54,45 @@ class ScenarioRepository extends EntityRepository
       #return count($scenarios)>0 ? $scenarios : array('Sorry no scenario available : contact your administrator');
     }
 
-    public function findScenarioByActivated()
+    public function findScenarioByActivatedAndNotDev()
     {
       $scenarios=$this->getEntityManager()
           ->createQuery(
-              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.isDocumented=:isDocumented'
+              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.isDocumented=:isDocumented
+              AND s.isDevelopment=:isDevelopment'
           )
           ->setParameters(array(
                           'isDocumented'   => 1,
+                          'isDevelopment'  => 0,
                           )
                         )
           ->getResult();
       return $scenarios;
     }
 
-    public function findScenarioByNotActivated()
+    public function findScenarioByNotActivatedAndNotDev()
     {
       $scenarios=$this->getEntityManager()
           ->createQuery(
-              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.isDocumented!=:isDocumented'
+              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.isDocumented!=:isDocumented
+              AND s.isDevelopment=:isDevelopment'
           )
           ->setParameters(array(
                           'isDocumented'   => 1,
+                          'isDevelopment'  => 0,
+                          )
+                        )
+          ->getResult();
+      return $scenarios;
+    }
+    public function findScenarioByIsDevelopment()
+    {
+      $scenarios=$this->getEntityManager()
+          ->createQuery(
+              'SELECT s FROM CKM\AppBundle\Entity\Scenario s WHERE s.isDevelopment=:isDevelopment'
+          )
+          ->setParameters(array(
+                          'isDevelopment'  => 1,
                           )
                         )
           ->getResult();

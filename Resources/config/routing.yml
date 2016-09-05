@@ -147,6 +147,9 @@ CKMAppBundle_administration_latex_documentation_delete:
 CKMAppBundle_administration_datacard_swith_documentation:
     pattern:  /administration/datacard/documentation/switchDocumented/{scenario}
     defaults: { _controller: CKMAppBundle:Administration:switchIsDocumented}
+CKMAppBundle_administration_datacard_swith_development:
+    pattern:  /administration/datacard/documentation/switchDevelopment/{scenario}
+    defaults: { _controller: CKMAppBundle:Administration:switchIsDevelopment}
 CKMAppBundle_administration_analysis_delete:
     pattern:  /administration/analysis/delete/{analyse}
     defaults: { _controller: CKMAppBundle:Administration:deleteAnalysis}
