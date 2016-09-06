@@ -163,7 +163,7 @@ class Observable extends Input
       $lines = explode("\n", $data);
 
       $new_line = "^\n$" ;
-      $observablePattern =  '/'.preg_quote( $this->getName(), '/' ).'/';
+      $observablePattern =  '/^'.preg_quote( $this->getName(), '/' ).';/';
       // info obs
       $tmp_ar_obs = array();
       // params de l obs
@@ -192,7 +192,7 @@ class Observable extends Input
       $lines = explode("\n", $data);
 
       $new_line = "^\n$" ;
-      $observablePattern =  '/'.preg_quote( $this->getName(), '/' ).'/';
+      $observablePattern =  '/^'.preg_quote( $this->getName(), '/' ).';/';
       // info obs
       $tmp_ar_obs = array();
       // params de l obs
