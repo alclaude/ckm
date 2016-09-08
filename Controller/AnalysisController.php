@@ -1081,7 +1081,7 @@ die('die');
       try {
         $this->get('CKM.services.analysisManager')->removeAnalysis($analyse);
         $this->get('session')->getFlashBag()->add(
-          'information',
+          'success',
           'Analysis '.$tmp.' deleted with success'
         );
 

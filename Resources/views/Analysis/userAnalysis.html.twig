@@ -41,6 +41,7 @@ Analysis - <small>List </small>
                   <th class="header">status </th>
                   <th class="header">Scenario </th>
                   <th class="header">Edit </th>
+                  <th class="header">Remove </th>
                 </tr>
               </thead>
               {% if analysesbyuser | length > 0 %}
@@ -59,6 +60,7 @@ Analysis - <small>List </small>
                       <td>{{ getStatusLibelle(analyse.status) }}</td>
                       <td>{{ analyse.scenario.name }} </td>
                       <td><a class="btn btn-success btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_source', {'analyse': analyse.id}) }}"><i class="glyphicon glyphicon-pencil tooltips" data-original-title="Edit parameter" title="Edit parameter"></i></a></td>
+                      <td><a class="btn btn-danger btn-xs" href="{{ path('CKMAppBundle_analyse_create_analyse_remove', {'analyse': analyse.id}) }}"><i class="fa fa-times-circle fa-lg" data-original-title="remove analysis" title="remove analysis"></i></a></td>
                     </tr>
                 {% endfor %}
               {% else %}
