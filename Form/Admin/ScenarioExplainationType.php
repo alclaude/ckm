@@ -34,6 +34,12 @@ class ScenarioExplainationType extends AbstractType
               'label' => 'Explanations',
               'required' => true,
             ))
+            ->add('command', 'textarea', array(
+              'attr'    => array('class' => 'form-control', 'rows' => '10'),
+              #'mapped'  => false,
+              'label' => 'Additionnal command',
+              'required' => true,
+            ))
         ;
     }
 

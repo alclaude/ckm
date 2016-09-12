@@ -334,7 +334,7 @@ class Analysis
       # parameter not to print : A, lambda, rhobar, etabar
       $notToPrints=array('A', 'lambda', 'rhobar', 'etabar');
 
-      $scenario  = $this->getScenario()->getWebPath();
+      $scenario  = '{ '.$this->getScenario()->getWebPath().' },';
       $rl = "\n";
 
       $datacard  = '';
@@ -424,7 +424,10 @@ class Analysis
 
       $datacard .= $this->writeTargets($targets, $rootTargets, $rl);
 
-      $datacard .= $this->getGranularity();
+      $datacard .= $this->getGranularity().'",';
+      $datacard .= $rl.$rl;
+
+      $datacard .= $this->getScenario()->getCommand();
       $datacard .= $rl;
       $datacard .= '}';
 

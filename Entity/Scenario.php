@@ -107,6 +107,13 @@ class Scenario
      */
     private $documentation='';
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="command", type="text", nullable=true)
+     */
+    private $command='';
+
     public function __construct()
     {
         $this->path = "/home/alclaude/Documents/DEV_PHP/ckm-web2/src/CKM/globalCKMfit_scenario.txt";
@@ -517,5 +524,28 @@ class Scenario
     public function getIsDevelopment()
     {
         return $this->isDevelopment;
+    }
+
+    /**
+     * Set command
+     *
+     * @param string $command
+     * @return Scenario
+     */
+    public function setCommand($command)
+    {
+        $this->command = $command;
+
+        return $this;
+    }
+
+    /**
+     * Get command
+     *
+     * @return string
+     */
+    public function getCommand()
+    {
+        return $this->command;
     }
 }
