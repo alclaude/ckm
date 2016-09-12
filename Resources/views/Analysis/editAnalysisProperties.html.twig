@@ -28,6 +28,14 @@ Analysis - <small> Define {{ message }} </small>
         {{ form_errors(form.name) }}
         {{ form_label(form.name) }}
         {{ form_widget(form.name, { 'attr': { 'readonly': 'true' } }) }}
+
+        {{ form_errors(form.scanMin) }}
+        {{ form_label(form.scanMin) }}
+        {{ form_widget(form.scanMin) }}
+
+        {{ form_errors(form.scanMax) }}
+        {{ form_label(form.scanMax) }}
+        {{ form_widget(form.scanMax) }}
       </div>
       {{ form_rest(form) }}
 {% endif %}
