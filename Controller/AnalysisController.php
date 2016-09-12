@@ -1744,14 +1744,14 @@ die('die');
         ->findOneById($target);
    
       $msgBtn = '';
-      if(!$target->getRemoveAsInput()) $msgBtn = 'Remove ';
-      else $msgBtn = 'Replace ';
+      if(!$target->getRemoveAsInput()) $msgBtn = 'Ignore ';
+      else $msgBtn = 'Include ';
  
       $form = $this->createFormBuilder($target)
             ->add('token', 'hidden',array(
                 'mapped'           => false,
             ))
-            ->add($msgBtn.'its input value',
+            ->add($msgBtn.'the input value for the fit',
                   'submit',
                     array(
                         'attr' => array('class' => 'btn btn-warning right btn-sm'),

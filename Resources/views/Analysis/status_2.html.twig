@@ -27,11 +27,20 @@
 {% if target_and_observable is defined and target_and_observable is not null and target_and_observable is not empty %}
     <div class="panel panel-warning">
       <div class="panel-heading">
-        <h3 class="panel-title">Did you see...</h3>
+        <h3 class="panel-title">Notice that...</h3>
       </div>
       {% for tar_obs in target_and_observable %}
         <div class="panel-body">
-          {{ tar_obs.latex.latex }}  is both a target and a input...
+          {{ tar_obs.latex.latex }}  is a target for which an input value is given and will be 
+          {% if tar_obs.removeAsInput is defined and tar_obs.removeAsInput==1 %}
+          ignored
+          {% elseif tar_obs.removeAsInput is defined and tar_obs.removeAsInput==0 %}
+          included
+          {% else %}
+          [debug] not a valid case
+          {% endif %}
+
+           in the fit
           {{ render(controller('CKMAppBundle:Analysis:removeInputValueOfTheTarget', {'analyse': analyse.id, 'target': tar_obs.id} )) }}
         </div>
       {% endfor %}
