@@ -46,6 +46,7 @@ class AddScenarioFieldSubscriber implements EventSubscriberInterface
                 if($this->scenarioEnabled==1) {
                   $qb->andwhere('scenario.isDocumented =1');
                 }
+                $qb->andwhere('scenario.isDevelopment=0');
                 
                 return $qb;
             }
@@ -70,10 +71,8 @@ echo '</pre>';
 die('debbug');
 */
         #$accessor    = PropertyAccess::createPropertyAccessor();
-
-
-
         $scenario        = $data->getScenario();
+
         $model_id = ($scenario) ? $scenario->getModel()->getId() : null;
 
 
