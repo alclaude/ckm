@@ -271,7 +271,7 @@ class AnalysisManager
     $data = file_get_contents($path) or die("fichier non trouv&eacute;");
     $lines = explode("\n", $data);
     $new_line = "^\n$" ;
-    $observablePattern =  '/^'.preg_quote( $target, '/' ).'/';
+    $observablePattern =  '/^'.preg_quote( $target, '/' ).';/';
     // info input
     $tmp_ar_obs = array();
     // recherche des elements de l input

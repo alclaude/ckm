@@ -734,7 +734,7 @@ class Analysis
       $lines = explode("\n", $data);
 
       $new_line = "^\n$" ;
-      $targetPattern =  '/'.preg_quote( $target, '/' ).'/';
+      $targetPattern =  '/'.preg_quote( $target, '/' ).';/';
 
       // recherche des params de l observable
       foreach($lines as $line) {
