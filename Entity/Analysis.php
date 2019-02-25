@@ -734,15 +734,18 @@ class Analysis
       $lines = explode("\n", $data);
 
       $new_line = "^\n$" ;
-      $targetPattern =  '/'.preg_quote( $target, '/' ).';/';
+      $targetPattern =  '/'.preg_quote( $target, '/' ).'/';
 
       // recherche des params de l observable
       foreach($lines as $line) {
         if( ! preg_match("/$new_line/", $line) ) {
           $name = explode(';',$line);
-          if( preg_match($targetPattern, $name[0]) ) {
+          /*if( preg_match($targetPattern, $name[0]) ) {
             return true;
-          }
+          }*/
+          // 20190218-Jp-tutorial
+          if($name[0]===$target) return true;
+
           if( preg_match('/# parameter/', $line) ) {
             return false;
           }
